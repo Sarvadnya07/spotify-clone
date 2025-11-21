@@ -1,0 +1,308 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================================
+   Global Theme Tokens & Accessibility Helpers
+   (keeps your Tailwind system flexible without changing classes)
+   ============================================================ */
+
+/* CSS variables used by a few handcrafted helpers below.
+   These are safe to add — they don't modify your existing ids/classes.
+*/
+:root{
+  --bg-surface: #0f0f0f;
+  --panel-bg: #121212;
+  --muted: #a7a7a7;
+  --accent: #1db954; /* spotify-green inspired accent */
+  --soft-white: #ffffff;
+  --soft-black: #0b0b0b;
+  --glass: rgba(255,255,255,0.03);
+  --radius-md: 12px;
+  --radius-sm: 8px;
+  --shadow-soft: 0 6px 18px rgba(0,0,0,0.55);
+  --transition-fast: 180ms;
+  --transition-medium: 300ms;
+}
+
+/* ============================================================
+   Scrollbar handling (mobile-first). You already had ::-webkit-scrollbar none,
+   but here we add cross-browser helpers and a .hide-scrollbar utility.
+   ============================================================ */
+
+/* Chrome, Edge, Safari */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 8px;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.06);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.06) transparent;
+}
+
+/* Utility to completely hide scrollbars (keeps scroll functionality) */
+.hide-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+/* ============================================================
+   Focus & keyboard accessibility helpers
+   ============================================================ */
+
+:focus {
+  outline: none;
+}
+
+/* Use focus-visible to only show keyboard focus rings */
+:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+/* Helper class: visually-hidden for accessible labels */
+.visually-hidden {
+  position: absolute !important;
+  height: 1px;
+  width: 1px;
+  overflow: hidden;
+  clip: rect(1px,1px,1px,1px);
+  white-space: nowrap;
+  border: 0;
+  padding: 0;
+  margin: -1px;
+}
+
+/* ============================================================
+   Micro-interaction utilities
+   ============================================================ */
+
+/* Ripple pseudo-element pattern (used by components that inject span.ripple) */
+.ripple {
+  position: absolute;
+  border-radius: 50%;
+  transform: scale(0);
+  animation: ripple-effect 600ms linear;
+  pointer-events: none;
+  background: rgba(255,255,255,0.14);
+}
+@keyframes ripple-effect {
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+/* Subtle card lift on hover */
+.hover-lift {
+  transition: transform var(--transition-fast) ease, box-shadow var(--transition-fast) ease;
+}
+.hover-lift:hover {
+  transform: translateY(-6px) scale(1.01);
+  box-shadow: var(--shadow-soft);
+}
+
+/* Soft pinch effect on press */
+.pressable:active {
+  transform: scale(0.985);
+  transition: transform var(--transition-fast) ease;
+}
+
+/* ============================================================
+   Player / Seek helpers (progress bars)
+   ============================================================ */
+
+/* Generic seek bar container */
+.seek-bg {
+  background: rgba(255,255,255,0.06);
+  height: 4px;
+  border-radius: 999px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Filled progress */
+.seek-fill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 0%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--accent), #0ab56e);
+  transition: width var(--transition-medium) linear;
+}
+
+/* Make the hit area a little taller for touch devices while visually keeping thin bar */
+.seek-touch {
+  padding: 8px 0;
+  margin: -8px 0;
+}
+
+/* ============================================================
+   Utility classes not in Tailwind for quick reuse
+   ============================================================ */
+
+.bg-panel {
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
+}
+
+.text-muted {
+  color: var(--muted);
+}
+
+/* Smooth gradient backgrounds — useful for album pages */
+.gradient-to-dark {
+  background: linear-gradient(180deg, rgba(33,33,33,0.04), var(--panel-bg));
+}
+
+/* Clamping helper (for browsers without tailwind/line-clamp) */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Tiny utility to create perfect rounded avatars */
+.avatar-sm {
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  object-fit: cover;
+}
+
+/* ============================================================
+   Responsive & layout helpers (keeps your layout stable)
+   ============================================================ */
+
+.container-fluid {
+  padding-left: 12px;
+  padding-right: 12px;
+}
+
+/* Very small screens: reduce paddings */
+@media (max-width: 480px) {
+  .container-fluid { padding-left: 8px; padding-right: 8px; }
+}
+
+/* Desktop layout helpers */
+.layout-sidebar {
+  display: flex;
+  gap: 12px;
+  align-items: stretch;
+}
+
+/* Sticky bottom player (safe for mobile where height may be dynamic) */
+.player-sticky {
+  position: sticky;
+  bottom: 0;
+  z-index: 60;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border-top: 1px solid rgba(255,255,255,0.03);
+}
+
+/* ============================================================
+   Visual polish: subtle animations and transitions
+   ============================================================ */
+
+.fade-in {
+  animation: fadeIn 320ms ease both;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.scale-on-hover {
+  transition: transform var(--transition-medium) ease;
+}
+.scale-on-hover:hover {
+  transform: scale(1.02);
+}
+
+/* ============================================================
+   Error / empty states
+   ============================================================ */
+
+.empty-block {
+  border-radius: var(--radius-sm);
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  padding: 12px;
+  color: var(--muted);
+  text-align: center;
+}
+
+/* ============================================================
+   Print & reduced-motion preference
+   ============================================================ */
+
+@media print {
+  .no-print { display: none !important; }
+}
+
+/* Honor user prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  .hover-lift, .scale-on-hover, .fade-in, .pressable, .ripple {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* ============================================================
+   Small set of component-specific helpers used across your app
+   (these will not clash with Tailwind classes and are optional)
+   ============================================================ */
+
+/* Navigation arrows */
+.nav-arrow {
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  background: rgba(0,0,0,0.6);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background var(--transition-fast) ease, transform var(--transition-fast);
+}
+.nav-arrow:hover { transform: translateY(-2px); background: rgba(255,255,255,0.03); }
+
+/* Small badge */
+.small-badge {
+  display: inline-flex;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.06);
+  color: var(--soft-white);
+  font-size: 12px;
+  align-items: center;
+}
+
+/* Card shadow for elements that need depth */
+.card-elevated {
+  border-radius: var(--radius-md);
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.05));
+  box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+}
+
+/* ============================================================
+   End of file — keep it tidy, keep it minimal, keep it fast.
+   Drop-in helpers above are intentionally non-opinionated and
+   complementary to Tailwind utility classes already in your project.
+   ============================================================ */
