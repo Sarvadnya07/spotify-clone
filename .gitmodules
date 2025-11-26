@@ -1,0 +1,3 @@
+[submodule "thirdparty/spotify-clone"]
+	path = thirdparty/spotify-clone
+	url = https://github.com/Sarvadnya07/spotify-clone.git

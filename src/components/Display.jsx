@@ -6,7 +6,7 @@ import React, {
   memo,
   Suspense
 } from "react";
-import DisplayHome from "./Displayhome";
+import DisplayHome from "./DisplayHome";
 import { Route, Routes, useLocation } from "react-router-dom";
 import DisplayAlbum from "./DisplayAlbum";
 import { albumsData } from "../assets/assets";
