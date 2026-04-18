@@ -11,7 +11,7 @@ A high-fidelity, lightning-fast music streaming interface built with **React 18*
 
 ## 📸 Preview
 
-![Project Preview](./screenshots/preview.png)
+![Project Preview](./Spotify.png)
 
 *Modern, responsive, and pixel-perfect UI designed for the ultimate listening experience.*
 
