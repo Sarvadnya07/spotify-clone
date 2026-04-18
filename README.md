@@ -5,7 +5,12 @@
 ![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
 ![Context API](https://img.shields.io/badge/Context_API-000000?style=for-the-badge&logo=react&logoColor=white)
 
+[![Live Demo](https://img.shields.io/badge/Demo-Live-green?style=for-the-badge&logo=vercel)](https://spotify-clone-psi-red.vercel.app/)
+
 A high-fidelity, lightning-fast music streaming interface built with **React 18** and **Vite**. This project replicates the core Spotify experience, focusing on seamless audio playback, dynamic UI state management, and a premium developer experience.
+
+🔗 **Live Link:** [https://spotify-clone-psi-red.vercel.app/](https://spotify-clone-psi-red.vercel.app/)
+
 
 ---
 
