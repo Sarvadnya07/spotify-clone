@@ -28,7 +28,7 @@ const Navbar = () => {
   }, [navigate]);
 
   // Optional keyboard support for accessibility
-  const handleKey = (e, action) => {
+  const handleKey = (e: React.KeyboardEvent, action: () => void) => {
     if (e.key === "Enter" || e.key === " ") {
       e.preventDefault();
       action();

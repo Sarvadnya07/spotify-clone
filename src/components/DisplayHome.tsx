@@ -26,7 +26,7 @@ const DisplayHome = () => {
   const trendingSongs = useMemo(() => songsData || [], [songsData]);
 
   // Render empty or broken arrays with graceful fallback
-  const renderEmptyMessage = (label) => (
+  const renderEmptyMessage = (label: string) => (
     <div className="text-gray-400 py-6 italic opacity-75 text-sm">
       {label} unavailable at the moment.
     </div>
@@ -59,7 +59,7 @@ const DisplayHome = () => {
                 <AlbumItem
                   key={index}
                   name={item.name}
-                  des={item.desc}
+                  desc={item.desc}
                   id={item.id}
                   image={item.image}
                 />

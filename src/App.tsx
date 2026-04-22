@@ -9,20 +9,53 @@ import React, {
 import Sidebar from "./components/Sidebar";
 import Player from "./components/Player";
 import Display from "./components/Display";
-import { PlayerContext } from "./context/PlayerContext";
+import usePlayerStore from "./store/usePlayerStore";
 
-const App = () => {
-  const { audioRef, track } = useContext(PlayerContext);
+import ErrorToast from "./components/ErrorToast";
+
+const App: React.FC = () => {
+  const { audioRef, track, playStatus, updateTime, play, pause, setError } = usePlayerStore();
 
   // Render guards & layout watchers
   const [isMounted, setIsMounted] = useState(false);
-  const layoutRef = useRef(null);
+  const layoutRef = useRef<HTMLDivElement>(null);
 
   // Gives smoother layout activation
   useEffect(() => {
     const timer = setTimeout(() => setIsMounted(true), 40);
     return () => clearTimeout(timer);
   }, []);
+
+  // Sync event listeners with Zustand
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    const onTime = () => updateTime();
+    const onLoaded = () => updateTime();
+    
+    audio.addEventListener("timeupdate", onTime);
+    audio.addEventListener("loadedmetadata", onLoaded);
+
+    return () => {
+      audio.removeEventListener("timeupdate", onTime);
+      audio.removeEventListener("loadedmetadata", onLoaded);
+    };
+  }, [audioRef, updateTime]);
+
+  // Sync playStatus with audio element
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    if (playStatus) {
+      audio.play().catch(() => {
+        /* handle autoplay block */
+      });
+    } else {
+      audio.pause();
+    }
+  }, [playStatus, audioRef]);
 
   // Auto-update audio source with safe load
   useEffect(() => {
@@ -32,38 +65,21 @@ const App = () => {
     try {
       audio.src = track.file;
       audio.load();
+      if (playStatus) audio.play().catch(() => {});
     } catch (e) {
       /* silently protect render */
     }
-  }, [track, audioRef]);
-
-  // Broadcast layout updates (future-proofing)
-  const observeLayout = useCallback(() => {
-    if (!layoutRef.current) return;
-
-    const observer = new ResizeObserver(() => {
-      /* Keep flexible spacing while minimising layout shifts */
-    });
-
-    observer.observe(layoutRef.current);
-
-    return () => observer.disconnect();
-  }, []);
-
-  useEffect(() => {
-    const cleanup = observeLayout();
-    return cleanup;
-  }, [observeLayout]);
+  }, [track, audioRef, playStatus]);
 
   // Keybinds (global shortcuts: space = play/pause, arrows = seek)
   useEffect(() => {
-    const handler = (e) => {
+    const handler = (e: KeyboardEvent) => {
       if (!audioRef.current) return;
       const audio = audioRef.current;
 
       if (e.code === "Space") {
         e.preventDefault();
-        audio.paused ? audio.play() : audio.pause();
+        playStatus ? pause() : play();
       }
 
       if (e.code === "ArrowRight") {
@@ -77,7 +93,7 @@ const App = () => {
 
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
-  }, [audioRef]);
+  }, [audioRef, playStatus, play, pause]);
 
   // Layout class generator
   const layoutClass = isMounted
@@ -94,19 +110,19 @@ const App = () => {
 
       {/* Bottom player */}
       <Player />
+      <ErrorToast />
 
       {/* Audio element (same ID, same structure) */}
       <audio
         ref={audioRef}
-        src={track.file}
         preload="auto"
-        onError={() => {
-          /* Soft fallback, avoids crashes */
+        onError={(e) => {
+          setError("Failed to load audio. Please check your connection.");
+          console.error("Audio playback error:", e);
         }}
       ></audio>
     </div>
   );
 };
 
-// Future optimization: memoized export
 export default memo(App);

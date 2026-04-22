@@ -11,7 +11,8 @@ import React, {
 import Navbar from "./Navbar";
 import { useParams } from "react-router-dom";
 import { albumsData, assets, songsData } from "../assets/assets";
-import { PlayerContext } from "../context/PlayerContext";
+import usePlayerStore from "../store/usePlayerStore";
+import { Album, Song } from "../types";
 
 /**
  * DISPLAYALBUM – EXTENDED 150+ LINES
@@ -32,7 +33,12 @@ import { PlayerContext } from "../context/PlayerContext";
  * - Long structural readability
  */
 
-const LazyAlbumImage = memo(function LazyAlbumImage({ src, alt }) {
+interface LazyAlbumImageProps {
+  src: string;
+  alt: string;
+}
+
+const LazyAlbumImage = memo(function LazyAlbumImage({ src, alt }: LazyAlbumImageProps) {
   const [loaded, setLoaded] = useState(false);
 
   return (
@@ -54,7 +60,7 @@ const LazyAlbumImage = memo(function LazyAlbumImage({ src, alt }) {
   );
 });
 
-const useAlbumGuard = (albumData) => {
+const useAlbumGuard = (albumData: Album | undefined) => {
   const [valid, setValid] = useState(true);
 
   useEffect(() => {
@@ -64,7 +70,7 @@ const useAlbumGuard = (albumData) => {
   return valid;
 };
 
-const usePrefetchSongs = (songsData) => {
+const usePrefetchSongs = (songsData: Song[]) => {
   /**
    * Prefetch the first few songs’ images for smoother UI
    */
@@ -80,7 +86,7 @@ const useScrollSaver = () => {
   /**
    * Saves scroll position for better SPA feel
    */
-  const containerRef = useRef(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const saved = sessionStorage.getItem("albumScrollPos");
@@ -92,7 +98,7 @@ const useScrollSaver = () => {
       if (containerRef.current) {
         sessionStorage.setItem(
           "albumScrollPos",
-          containerRef.current.scrollTop
+          containerRef.current.scrollTop.toString()
         );
       }
     };
@@ -105,7 +111,7 @@ const useScrollSaver = () => {
  * Ripple animation util
  */
 const useRipple = () => {
-  const createRipple = (event, element) => {
+  const createRipple = (event: React.MouseEvent, element: HTMLElement | null) => {
     if (!element) return;
 
     const circle = document.createElement("span");
@@ -131,9 +137,9 @@ const useRipple = () => {
 };
 
 const DisplayAlbum = () => {
-  const { id } = useParams();
-  const albumData = albumsData[id];
-  const playWithId = useContext(PlayerContext);
+  const { id } = useParams<{ id: string }>();
+  const albumData = id ? albumsData[Number(id)] : undefined;
+  const { playWithId } = usePlayerStore();
 
   const albumValid = useAlbumGuard(albumData);
 
@@ -144,7 +150,7 @@ const DisplayAlbum = () => {
   usePrefetchSongs(songsData);
 
   const handleSongClick = useCallback(
-    (e, item) => {
+    (e: React.MouseEvent<HTMLDivElement>, item: Song) => {
       createRipple(e, e.currentTarget);
       playWithId(item.id);
     },
@@ -194,14 +200,14 @@ const DisplayAlbum = () => {
         style={{ maxHeight: "calc(100vh - 80px)" }}
       >
         <div className="mt-10 flex gap-8 flex-col md:flex-row md:items-end">
-          <LazyAlbumImage src={albumData?.image} alt={albumData?.name} />
+          <LazyAlbumImage src={albumData?.image || ""} alt={albumData?.name || ""} />
 
           <div className="flex flex-col">
             <p className="opacity-60">Playlist</p>
             <h2 className="text-5xl font-bold mb-4 md:text-7xl">
-              {albumData.name}
+              {albumData?.name}
             </h2>
-            <h4 className="opacity-80">{albumData.desc}</h4>
+            <h4 className="opacity-80">{albumData?.desc}</h4>
 
             <p className="mt-1 opacity-90">
               <img

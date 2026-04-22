@@ -1,6 +1,6 @@
-import React, { useContext, useCallback } from "react";
+import React, { useCallback } from "react";
 import { assets } from "../assets/assets";
-import { PlayerContext } from "../context/PlayerContext";
+import usePlayerStore from "../store/usePlayerStore";
 
 /**
  * Enhanced Player Component (100+ lines)
@@ -23,7 +23,11 @@ const Player = () => {
     play,
     pause,
     time,
-  } = useContext(PlayerContext);
+  } = usePlayerStore();
+
+  const formatTime = (time) => {
+    return `${time.minute}:${time.second.toString().padStart(2, '0')}`;
+  };
 
   const currentTrack = track || {};
 
@@ -130,7 +134,7 @@ const Player = () => {
         {/* Seek Bar */}
         <div className="flex items-center gap-5 w-full justify-center">
           <p className="text-xs tabular-nums opacity-80">
-            {time.currentTime.minute}:{time.currentTime.second}
+            {formatTime(time.currentTime)}
           </p>
 
           <div
@@ -162,7 +166,7 @@ const Player = () => {
           </div>
 
           <p className="text-xs tabular-nums opacity-80">
-            {time.totalTime.minute}:{time.totalTime.second}
+            {formatTime(time.totalTime)}
           </p>
         </div>
       </div>

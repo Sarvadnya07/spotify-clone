@@ -21,7 +21,9 @@ import { albumsData } from "../assets/assets";
  *   animation utilities, error guards, scroll restoration, observer hooks, etc.
  */
 
-const useSafeAlbumLookup = (albumId) => {
+import { Album } from "../types";
+
+const useSafeAlbumLookup = (albumId: string | undefined): Album | null => {
   /**
    * Prevents:
    *   TypeError: Cannot read properties of undefined (reading 'bgColor')
@@ -36,7 +38,7 @@ const useSafeAlbumLookup = (albumId) => {
   return albumsData[index];
 };
 
-const useGradientBackground = (ref, isAlbum, bgColor) => {
+const useGradientBackground = (ref: React.RefObject<HTMLDivElement>, isAlbum: boolean, bgColor: string | null) => {
   /**
    * Smooth gradient transitions
    */
@@ -55,7 +57,7 @@ const useGradientBackground = (ref, isAlbum, bgColor) => {
   }, [isAlbum, bgColor, ref]);
 };
 
-const useScrollRestoration = (ref) => {
+const useScrollRestoration = (ref: React.RefObject<HTMLDivElement>) => {
   /**
    * Spotify-style scroll reset when navigating pages
    */
@@ -82,11 +84,11 @@ const usePathDetails = () => {
   return { isAlbum, lastSegment, location };
 };
 
-const Display = () => {
+const Display: React.FC = () => {
   /**
    * Refs, state, and route parsing (all identifiers preserved)
    */
-  const displayRef = useRef();
+  const displayRef = useRef<HTMLDivElement>(null);
 
   const { isAlbum, lastSegment, location } = usePathDetails();
 

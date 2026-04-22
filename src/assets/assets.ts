@@ -69,7 +69,9 @@ export const assets = {
     clock_icon
 }
 
-export const albumsData = [
+import { Album, Song } from '../types';
+
+export const albumsData: Album[] = [
     {   
         id:0,
         name: "Top 50 Global",
@@ -114,7 +116,7 @@ export const albumsData = [
     }
 ]
 
-export const songsData = [
+export const songsData: Song[] = [
     {
         id:0,
         name: "Song One",

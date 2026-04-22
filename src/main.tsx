@@ -1,9 +1,8 @@
 import { StrictMode, Suspense, useEffect } from "react";
 import { createRoot } from "react-dom/client";
-import App from "./App.jsx";
+import App from "./App";
 import "./index.css";
 import { BrowserRouter } from "react-router-dom";
-import PlayerContextProvider from "./context/PlayerContext.jsx";
 
 /* -----------------------------------------------------
    ⚡ Root Element Lookup (failsafe)
@@ -41,7 +40,7 @@ const useHydrationGuard = () => {
    Helps catch rendering issues + Suspense fallback
 ------------------------------------------------------ */
 
-const DiagnosticsWrapper = ({ children }) => {
+const DiagnosticsWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   useHydrationGuard();
 
   useEffect(() => {
@@ -56,7 +55,7 @@ const DiagnosticsWrapper = ({ children }) => {
       navigator.userAgent
     );
 
-    const memoryInfo = performance.memory || null;
+    const memoryInfo = (performance as any).memory || null;
     if (memoryInfo) {
       console.log(
         "%c[MEMORY] JS Heap Size:",
@@ -89,9 +88,7 @@ createRoot(rootElement).render(
     {/* Suspense + Diagnostics enhance debugging and code splitting */}
     <DiagnosticsWrapper>
       <BrowserRouter>
-        <PlayerContextProvider>
-          <App />
-        </PlayerContextProvider>
+        <App />
       </BrowserRouter>
     </DiagnosticsWrapper>
   </StrictMode>

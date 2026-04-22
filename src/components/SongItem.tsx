@@ -1,10 +1,10 @@
-import React, { useContext, useState, useRef } from "react";
-import { PlayerContext } from "../context/PlayerContext";
+import React, { useState, useRef } from "react";
+import usePlayerStore from "../store/usePlayerStore";
 
 // Enhanced SongItem component with richer UI feedback, animations,
 // lazy-loading, accessible labels, and better performance handling.
 const SongItem = ({ name, image, desc, id }) => {
-  const { playWithId } = useContext(PlayerContext);
+  const { playWithId } = usePlayerStore();
 
   // Local UI states
   const [isHover, setIsHover] = useState(false);

@@ -28,7 +28,12 @@ import { useNavigate } from "react-router-dom";
  * - Long-form patterns for Premium UI components
  */
 
-const LazyImage = memo(function LazyImage({ src, alt }) {
+interface LazyImageProps {
+  src: string;
+  alt: string;
+}
+
+const LazyImage = memo(function LazyImage({ src, alt }: LazyImageProps) {
   const [loaded, setLoaded] = useState(false);
   const [error, setError] = useState(false);
 
@@ -64,7 +69,7 @@ const LazyImage = memo(function LazyImage({ src, alt }) {
  * Optional: Prefetch mechanism for album details
  * (Works well in Spotify-clone UI to reduce latency.)
  */
-const useAlbumPrefetch = (id) => {
+const useAlbumPrefetch = (id: number) => {
   useEffect(() => {
     if (!id) return;
 
@@ -81,9 +86,9 @@ const useAlbumPrefetch = (id) => {
  * Ripple animation (UI candy)
  */
 const useRipple = () => {
-  const rippleRef = useRef(null);
+  const rippleRef = useRef<HTMLDivElement>(null);
 
-  const createRipple = (event) => {
+  const createRipple = (event: React.MouseEvent<HTMLDivElement>) => {
     const container = rippleRef.current;
     if (!container) return;
 
@@ -110,7 +115,14 @@ const useRipple = () => {
 /**
  * Main Component — AlbumItem
  */
-const AlbumItem = ({ image, name, desc, id }) => {
+interface AlbumItemProps {
+  image: string;
+  name: string;
+  desc: string;
+  id: number;
+}
+
+const AlbumItem: React.FC<AlbumItemProps> = ({ image, name, desc, id }) => {
   const navigate = useNavigate();
 
   const { rippleRef, createRipple } = useRipple();
@@ -129,7 +141,7 @@ const AlbumItem = ({ image, name, desc, id }) => {
    * Keyboard support
    */
   const handleKeyPress = useCallback(
-    (e) => {
+    (e: React.KeyboardEvent) => {
       if (e.key === "Enter") handleClick();
     },
     [handleClick]
