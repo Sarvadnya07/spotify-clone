@@ -60,10 +60,6 @@
     "context-api"
   ],
   "license": "MIT",
-  "author": {
-    "name": "BROKEN",
-    "email": "",
-    "url": ""
-  },
-  "homepage": ".",
+  "author": "BROKEN",
+  "homepage": "."
 }
