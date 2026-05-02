@@ -1,119 +1,13 @@
 import React, {
   useCallback,
-  useEffect,
-  useRef,
-  useState,
   memo,
-  Suspense
 } from "react";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 
 /**
- * AlbumItem Component (Enhanced 100+ lines)
- *
- * Original identifiers preserved:
- * - Component name: AlbumItem
- * - Props: image, name, desc, id
- * - Functions: handleClick
- *
- * Enhancements added:
- * - Extensive safety guards
- * - Keyboard + accessibility support
- * - Lazy image loader with fallback
- * - Error boundary simulation
- * - Ripple click effect (CSS-driven)
- * - Prefetch hook placeholder for album data
- * - Extended comments for future devs
- * - Memoized for performance
- * - Long-form patterns for Premium UI components
- */
-
-interface LazyImageProps {
-  src: string;
-  alt: string;
-}
-
-const LazyImage = memo(function LazyImage({ src, alt }: LazyImageProps) {
-  const [loaded, setLoaded] = useState(false);
-  const [error, setError] = useState(false);
-
-  return (
-    <div className="relative w-full h-auto overflow-hidden rounded">
-      {!loaded && !error && (
-        <div className="w-full h-[180px] bg-[#1f1f1f] animate-pulse rounded" />
-      )}
-
-      {!error && (
-        <img
-          className={`rounded transition-opacity duration-300 ${
-            loaded ? "opacity-100" : "opacity-0"
-          }`}
-          src={src}
-          alt={alt}
-          loading="lazy"
-          onLoad={() => setLoaded(true)}
-          onError={() => setError(true)}
-        />
-      )}
-
-      {error && (
-        <div className="w-full h-[180px] bg-[#333] flex items-center justify-center text-xs text-white rounded">
-          image unavailable
-        </div>
-      )}
-    </div>
-  );
-});
-
-/**
- * Optional: Prefetch mechanism for album details
- * (Works well in Spotify-clone UI to reduce latency.)
- */
-const useAlbumPrefetch = (id: number) => {
-  useEffect(() => {
-    if (!id) return;
-
-    // Placeholder for future expansion:
-    // Example:
-    // fetch(`/api/album/${id}/meta`)
-    //   .then(res => res.json())
-    //   .then(() => console.log("Prefetched album:", id));
-
-  }, [id]);
-};
-
-/**
- * Ripple animation (UI candy)
- */
-const useRipple = () => {
-  const rippleRef = useRef<HTMLDivElement>(null);
-
-  const createRipple = (event: React.MouseEvent<HTMLDivElement>) => {
-    const container = rippleRef.current;
-    if (!container) return;
-
-    const circle = document.createElement("span");
-    const diameter = Math.max(container.clientWidth, container.clientHeight);
-    const radius = diameter / 2;
-
-    circle.style.width = circle.style.height = `${diameter}px`;
-    circle.style.left = `${event.clientX - container.getBoundingClientRect().left - radius}px`;
-    circle.style.top = `${event.clientY - container.getBoundingClientRect().top - radius}px`;
-    circle.classList.add("ripple");
-
-    const existingRipple = container.getElementsByClassName("ripple")[0];
-    if (existingRipple) {
-      existingRipple.remove();
-    }
-
-    container.appendChild(circle);
-  };
-
-  return { rippleRef, createRipple };
-};
-
-/**
- * Main Component — AlbumItem
+ * AlbumItem Component
+ * Enhanced with Framer Motion for shared layout transitions.
  */
 interface AlbumItemProps {
   image: string;
@@ -125,91 +19,48 @@ interface AlbumItemProps {
 const AlbumItem: React.FC<AlbumItemProps> = ({ image, name, desc, id }) => {
   const navigate = useNavigate();
 
-  const { rippleRef, createRipple } = useRipple();
-
-  useAlbumPrefetch(id);
-
-  /**
-   * Click handler (kept original name)
-   */
   const handleClick = useCallback(() => {
-    if (!id) return;
-    navigate(`/album/${id}`);
+    if (id !== undefined) {
+      navigate(`/album/${id}`);
+    }
   }, [navigate, id]);
 
-  /**
-   * Keyboard support
-   */
-  const handleKeyPress = useCallback(
-    (e: React.KeyboardEvent) => {
-      if (e.key === "Enter") handleClick();
-    },
-    [handleClick]
-  );
-
-  /**
-   * For analytics, or logging who clicked what album
-   */
-  const reportView = useRef(false);
-
-  useEffect(() => {
-    if (!reportView.current) {
-      reportView.current = true;
-      // Example:
-      // console.log("Album item mounted:", id);
-    }
-  }, [id]);
-
-  /**
-   * Container className expanded for more UI flexibility
-   */
-  const baseClasses =
-    "min-w-[180px] p-2 px-3 rounded cursor-pointer select-none outline-none transition-all duration-200";
-  const hoverClasses = "hover:bg-[#ffffff26] hover:scale-[1.02]";
-  const focusClasses = "focus:ring-2 focus:ring-[#ffffff50] focus:ring-offset-0";
-
   return (
-    <div
-      ref={rippleRef}
-      onClick={(e) => {
-        createRipple(e);
-        handleClick();
-      }}
-      onKeyDown={handleKeyPress}
-      className={`${baseClasses} ${hoverClasses} ${focusClasses}`}
+    <motion.div
+      onClick={handleClick}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      whileHover={{ scale: 1.05, backgroundColor: "rgba(255, 255, 255, 0.1)" }}
+      whileTap={{ scale: 0.95 }}
+      className="min-w-[180px] p-4 rounded-lg cursor-pointer transition-colors duration-200 group"
       role="button"
       tabIndex={0}
       aria-label={name}
     >
-      <Suspense fallback={<div className="w-full h-[180px] bg-neutral-800" />}>
-        <LazyImage src={image} alt={name || "Album cover"} />
-      </Suspense>
+      <div className="relative mb-4 shadow-lg group-hover:shadow-2xl transition-shadow duration-300">
+        <motion.img
+          layoutId={`album-image-${id}`}
+          className="rounded-md w-full aspect-square object-cover"
+          src={image}
+          alt={name}
+        />
+        <motion.div 
+          initial={{ opacity: 0, y: 10 }}
+          whileHover={{ opacity: 1, y: 0 }}
+          className="absolute bottom-2 right-2 w-12 h-12 bg-[#1db954] rounded-full flex items-center justify-center shadow-xl text-black"
+        >
+          <span className="text-xl">▶</span>
+        </motion.div>
+      </div>
 
-      <p className="font-bold mt-2 mb-0 truncate">{name}</p>
-      <p className="text-slate-200 text-sm line-clamp-2">{desc}</p>
-    </div>
+      <motion.p layoutId={`album-name-${id}`} className="font-bold text-white truncate mb-1">
+        {name}
+      </motion.p>
+      <p className="text-gray-400 text-sm line-clamp-2 leading-snug">
+        {desc}
+      </p>
+    </motion.div>
   );
 };
 
 export default memo(AlbumItem);
-
-/* 
-  CSS to be added (example):
-
-  .ripple {
-    position: absolute;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.3);
-    transform: scale(0);
-    animation: ripple-effect 600ms linear;
-    pointer-events: none;
-  }
-
-  @keyframes ripple-effect {
-    to {
-      transform: scale(4);
-      opacity: 0;
-    }
-  }
-
-*/

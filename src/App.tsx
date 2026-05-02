@@ -6,43 +6,26 @@ import React, {
 import Sidebar from "./components/Sidebar";
 import Player from "./components/Player";
 import Display from "./components/Display";
-import usePlayerStore from "./store/usePlayerStore";
 import { useAudioEngine } from "./hooks/useAudioEngine";
+import { useKeyboardShortcuts } from "./hooks/useKeyboardShortcuts";
 import ErrorToast from "./components/ErrorToast";
 
+/**
+ * App Root
+ * Orchestrates the global layout, audio engine, and global interaction hooks.
+ */
 const App: React.FC = () => {
-  const { playStatus, play, pause } = usePlayerStore();
-  
-  // Initialize audio engine
+  // Initialize core services
   useAudioEngine();
+  useKeyboardShortcuts();
 
-  // Render guards for smooth entry
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => setIsMounted(true), 40);
-    return () => clearTimeout(timer);
+    setIsMounted(true);
   }, []);
 
-  // Global Keybinds (Keeping logic here for app-wide context)
-  useEffect(() => {
-    const handler = (e: KeyboardEvent) => {
-      // Avoid triggering when user is typing in an input
-      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
-
-      if (e.code === "Space") {
-        e.preventDefault();
-        playStatus ? pause() : play();
-      }
-    };
-
-    window.addEventListener("keydown", handler);
-    return () => window.removeEventListener("keydown", handler);
-  }, [playStatus, play, pause]);
-
-  const layoutClass = isMounted
-    ? "h-screen bg-black transition-opacity duration-300 opacity-100"
-    : "h-screen bg-black opacity-0";
+  const layoutClass = `h-screen bg-black transition-opacity duration-700 ${isMounted ? 'opacity-100' : 'opacity-0'}`;
 
   return (
     <div className={layoutClass}>

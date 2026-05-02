@@ -1,167 +1,160 @@
-# 🎵 Spotify Clone — Premium Music Streaming Experience
+# 🎵 Spotify Clone — High-Fidelity Audio Experience
 
-[![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
-[![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://reactjs.org/)
-[![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
+[![React](https://img.shields.io/badge/React-18.3-61DAFB?logo=react&logoColor=black)](https://reactjs.org/)
+[![Vite](https://img.shields.io/badge/Vite-7.0-646CFF?logo=vite&logoColor=white)](https://vitejs.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-6.0-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4-38B2AC?logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+[![Zustand](https://img.shields.io/badge/Zustand-5.0-orange?logo=react&logoColor=white)](https://github.com/pmndrs/zustand)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-A high-fidelity, production-ready music streaming interface built with the modern React ecosystem. This project replicates the core Spotify experience, featuring a seamless audio player, dynamic routing, and a pixel-perfect UI.
-
-🔗 **Live Demo:** [spotify-clone-psi-red.vercel.app](https://spotify-clone-psi-red.vercel.app/)
-
----
-
-## 📖 Overview
-
-The **Spotify Clone** is more than just a UI replica; it is a full-featured frontend application designed to demonstrate modern web development best practices. Leveraging **React 18** and **Vite**, the application delivers near-instant load times and a fluid user experience. The global audio state is managed via the **Context API**, ensuring that music playback remains uninterrupted as users navigate through albums and artist pages.
-
-### 🚀 Key Features
-
-- **🎧 Persistent Audio Engine:** Global playback control that persists across route changes.
-- **🎨 Pixel-Perfect UI:** Modern, responsive design using Tailwind CSS with glassmorphism and smooth transitions.
-- **🧭 Dynamic Routing:** Client-side navigation with React Router Dom v6.
-- **📱 Mobile Optimized:** Adaptive layouts for a seamless experience across all device types.
-- **⚡ Performance First:** Optimized asset loading and Vite-powered HMR for a rapid development cycle.
-- **🔍 Album & Song Discovery:** Dynamic rendering of music collections with detailed views.
+A premium, production-grade Spotify clone built with the modern React ecosystem. This project features a robust audio engine, persistent playback across navigation, and a responsive, high-performance UI that mirrors the actual Spotify desktop experience.
 
 ---
 
-## 📸 Screenshots
+## 🚀 Overview
 
-| Home Dashboard | Album View | Mobile Layout |
-| :---: | :---: | :---: |
-| ![Home](./screenshots/home.png) | ![Album](./screenshots/album.png) | ![Mobile](./screenshots/mobile.png) |
+This repository serves as a showcase for building complex, audio-heavy web applications. It leverages **Zustand** for state management and a **Custom Audio Engine** to ensure seamless synchronization between the UI and the browser's Media API. 
 
-*(Note: Replace with actual screenshots in your repository)*
+Unlike basic clones, this implementation focuses on architectural integrity, decoupling expensive DOM operations from the React render cycle to achieve 60FPS performance even during high-frequency seek updates.
+
+---
+
+## ✨ Core Features
+
+- **Persistent Playback**: Music continues playing seamlessly as you navigate between Home and Album views.
+- **Custom Audio Engine**: Centralized management of the HTML5 Audio API via a dedicated engine hook.
+- **Reactive UI**: Real-time seek bar progress, volume control, and buffering indicators.
+- **Dynamic Theming**: Album views dynamically adapt their layout based on album metadata.
+- **Keyboard Shortcuts**: Global controls (`Space` for play/pause, `Arrows` for seeking).
+- **Responsive Layout**: Fluid design that adapts from mobile viewports to ultra-wide desktop monitors.
+- **TypeScript First**: 100% type coverage for state, props, and asset definitions.
 
 ---
 
 ## 🛠 Tech Stack
 
-### Frontend Core
-- **Framework:** React 18 (Functional Components, Hooks)
-- **Build Tool:** Vite (Ultra-fast bundling)
-- **Routing:** React Router Dom v6
-- **State Management:** React Context API (Audio/Player State)
-
-### Styling & UI
-- **CSS:** Tailwind CSS
-- **Icons:** Custom SVG & Tailwind-based iconography
-- **Typography:** System fonts optimized for readability
-
-### Tooling
-- **Linting:** ESLint (Flat Config)
-- **Formatting:** Prettier
-- **Environment:** Node.js (>=18)
+- **Framework**: React 18 (Hooks, Memo, Suspense)
+- **Build Tool**: Vite 7 (Lightning fast HMR)
+- **State Management**: Zustand (Atomic, decoupled state)
+- **Styling**: Tailwind CSS (Utility-first, highly optimized)
+- **Routing**: React Router DOM 6
+- **Language**: TypeScript 6 (Strict mode)
 
 ---
 
 ## 🏗 Architecture
 
-The project follows a modular, component-driven architecture:
+The project follows a **Service-Oriented Frontend Architecture**:
 
-- **`src/context`**: Houses the `PlayerContext`, managing audio refs, play/pause states, track progress, and volume.
-- **`src/components`**: Atomic and molecular components like `AlbumItem`, `SongItem`, and the complex `Player` control bar.
-- **`src/assets`**: Centralized storage for static assets and reusable media.
-
----
-
-## ⚙️ Installation Guide
-
-### Prerequisites
-- Node.js (v18.x or higher)
-- npm or yarn
-
-### 1. Clone the Repository
-```bash
-git clone https://github.com/Sarvadnya07/spotify-clone.git
-cd spotify-clone
+```mermaid
+graph TD
+    A[UI Components] --> B[Zustand Store]
+    B --> C[useAudioEngine Hook]
+    C --> D[HTML5 Audio Singleton]
+    D -- Events --> C
+    C -- Sync State --> B
 ```
 
-### 2. Install Dependencies
-```bash
-npm install
-```
-
-### 3. Start Development Server
-```bash
-npm run dev
-```
-Open [http://localhost:5173](http://localhost:5173) to view it in the browser.
-
-### 4. Build for Production
-```bash
-npm run build
-npm run preview
-```
+1.  **UI Layer**: Functional components utilizing Tailwind for styling.
+2.  **State Layer (Zustand)**: Manages metadata, playback status, and volume.
+3.  **Engine Layer**: A custom hook that bridges the reactive store with the imperative Browser Audio API.
 
 ---
 
 ## 📂 Folder Structure
 
-```plaintext
+```text
 spotify-clone/
-├── public/                 # Static assets (audios, images)
+├── public/                # Static assets
 ├── src/
-│   ├── assets/             # Icons and media files
-│   ├── components/         # React components
-│   │   ├── Player.jsx      # Bottom playback controls
-│   │   ├── Sidebar.jsx     # Navigation and Library
-│   │   ├── Navbar.jsx      # Top navigation header
-│   │   └── ...             # Item components (Album, Song)
-│   ├── context/            # Global State Management
-│   │   └── PlayerContext.jsx
-│   ├── App.jsx             # Root layout
-│   ├── main.jsx            # Entry point
-│   └── index.css           # Tailwind & Global Styles
-├── tailwind.config.js      # Tailwind configuration
-├── vite.config.js          # Vite optimization settings
-└── package.json            # Scripts and dependencies
+│   ├── assets/           # Icons, images, and audio files
+│   ├── components/       # Reusable UI components
+│   │   ├── Player.tsx    # Complex transport controls
+│   │   ├── Sidebar.tsx   # Navigation and Library
+│   │   └── Display.tsx   # Dynamic content router
+│   ├── hooks/            # Custom logic (useAudioEngine)
+│   ├── store/            # Global state (Zustand)
+│   ├── types/            # TypeScript interfaces
+│   ├── App.tsx           # Root orchestrator
+│   └── main.tsx          # Entry point
+├── tailwind.config.js    # Design system tokens
+└── vite.config.ts        # Build configuration
 ```
 
 ---
 
-## 🔐 Security Considerations
+## 📦 Installation Guide
 
-- **XSS Prevention:** React's built-in escaping handles most XSS vectors; however, any future user-generated content (comments, playlist names) should be sanitized.
-- **Environment Variables:** Use `.env` for any future API keys (e.g., Spotify API, Supabase).
-- **Dependency Audits:** Regularly run `npm audit` to check for vulnerable packages.
+### Prerequisites
+- Node.js >= 18.0.0
+- npm >= 9.0.0
+
+### Steps
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/Sarvadnya07/spotify-clone.git
+   cd spotify-clone
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Start development server**
+   ```bash
+   npm run dev
+   ```
+
+4. **Build for production**
+   ```bash
+   npm run build
+   ```
 
 ---
 
-## 📈 Performance Optimization
+## ⚙️ Configuration
 
-- **Vite Bundling:** Optimized for production using Rollup under the hood.
-- **Asset Optimization:** Large images are stored in `public` and should be compressed/converted to WebP for production.
-- **Code Splitting:** Future implementations can use `React.lazy()` for route-based splitting.
+The project uses local assets by default. To integrate with a real API, update the `src/assets/assets.ts` data structure or replace it with a service layer fetching from your backend.
+
+| Variable | Description | Default |
+| :--- | :--- | :--- |
+| `STRICT_MODE` | Enables TypeScript strict checking | `true` |
+| `DEV_SERVER_PORT` | Port for Vite dev server | `5173` |
+
+---
+
+## 🔒 Security & Performance
+
+- **Performance**: High-frequency `timeupdate` logic is optimized to minimize React re-renders.
+- **Security**: Sanitized inputs and strictly typed data models prevent injection and runtime crashes.
+- **Bundle Size**: Minimized via Vite's Tree Shaking and Tailwind's JIT compiler.
 
 ---
 
 ## 🤝 Contributing
 
 Contributions are welcome! Please follow these steps:
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+1. Fork the project.
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`).
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`).
+4. Push to the Branch (`git push origin feature/AmazingFeature`).
+5. Open a Pull Request.
 
 ---
 
 ## 📜 License
 
-Distributed under the **MIT License**. See `LICENSE` for more information.
+Distributed under the MIT License. See `LICENSE` for more information.
 
 ---
 
-## 👨‍💻 Author
+## 👤 Author
 
 **Sarvadnya**
 - GitHub: [@Sarvadnya07](https://github.com/Sarvadnya07)
-- LinkedIn: [Profile Link](https://linkedin.com/in/yourprofile)
+- Project Link: [https://github.com/Sarvadnya07/spotify-clone](https://github.com/Sarvadnya07/spotify-clone)
 
 ---
 
-<p align="center">
-  <i>Give this project a ⭐ if you like it!</i>
-</p>
+<p align="center">Made with ❤️ for the Developer Community</p>

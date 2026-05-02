@@ -1,66 +1,58 @@
-# 🚀 Future Scope — Spotify Clone Roadmap
+# 🚀 Future Scope & Roadmap — Spotify Clone
 
-This document outlines the strategic vision and upcoming enhancements for the Spotify Clone project. The goal is to evolve this from a high-fidelity UI clone into a fully functional, production-ready music ecosystem.
-
----
-
-## 🛠 Short-Term Improvements (1-3 Months)
-
-- **[ ] Persistent Settings:** Add a settings panel to toggle themes (Light/Dark) and save volume preferences to `localStorage`.
-- **[ ] Enhanced Audio Controls:** Implement "Shuffle" and "Repeat" logic within the `PlayerContext`.
-- **[ ] Search Functionality:** Add a real-time search bar to filter through locally available songs and albums.
-- **[ ] Skeleton Screens:** Implement loading placeholders for a smoother perceived performance during initial asset loads.
-- **[ ] Interactive Tooltips:** Add micro-interactions and tooltips for player controls to improve accessibility.
+This roadmap outlines the evolution of the Spotify Clone from a production-ready frontend to a full-featured music platform.
 
 ---
 
-## 🛰 Mid-Term Enhancements (3-6 Months)
+## ✅ COMPLETED (Phase 1 & 2)
 
-- **[ ] Backend Integration:** Migrate from static JSON/local assets to a headless CMS (like Strapi) or a BaaS (like Supabase) for dynamic content management.
-- **[ ] Authentication System:** Integrate Clerk or Firebase Auth for user sign-up/login, allowing users to create personal libraries.
-- **[ ] User Playlists:** Enable users to create, edit, and share custom playlists.
-- **[ ] Real-time Progress Sync:** Synchronize playback progress across multiple devices using WebSockets or Firebase Realtime Database.
-- **[ ] PWA Support:** Transform the app into a Progressive Web App for offline listening and installation on mobile devices.
+### 1. Architectural Hardening
+- [x] **State Persistence**: Volume and last-played track saved via Zustand `persist`.
+- [x] **Audio Engine Optimization**: Zero-render seek bar updates and singleton management.
+- [x] **Media Session API**: OS-level playback controls and lock screen metadata.
 
----
+### 2. Immersive UI & UX
+- [x] **Motion Design**: Shared layout transitions (morphing covers) and route animations.
+- [x] **Dynamic Theming**: Real-time average color extraction from album art for adaptive backgrounds.
+- [x] **Audio Visualization**: High-performance Canvas-based frequency visualizer.
 
-## 🔭 Long-Term Vision (6+ Months)
-
-- **[ ] Collaborative Playlists:** Allow multiple users to edit the same playlist in real-time.
-- **[ ] Social Listening:** Feature a "Friend Activity" sidebar to see what others are listening to.
-- **[ ] Spotify API Integration:** Allow users to login with their actual Spotify accounts to sync their real-world playlists.
-- **[ ] Audio Visualizer:** Implement a 3D audio frequency visualizer using Three.js or Canvas API.
-- **[ ] AI-Powered Recommendations:** Integrate a recommendation engine (e.g., using OpenAI or a custom ML model) to suggest music based on listening history.
-
----
-
-## ⚡ Performance & Scalability
-
-- **Code Splitting:** Implement route-based lazy loading to reduce initial bundle size.
-- **Image Optimization:** Integrate a CDN (like Cloudinary) for dynamic image resizing and WebP conversion.
-- **Virtual Scrolling:** Use `react-window` or similar for large lists of songs to maintain 60FPS.
-- **Caching Strategy:** Implement service workers for aggressive caching of audio files and UI components.
+### 3. Core Features
+- [x] **Search Engine**: Real-time fuzzy search for songs and albums.
+- [x] **Favorites System**: Persistent "Liked Songs" with heart interactions.
+- [x] **Async Data Layer**: Abstracted music service with loading skeletons.
 
 ---
 
-## 🛡 Security Upgrades
+## 🟡 SHORT-TERM (Next Steps)
 
-- **JWT Authentication:** Secure API endpoints with JSON Web Tokens.
-- **Rate Limiting:** Implement rate limiting on any future backend APIs to prevent abuse.
-- **Content Security Policy (CSP):** Harden the application against XSS and data injection attacks.
+### 1. Mobile & Accessibility
+- [x] **Mobile Touch Optimization**: Increased hit areas for seek/volume bars and added touch event support.
+- [x] **Keyboard Shortcuts**: Implemented global hotkeys (Space, L, M, Arrows) for a native desktop feel.
 
----
-
-## 🎨 UI/UX Improvements
-
-- **Glassmorphism 2.0:** Further refine the CSS with advanced backdrop-filter effects for a more "Apple-like" premium feel.
-- **Gesture Navigation:** Add swipe gestures for mobile users to switch tracks or close the player.
-- **Accessibility (A11y):** Ensure full ARIA compliance and keyboard navigation support.
+### 2. Refined Content
+- [x] **Context Menus**: Implemented custom right-click menus for quick actions (Play, Like, Share) in Album and Search views.
+- [ ] **Lyrics Integration**: Syncing time-coded lyrics with the current playback time.
 
 ---
 
-## 🤖 DevOps & CI/CD
+## 🟠 MID-TERM (Feature Expansion)
 
-- **GitHub Actions:** Automate linting, testing, and deployment on every push.
-- **Unit Testing:** Implement testing coverage using Vitest and React Testing Library.
-- **Automated Documentation:** Use TypeDoc or similar to generate API documentation from comments.
+### 1. Real Backend Integration
+- [ ] **Spotify API**: OAuth2 integration to stream real user data and playlists.
+- [ ] **Cloud Persistence**: Sync liked songs and settings to a Firebase/MongoDB backend.
+
+### 2. Social & Sharing
+- [ ] **Friend Activity**: Simulated side-bar showing what "friends" are listening to.
+- [ ] **Shareable Links**: Deep-linking to specific albums or search queries.
+
+---
+
+## 🔴 LONG-TERM (Platform Vision)
+
+### 1. Desktop App (Electron)
+- [ ] **Native Experience**: Package the clone as a cross-platform desktop application.
+- [ ] **Global Hotkeys**: Control playback even when the app is minimized.
+
+### 2. Audio Intelligence
+- [ ] **Smart Shuffle**: Implementing an algorithm that groups similar genres/tempos.
+- [ ] **Personalized Mixes**: Algorithmic "Daily Mix" generation based on listening history.

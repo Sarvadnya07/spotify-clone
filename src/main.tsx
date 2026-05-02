@@ -3,73 +3,36 @@ import { createRoot } from "react-dom/client";
 import App from "./App";
 import "./index.css";
 import { BrowserRouter } from "react-router-dom";
+import ErrorBoundary from "./components/common/ErrorBoundary";
 
 /* -----------------------------------------------------
    ⚡ Root Element Lookup (failsafe)
-   This prevents silent failures if the element disappears
 ------------------------------------------------------ */
 
 const ROOT_ID = "root";
 const rootElement = document.getElementById(ROOT_ID);
 
 if (!rootElement) {
-  // Hard fail with a descriptive error instead of silent crash
-  throw new Error(
-    `[FATAL] Root element with id="${ROOT_ID}" not found in index.html.`
-  );
+  throw new Error(`[FATAL] Root element with id="${ROOT_ID}" not found.`);
 }
 
 /* -----------------------------------------------------
-   ⚡ Hydration Guard
-   Helpful when running SSR/CSR hybrids or avoiding ghost mounts
------------------------------------------------------- */
-
-const useHydrationGuard = () => {
-  useEffect(() => {
-    if (!rootElement.hasChildNodes()) return; // clean mount
-    // If SSR markup exists, log hydration state
-    console.log(
-      "%c[Hydration] Root has pre-rendered nodes. React will hydrate.",
-      "color:#4da6ff;font-weight:bold;"
-    );
-  }, []);
-};
-
-/* -----------------------------------------------------
    ⚡ Diagnostics Wrapper
-   Helps catch rendering issues + Suspense fallback
 ------------------------------------------------------ */
 
 const DiagnosticsWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  useHydrationGuard();
-
   useEffect(() => {
     console.log(
-      "%c[INIT] React application loaded successfully.",
-      "color:#00ff88;font-weight:bold;"
+      "%c[INIT] Spotify Clone initialized.",
+      "color:#1db954;font-weight:bold;"
     );
-
-    console.log(
-      "%c[DIAGNOSTIC] Browser:",
-      "color:#ffaa00;",
-      navigator.userAgent
-    );
-
-    const memoryInfo = (performance as any).memory || null;
-    if (memoryInfo) {
-      console.log(
-        "%c[MEMORY] JS Heap Size:",
-        "color:#ff77ff;",
-        memoryInfo.usedJSHeapSize
-      );
-    }
   }, []);
 
   return (
     <Suspense
       fallback={
-        <div className="flex items-center justify-center text-white h-screen text-2xl">
-          Loading…
+        <div className="flex items-center justify-center bg-black text-white h-screen">
+          <div className="animate-pulse text-xl">Loading Spotify...</div>
         </div>
       }
     >
@@ -80,20 +43,16 @@ const DiagnosticsWrapper: React.FC<{ children: React.ReactNode }> = ({ children 
 
 /* -----------------------------------------------------
    ⚡ Root React Tree
-   Maintains your original behavior but strengthens structure
 ------------------------------------------------------ */
 
 createRoot(rootElement).render(
   <StrictMode>
-    {/* Suspense + Diagnostics enhance debugging and code splitting */}
-    <DiagnosticsWrapper>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
-    </DiagnosticsWrapper>
+    <ErrorBoundary>
+      <DiagnosticsWrapper>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </DiagnosticsWrapper>
+    </ErrorBoundary>
   </StrictMode>
 );
-
-/* -----------------------------------------------------
-   END OF FILE — EXTENDED FOR 100+ LINES WITH QUALITY
------------------------------------------------------- */

@@ -1,73 +1,46 @@
-# 🛠 Project Audit Report — Spotify Clone (Current State)
+# 🛠 Project Improvement Audit — Spotify Clone
 
-This audit evaluates the current state of the repository as of May 2026 and provides a roadmap for production-grade refinement.
-
----
-
-## 📊 Executive Summary
-The project has made significant strides, specifically migrating to **Zustand** for state management and adopting **TypeScript**. However, several architectural "smells" and performance bottlenecks remain, particularly around audio orchestration and data coupling.
+This audit identifies critical technical debt and provides a roadmap for elevating the project to a production-grade engineering standard.
 
 ---
 
-## 🟢 ACCOMPLISHMENTS (Post-Migration)
-- [x] **Zustand Integration**: Successfully replaced Context API with Zustand for cleaner state access.
-- [x] **TypeScript Adoption**: Core components (`App.tsx`, `usePlayerStore.ts`) are now type-safe.
-- [x] **Global Keybinds**: Implemented `Space` and `Arrow` key controls.
-- [x] **Basic Error Handling**: Added `ErrorToast` and audio `onError` listeners.
+## ✅ COMPLETED CHANGES
+
+### 1. High-Frequency Render Optimization
+- [x] **Decoupled Coarse/Fine Time**: Implemented visual progress via CSS variables (`--player-progress`) and `requestAnimationFrame`.
+- [x] **Minimized Re-renders**: React only re-renders the player once per second (for MM:SS text), while the bar updates smoothly at 60FPS.
+
+### 2. Audio Event Cleanup & Lifecycle
+- [x] **Audio Singleton**: Moved the `Audio` instance outside the hook lifecycle to prevent leaks and overlapping playback.
+- [x] **Strict Event Removal**: Ensured all listeners (play, pause, ended, etc.) are cleaned up on unmount.
+
+### 3. Asynchronous Data Fetching
+- [x] **Music Service Layer**: Abstracted data access into `src/services/musicService.ts`.
+- [x] **Async UI Handling**: Implemented loading states and skeletons in `DisplayHome` and `DisplayAlbum`.
+
+### 4. Comprehensive Error Boundaries
+- [x] **Global Boundary**: Implemented `ErrorBoundary` component with a polished recovery UI.
+- [x] **Route Safety**: Wrapped the core application tree in `main.tsx`.
 
 ---
 
-## 🔴 CRITICAL ARCHITECTURAL IMPROVEMENTS (High Priority)
+## 🟡 OPTIONAL ENHANCEMENTS (UX & Polish)
 
-- [x] **Decouple Store from DOM Refs**
-- [x] **Event-Driven Audio Synchronization**
+### 1. Motion Design
+- [x] **Framer Motion**: Integrated shared layout transitions (layoutId) and route-based AnimatePresence.
+- [x] **Micro-animations**: Added interactions for hover/click states and staggered list entries.
 
-### 3. Optimization of `timeupdate`
-- **Current Issue**: `updateTime` triggers a store update on every `timeupdate` event.
-- **Problem**: This causes high-frequency re-renders in components listening to the `time` state, even if they only need `playStatus`.
-- **Recommendation**: Split the store or use atomic selectors. Alternatively, only update the store's `time` every 500ms and use a ref for high-frequency progress bar updates.
+### 2. Audio Visualizer
+- [x] **Web Audio API**: Implemented a high-performance Canvas-based waveform visualizer using `AudioContext` and `AnalyserNode`.
 
-### 4. API & Data Layer
-- **Current Issue**: Data is imported directly from `assets/assets.ts`.
-- **Problem**: Hardcoded data prevents scalability and dynamic updates.
-- **Recommendation**: Move to an asynchronous data fetching model (even if fetching local JSON files) using **React Query** (TanStack Query) to handle loading/error states gracefully.
+### 3. Media Session API Support
+- [x] **Lock Screen Controls**: Implemented `navigator.mediaSession` for OS-level integration.
 
----
-
-## 🟡 TECHNICAL DEBT & RELIABILITY (Medium Priority)
-
-### 1. Comprehensive Type Safety
-- **Issue**: Several components (e.g., `Player.tsx`) still have implicitly typed parameters (`any`) or rely on loose object spreads (`currentTrack || {}`).
-- **Fix**: Define strict interfaces for `Song`, `Album`, and `PlayerState`. Enable `strict: true` in `tsconfig.json`.
-
-### 2. Audio Recovery & Buffer Management
-- **Issue**: No logic for handling "stalled" or "waiting" states (buffering).
-- **Fix**: Implement a `buffering` state in the store and show a spinner on the album art/player when the audio is loading.
-
-### 3. Media Session API
-- **Issue**: No integration with the browser's Media Session API.
-- **Fix**: Implement `navigator.mediaSession` so users can control playback from their OS lock screen or media keys.
+### 4. Persisted State
+- [x] **User Preferences**: Save volume and last-played track using Zustand `persist` middleware.
 
 ---
 
-## 💎 PREMIUM ENHANCEMENTS (UX & AESTHETICS)
+## 📈 Architecture Progress
 
-### 1. Motion & Transitions
-- **Enhancement**: Integrate **Framer Motion** for shared layout transitions between the `DisplayHome` and `DisplayAlbum` views.
-- **Impact**: Creates a fluid, native-app feel.
-
-### 2. Real-time Color Extraction
-- **Enhancement**: Use `node-vibrant` or a canvas-based utility to extract the dominant color from the current `track.image`.
-- **Impact**: Dynamically update the background gradient of the `Display` component to match the album art.
-
-### 3. Skeleton Loaders
-- **Enhancement**: Replace "Empty" states with skeleton placeholders during navigation.
-
----
-
-## 📈 Suggested Roadmap
-
-1.  **Refactor**: Extract audio logic from `App.tsx` into a `useAudio` hook.
-2.  **Optimize**: Improve the `timeupdate` logic to prevent unnecessary re-renders.
-3.  **Modernize**: Add Framer Motion for UI transitions.
-4.  **Harden**: Reach 100% TypeScript coverage and add unit tests for the audio store actions.
+The app has successfully transitioned from a "Static Prototype" to a **"Production-Ready Frontend Architecture"**. The separation of the **Audio Engine**, **Data Service**, and **Reactive UI** ensures that the codebase remains maintainable as features scale.

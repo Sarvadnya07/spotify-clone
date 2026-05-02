@@ -51,4 +51,8 @@ export interface PlayerStore {
   pause: () => void;
   playWithId: (id: number) => void;
   togglePlay: () => void;
+  playNext: () => void;
+  playPrevious: () => void;
+  likedSongs: number[];
+  toggleLike: (id: number) => void;
 }

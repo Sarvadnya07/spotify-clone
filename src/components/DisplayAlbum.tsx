@@ -1,260 +1,174 @@
 import React, {
-  useContext,
-  useMemo,
   useEffect,
   useState,
   useCallback,
   memo,
-  Suspense,
   useRef
 } from "react";
 import Navbar from "./Navbar";
 import { useParams } from "react-router-dom";
-import { albumsData, assets, songsData } from "../assets/assets";
+import { assets } from "../assets/assets";
+import { musicService } from "../services/musicService";
 import usePlayerStore from "../store/usePlayerStore";
 import { Album, Song } from "../types";
-
-/**
- * DISPLAYALBUM – EXTENDED 150+ LINES
- *
- * Your original identifiers remain:
- * - DisplayAlbum
- * - albumData, songsData, playWithId, id, item.id, etc.
- *
- * Enhancements include:
- * - Safety against invalid album IDs
- * - Lazy image fallback
- * - Smooth fade-in animation
- * - Memoization for heavy lists
- * - Keyboard controls
- * - Prefetching future album meta
- * - Scroll tracking + auto restore
- * - Interaction ripple
- * - Long structural readability
- */
-
-interface LazyAlbumImageProps {
-  src: string;
-  alt: string;
-}
-
-const LazyAlbumImage = memo(function LazyAlbumImage({ src, alt }: LazyAlbumImageProps) {
-  const [loaded, setLoaded] = useState(false);
-
-  return (
-    <div className="relative w-48 h-48 overflow-hidden rounded bg-neutral-800">
-      {!loaded && (
-        <div className="absolute inset-0 animate-pulse bg-neutral-700 rounded" />
-      )}
-
-      <img
-        src={src}
-        alt={alt}
-        className={`absolute inset-0 w-full h-full object-cover rounded transition-opacity duration-500 ${
-          loaded ? "opacity-100" : "opacity-0"
-        }`}
-        loading="lazy"
-        onLoad={() => setLoaded(true)}
-      />
-    </div>
-  );
-});
-
-const useAlbumGuard = (albumData: Album | undefined) => {
-  const [valid, setValid] = useState(true);
-
-  useEffect(() => {
-    if (!albumData) setValid(false);
-  }, [albumData]);
-
-  return valid;
-};
-
-const usePrefetchSongs = (songsData: Song[]) => {
-  /**
-   * Prefetch the first few songs’ images for smoother UI
-   */
-  useEffect(() => {
-    songsData.slice(0, 5).forEach((item) => {
-      const img = new Image();
-      img.src = item.image;
-    });
-  }, [songsData]);
-};
-
-const useScrollSaver = () => {
-  /**
-   * Saves scroll position for better SPA feel
-   */
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const saved = sessionStorage.getItem("albumScrollPos");
-    if (saved && containerRef.current) {
-      containerRef.current.scrollTop = Number(saved);
-    }
-
-    return () => {
-      if (containerRef.current) {
-        sessionStorage.setItem(
-          "albumScrollPos",
-          containerRef.current.scrollTop.toString()
-        );
-      }
-    };
-  }, []);
-
-  return containerRef;
-};
-
-/**
- * Ripple animation util
- */
-const useRipple = () => {
-  const createRipple = (event: React.MouseEvent, element: HTMLElement | null) => {
-    if (!element) return;
-
-    const circle = document.createElement("span");
-    const diameter = Math.max(element.clientWidth, element.clientHeight);
-    const radius = diameter / 2;
-
-    circle.style.width = circle.style.height = `${diameter}px`;
-    circle.style.left = `${event.clientX -
-      element.getBoundingClientRect().left -
-      radius}px`;
-    circle.style.top = `${event.clientY -
-      element.getBoundingClientRect().top -
-      radius}px`;
-    circle.classList.add("ripple");
-
-    const existing = element.getElementsByClassName("ripple")[0];
-    if (existing) existing.remove();
-
-    element.appendChild(circle);
-  };
-
-  return createRipple;
-};
+import { motion } from "framer-motion";
+import { getAverageColor } from "../utils/colorExtractor";
+import ContextMenu from "./common/ContextMenu";
+import { useContextMenu } from "../hooks/useContextMenu";
 
 const DisplayAlbum = () => {
   const { id } = useParams<{ id: string }>();
-  const albumData = id ? albumsData[Number(id)] : undefined;
-  const { playWithId } = usePlayerStore();
+  const [album, setAlbum] = useState<Album | null>(null);
+  const [songs, setSongs] = useState<Song[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [dynamicColor, setDynamicColor] = useState("#121212");
+  
+  const { playWithId, likedSongs, toggleLike } = usePlayerStore();
+  const scrollContainer = useRef<HTMLDivElement>(null);
+  const { visible, x, y, data, showMenu, closeMenu } = useContextMenu();
 
-  const albumValid = useAlbumGuard(albumData);
+  useEffect(() => {
+    const fetchAlbumDetails = async () => {
+      if (!id) return;
+      setLoading(true);
+      try {
+        const [albumData, songsData] = await Promise.all([
+          musicService.getAlbumById(Number(id)),
+          musicService.getSongs()
+        ]);
+        if (albumData) {
+          setAlbum(albumData);
+          setSongs(songsData);
+          const color = await getAverageColor(albumData.image);
+          setDynamicColor(color);
+        }
+      } catch (error) {
+        console.error("Error fetching album:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchAlbumDetails();
+  }, [id]);
 
-  const scrollContainer = useScrollSaver();
+  const handleSongClick = useCallback((id: number) => {
+    playWithId(id);
+  }, [playWithId]);
 
-  const createRipple = useRipple();
-
-  usePrefetchSongs(songsData);
-
-  const handleSongClick = useCallback(
-    (e: React.MouseEvent<HTMLDivElement>, item: Song) => {
-      createRipple(e, e.currentTarget);
-      playWithId(item.id);
-    },
-    [playWithId, createRipple]
-  );
-
-  const songList = useMemo(() => {
-    return songsData.map((item, index) => (
-      <div
-        key={index}
-        onClick={(e) => handleSongClick(e, item)}
-        onKeyDown={(e) => e.key === "Enter" && playWithId(item.id)}
-        tabIndex={0}
-        role="button"
-        className="grid grid-cols-3 sm:grid-cols-4 gap-2 p-2 items-center text-[#a7a7a7] hover:bg-[#ffffff2b] rounded cursor-pointer transition-all duration-150"
-      >
-        <p className="text-white flex items-center">
-          <b className="mr-4 text-[#a7a7a7]">{index + 1}</b>
-          <img className="inline w-10 h-10 mr-5 rounded" src={item.image} alt="" />
-          {item.name}
-        </p>
-        <p className="text-[15px]">{albumData?.name}</p>
-        <p className="text-[15px] hidden sm:block">5 days ago</p>
-        <p className="text-[15px] text-center">{item.duration}</p>
-      </div>
-    ));
-  }, [albumData, handleSongClick]);
-
-  if (!albumValid) {
+  if (loading) {
     return (
-      <>
+      <div className="h-full flex flex-col">
         <Navbar />
-        <div className="p-10 text-center text-red-400 text-xl">
-          Album not found.
+        <div className="flex-grow flex items-center justify-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#1db954]" />
         </div>
-      </>
+      </div>
     );
   }
 
+  if (!album) return null;
+
   return (
-    <>
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="h-full flex flex-col"
+    >
       <Navbar />
-
-      <div
+      <div 
         ref={scrollContainer}
-        className="overflow-auto pr-2"
-        style={{ maxHeight: "calc(100vh - 80px)" }}
+        className="flex-grow overflow-y-auto px-6 pt-10 transition-colors duration-1000"
+        style={{ 
+          background: `linear-gradient(${dynamicColor}, #121212 400px, #121212)` 
+        }}
       >
-        <div className="mt-10 flex gap-8 flex-col md:flex-row md:items-end">
-          <LazyAlbumImage src={albumData?.image || ""} alt={albumData?.name || ""} />
-
-          <div className="flex flex-col">
-            <p className="opacity-60">Playlist</p>
-            <h2 className="text-5xl font-bold mb-4 md:text-7xl">
-              {albumData?.name}
-            </h2>
-            <h4 className="opacity-80">{albumData?.desc}</h4>
-
-            <p className="mt-1 opacity-90">
-              <img
-                className="inline-block w-5 mr-1"
-                src={assets.spotify_logo}
-                alt="Spotify Logo"
-              />
-              <b>Spotify</b> • 1,323,154 likes • <b>50 songs,</b> about 2 hr 30 min
-            </p>
+        <div className="flex flex-col md:flex-row md:items-end gap-8 mb-10">
+          <motion.img
+            layoutId={`album-image-${id}`}
+            src={album.image}
+            alt={album.name}
+            className="w-48 h-48 lg:w-60 lg:h-60 rounded shadow-2xl object-cover"
+          />
+          <div className="flex flex-col gap-2">
+            <span className="text-xs font-bold uppercase tracking-wider">Playlist</span>
+            <motion.h1 
+              layoutId={`album-name-${id}`}
+              className="text-4xl md:text-7xl font-black mb-2"
+            >
+              {album.name}
+            </motion.h1>
+            <div className="flex items-center gap-2 text-sm font-medium">
+              <img className="w-6" src={assets.spotify_logo} alt="Spotify" />
+              <span>Spotify</span>
+              <span className="opacity-60">• 1,323,154 likes • {songs.length} songs</span>
+            </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-3 sm:grid-cols-4 mt-10 mb-4 pl-2 text-[#a7a7a7]">
-          <p>
-            <b className="mr-4">#</b>Title
-          </p>
-          <p>Album</p>
-          <p className="hidden sm:block">Date Added</p>
-          <img className="m-auto w-4" src={assets.clock_icon} alt="" />
+        {/* Header Row */}
+        <div className="grid grid-cols-[16px_1fr_1fr_80px] gap-4 px-4 py-2 text-xs font-bold uppercase tracking-widest text-gray-400 border-b border-white/10 mb-4 sticky top-0 bg-[#121212]/80 backdrop-blur-md z-10">
+          <span>#</span>
+          <span>Title</span>
+          <span className="hidden md:block">Album</span>
+          <img className="w-4 ml-auto" src={assets.clock_icon} alt="Duration" />
         </div>
 
-        <hr className="border-[#555]" />
-
-        {songList}
+        {/* Song List */}
+        <motion.div 
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.2 }}
+          className="flex flex-col mb-20"
+        >
+          {songs.map((song, index) => {
+            const isLiked = likedSongs.includes(song.id);
+            return (
+              <motion.div
+                key={song.id}
+                whileHover={{ backgroundColor: "rgba(255, 255, 255, 0.1)" }}
+                onContextMenu={(e) => showMenu(e, song)}
+                className="grid grid-cols-[16px_1fr_1fr_80px] gap-4 px-4 py-3 items-center text-gray-400 rounded-md group cursor-pointer transition-colors"
+              >
+                <span className="text-sm group-hover:text-white" onClick={() => handleSongClick(song.id)}>{index + 1}</span>
+                <div className="flex items-center gap-3" onClick={() => handleSongClick(song.id)}>
+                  <img className="w-10 h-10 rounded" src={song.image} alt={song.name} />
+                  <div className="flex flex-col">
+                    <span className="text-white font-medium truncate max-w-[200px]">{song.name}</span>
+                    <span className="text-xs group-hover:text-white transition-colors">{song.desc}</span>
+                  </div>
+                </div>
+                <div className="flex items-center gap-4 hidden md:flex">
+                  <span className="text-sm group-hover:text-white transition-colors flex-grow truncate">{album.name}</span>
+                  <button 
+                    onClick={(e) => { e.stopPropagation(); toggleLike(song.id); }}
+                    className={`opacity-0 group-hover:opacity-100 transition-opacity ${isLiked ? 'opacity-100 text-[#1db954]' : 'text-gray-400 hover:text-white'}`}
+                  >
+                    {isLiked ? '❤️' : '🤍'}
+                  </button>
+                </div>
+                <span className="text-sm ml-auto">{song.duration}</span>
+              </motion.div>
+            );
+          })}
+        </motion.div>
       </div>
-    </>
+
+      <ContextMenu 
+        visible={visible}
+        x={x}
+        y={y}
+        onClose={closeMenu}
+        options={[
+          { label: 'Play Now', icon: '▶', onClick: () => playWithId(data?.id) },
+          { label: likedSongs.includes(data?.id) ? 'Remove from Liked' : 'Add to Liked', icon: '❤️', onClick: () => toggleLike(data?.id) },
+          { label: 'Add to Queue', icon: '➕', onClick: () => console.log('Added to queue') },
+          { label: 'Share', icon: '🔗', onClick: () => navigator.clipboard.writeText(window.location.href) },
+          { label: 'Delete', icon: '🗑', onClick: () => console.log('Delete'), variant: 'danger' },
+        ]}
+      />
+    </motion.div>
   );
 };
 
 export default memo(DisplayAlbum);
-
-/*
-  ADD THIS RIPPLE CSS:
-
-  .ripple {
-    position: absolute;
-    border-radius: 50%;
-    transform: scale(0);
-    animation: ripple-animation 600ms linear;
-    background: rgba(255, 255, 255, 0.3);
-    pointer-events: none;
-  }
-
-  @keyframes ripple-animation {
-    to {
-      transform: scale(4);
-      opacity: 0;
-    }
-  }
-*/
