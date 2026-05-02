@@ -15,7 +15,7 @@ const DisplayHome = () => {
   const [albums, setAlbums] = useState<Album[]>([]);
   const [songs, setSongs] = useState<Song[]>([]);
   const [loading, setLoading] = useState(true);
-  const { listeningHistory } = usePlayerStore();
+  const { history } = usePlayerStore();
 
   useEffect(() => {
     const fetchData = async () => {
