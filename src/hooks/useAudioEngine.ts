@@ -7,9 +7,10 @@ import usePlayerStore from '../store/usePlayerStore';
 const audioInstance = new Audio();
 
 // Web Audio API Singletons
-let audioContext: AudioContext | null = null;
-let analyser: AnalyserNode | null = null;
-let source: MediaElementAudioSourceNode | null = null;
+export let audioContext: AudioContext | null = null;
+export let analyser: AnalyserNode | null = null;
+export let source: MediaElementAudioSourceNode | null = null;
+export { audioInstance };
 
 /**
  * useAudioEngine

@@ -3,13 +3,12 @@ import DisplayHome from "./DisplayHome";
 import { Route, Routes, useLocation } from "react-router-dom";
 import DisplayAlbum from "./DisplayAlbum";
 import Search from "./Search";
+import WeatherJournal from "./WeatherJournal";
 import { AnimatePresence } from "framer-motion";
 
 /**
- * Display Component - Modern Overhaul
- * - Removed legacy width constraints (w-[75%], w-[55%]) that caused layout gaps.
- * - Now fills the entire available flex-grow space provided by the App root.
- * - Optimized for a seamless, edge-to-edge glass experience.
+ * Display Component - Weather Integrated
+ * - Orchestrates route transitions for Home, Albums, Search, and the Weather Journal.
  */
 const Display: React.FC = () => {
   const displayRef = useRef<HTMLDivElement>(null);
@@ -25,6 +24,7 @@ const Display: React.FC = () => {
           <Route path="/" element={<DisplayHome />} />
           <Route path="/album/:id" element={<DisplayAlbum />} />
           <Route path="/search" element={<Search />} />
+          <Route path="/journal" element={<WeatherJournal />} />
         </Routes>
       </AnimatePresence>
     </div>

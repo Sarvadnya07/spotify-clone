@@ -3,7 +3,6 @@ import React, {
   useEffect,
   memo,
   useCallback,
-  useMemo,
 } from "react";
 import Sidebar from "./components/Sidebar";
 import Player from "./components/Player";
@@ -15,17 +14,18 @@ import DJOverlay from "./components/DJOverlay";
 import Miniplayer from "./components/Miniplayer";
 import ToastContainer from "./components/ToastContainer";
 import ShortcutsModal from "./components/common/ShortcutsModal";
+import ReactiveBackground from "./components/ReactiveBackground";
 import { useAudioEngine } from "./hooks/useAudioEngine";
 import { useKeyboardShortcuts } from "./hooks/useKeyboardShortcuts";
 import { useElectronHotkeys } from "./hooks/useElectronHotkeys";
-import { useVisualizer } from "./hooks/useVisualizer";
+import { useWeather } from "./hooks/useWeather";
 import usePlayerStore from "./store/usePlayerStore";
 import ErrorToast from "./components/ErrorToast";
 
 /**
- * App Root - Reactive Ecosystem
- * - Features Real-Time Audio Visualization (Visualizer Synergy).
- * - Integrates AI DJ, Native Hotkeys, and Seamless Glass Layout.
+ * App Root - Optimized for Performance
+ * - High-frequency visual updates are isolated to ReactiveBackground.
+ * - Main tree only re-renders on structural state changes.
  */
 const App: React.FC = () => {
   const [isMounted, setIsMounted] = useState(false);
@@ -36,26 +36,22 @@ const App: React.FC = () => {
     setIsShortcutsOpen(prev => !prev);
   }, []);
 
-  useAudioEngine();
+  useAudioEngine(); // Core Audio Singleton
   useKeyboardShortcuts(toggleShortcuts);
   useElectronHotkeys();
-  const intensity = useVisualizer();
+  useWeather(); // Intelligence Polling
 
   useEffect(() => {
     setIsMounted(true);
   }, []);
 
-  // Reactive Background Styles
-  const bgStyles = useMemo(() => ({
-    "--pulse-intensity": intensity,
-    filter: `contrast(${100 + intensity * 20}%)`,
-  } as React.CSSProperties), [intensity]);
-
-  const layoutClass = `h-screen bg-black bg-gradient-animate overflow-hidden transition-opacity duration-1000 ${isMounted ? 'opacity-100' : 'opacity-0'}`;
+  const layoutClass = `h-screen overflow-hidden transition-opacity duration-1000 ${isMounted ? 'opacity-100' : 'opacity-0'}`;
 
   return (
-    <div className={layoutClass} style={bgStyles}>
-      <div className="h-full flex flex-col relative">
+    <div className={layoutClass}>
+      <ReactiveBackground />
+      
+      <div className="h-full flex flex-col relative z-10">
         <div className="flex-grow flex overflow-hidden">
           <Sidebar onShowShortcuts={toggleShortcuts} />
           
@@ -77,15 +73,6 @@ const App: React.FC = () => {
         <ShortcutsModal isOpen={isShortcutsOpen} onClose={() => setIsShortcutsOpen(false)} />
         <ErrorToast />
       </div>
-
-      {/* Reactive Glow Layer */}
-      <div 
-        className="fixed inset-0 pointer-events-none transition-opacity duration-300 z-0"
-        style={{ 
-          background: `radial-gradient(circle at 50% 50%, rgba(29, 185, 84, ${intensity * 0.15}) 0%, transparent 70%)`,
-          opacity: intensity > 0.1 ? 1 : 0
-        }}
-      />
     </div>
   );
 };

@@ -3,15 +3,16 @@ import { assets } from "../assets/assets";
 import { useNavigate } from "react-router-dom";
 import usePlayerStore from "../store/usePlayerStore";
 import { useToastStore } from "../store/useToastStore";
+import WeatherHub from "./WeatherHub";
 
 interface SidebarProps {
   onShowShortcuts: () => void;
 }
 
 /**
- * Seamless Modern Sidebar
- * - Replaced rounded floating panels with a docked, edge-to-edge layout.
- * - Maintains glassmorphism but eliminates "void" gaps.
+ * Seamless Modern Sidebar - Weather & Journal Integrated
+ * - Features the WeatherHub and a direct link to the Weather Journal.
+ * - Optimized for high-fidelity navigation.
  */
 const Sidebar: React.FC<SidebarProps> = ({ onShowShortcuts }) => {
   const navigate = useNavigate();
@@ -28,7 +29,9 @@ const Sidebar: React.FC<SidebarProps> = ({ onShowShortcuts }) => {
       onClick={onClick}
       className={`flex items-center gap-4 px-6 py-3 cursor-pointer transition-all duration-300 group ${active ? 'bg-white/10 text-white' : 'text-gray-400 hover:text-white hover:bg-white/5'}`}
     >
-      <img className={`w-5 transition-all ${active ? 'brightness-125' : 'opacity-60 group-hover:opacity-100'}`} src={icon} alt={label} />
+      <div className={`w-5 flex items-center justify-center transition-all ${active ? 'brightness-125' : 'opacity-60 group-hover:opacity-100'}`}>
+        {typeof icon === 'string' ? <span className="text-lg leading-none">{icon}</span> : <img className="w-5" src={icon} alt={label} />}
+      </div>
       <span className="font-bold text-[14px] tracking-wide">{label}</span>
     </div>
   );
@@ -38,10 +41,16 @@ const Sidebar: React.FC<SidebarProps> = ({ onShowShortcuts }) => {
       className="w-[280px] h-full flex flex-col hidden lg:flex select-none border-r border-white/5 bg-black/20"
       role="navigation"
     >
+      {/* WEATHER INTELLIGENCE HUB */}
+      <div className="pt-2">
+        <WeatherHub />
+      </div>
+
       {/* NAVIGATION SECTION */}
-      <div className="py-4 flex flex-col gap-1">
+      <div className="py-2 flex flex-col gap-1">
         <NavItem icon={assets.home_icon} label="Home" onClick={() => navigate("/")} active={window.location.pathname === '/'} />
         <NavItem icon={assets.search_icon} label="Search" onClick={() => navigate("/search")} active={window.location.pathname === '/search'} />
+        <NavItem icon="📖" label="Journal" onClick={() => navigate("/journal")} active={window.location.pathname === '/journal'} />
       </div>
 
       {/* LIBRARY SECTION */}
@@ -59,7 +68,6 @@ const Sidebar: React.FC<SidebarProps> = ({ onShowShortcuts }) => {
           </button>
         </div>
 
-        {/* Scrollable Collections */}
         <div className="flex-1 overflow-y-auto px-2 pb-32 hide-scrollbar">
           <div className="mx-2 mb-4 p-3 rounded-xl bg-white/5 border border-white/5 cursor-pointer group">
             <div className="flex items-center gap-4">
@@ -90,7 +98,6 @@ const Sidebar: React.FC<SidebarProps> = ({ onShowShortcuts }) => {
           </div>
         </div>
 
-        {/* Command Center Footer */}
         <div className="mt-auto p-4 border-t border-white/5">
           <button 
             onClick={onShowShortcuts}

@@ -5,19 +5,18 @@ import { useAuthStore } from '../store/useAuthStore';
 import { aiDjService } from '../services/AiDjService';
 
 /**
- * Modern Glass DJOverlay - Premium Enabled
- * - Voice synthesis is restricted to Premium tier users.
- * - Free users receive a non-audible preview of the DJ logic.
+ * Modern Glass DJOverlay - Weather Aware
+ * - Now integrates environment intelligence into its narration logic.
+ * - Freezes voice synthesis for Free users, provides atmospheric audio for Premium.
  */
 const DJOverlay = () => {
-  const { track } = usePlayerStore();
+  const { track, currentWeather } = usePlayerStore();
   const { user } = useAuthStore();
   const [commentary, setCommentary] = useState<string | null>(null);
   const [isVisible, setIsVisible] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
 
   const speak = useCallback((text: string) => {
-    // LOCK: Only premium users get the voice interaction
     if (!window.speechSynthesis || user?.tier !== 'Premium') return;
     
     window.speechSynthesis.cancel();
@@ -40,15 +39,16 @@ const DJOverlay = () => {
 
   useEffect(() => {
     const triggerDj = async () => {
+      // 20% chance to trigger AI DJ
       if (Math.random() > 0.8) {
-        const text = await aiDjService.getCommentary(track, track);
+        // PASSING CURRENT WEATHER TO AI SERVICE
+        const text = await aiDjService.getCommentary(track, track, currentWeather);
         setCommentary(text);
         setIsVisible(true);
         
         if (user?.tier === 'Premium') {
           setTimeout(() => speak(text), 1000);
         } else {
-          // Free users only see it for 6s then it fades
           setTimeout(() => setIsVisible(false), 6000);
         }
       }
@@ -59,7 +59,7 @@ const DJOverlay = () => {
     return () => {
       if (window.speechSynthesis) window.speechSynthesis.cancel();
     };
-  }, [track.id, speak, user?.tier]);
+  }, [track.id, speak, user?.tier, currentWeather]);
 
   return (
     <AnimatePresence>
@@ -88,10 +88,12 @@ const DJOverlay = () => {
                       ))}
                     </div>
                   )}
-                  {user?.tier === 'Free' && (
-                    <span className="text-[8px] font-black text-gray-500 bg-white/5 px-1.5 py-0.5 rounded border border-white/5 tracking-widest uppercase">Visual Preview</span>
-                  )}
                 </div>
+                {currentWeather && (
+                  <span className="text-[9px] font-black text-blue-400 uppercase tracking-widest bg-blue-400/10 px-2 py-0.5 rounded border border-blue-400/20">
+                    Weather Aware
+                  </span>
+                )}
               </div>
 
               <p className="text-white font-bold text-base leading-relaxed tracking-tight italic">
@@ -101,14 +103,12 @@ const DJOverlay = () => {
 
             {user?.tier === 'Free' && (
               <div className="mt-4 px-4 py-2 bg-gradient-to-r from-indigo-600/20 to-purple-600/20 rounded-xl border border-indigo-500/20">
-                <p className="text-[10px] font-bold text-indigo-300">Upgrade to Premium to hear Alex's voice!</p>
+                <p className="text-[10px] font-bold text-indigo-300">Upgrade to hear Alex's weather insights!</p>
               </div>
             )}
 
             <div className="mt-5 flex items-center gap-4 pt-4 border-t border-white/10 relative z-10">
-              <div className="relative group">
-                <img className="w-10 h-10 rounded-lg shadow-lg group-hover:scale-110 transition-transform" src={track.image} alt="S" />
-              </div>
+              <img className="w-10 h-10 rounded-lg shadow-lg" src={track.image} alt="S" />
               <div className="flex flex-col min-w-0">
                 <span className="text-[9px] font-black text-gray-500 tracking-[0.2em] uppercase">ON DECK</span>
                 <span className="text-xs font-bold text-white truncate">{track.name}</span>
