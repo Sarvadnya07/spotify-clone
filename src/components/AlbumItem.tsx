@@ -1,6 +1,5 @@
-import React, { useCallback, memo } from "react";
-import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
+import React, { memo } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 interface AlbumItemProps {
   image: string;
@@ -10,50 +9,34 @@ interface AlbumItemProps {
 }
 
 /**
- * Modern Glass AlbumItem
- * - High-fidelity card layout with depth effects.
- * - Supports shared element transition patterns.
+ * Industry-Grade AlbumItem
+ * - Standardized grid item with high-fidelity finish.
  */
 const AlbumItem: React.FC<AlbumItemProps> = ({ image, name, desc, id }) => {
   const navigate = useNavigate();
 
-  const handleClick = useCallback(() => {
-    navigate(`/album/${id}`);
-  }, [navigate, id]);
-
   return (
-    <motion.div
-      whileHover={{ y: -5 }}
-      whileTap={{ scale: 0.95 }}
-      onClick={handleClick}
-      className="min-w-[180px] p-4 rounded-2xl glass-card cursor-pointer group flex flex-col gap-3 select-none"
+    <div
+      onClick={() => navigate(`/album/${id}`)}
+      className="min-w-[170px] p-4 rounded-lg cursor-pointer bg-[#181818] hover:bg-[#282828] transition-all duration-300 group"
     >
-      <div className="relative aspect-square overflow-hidden rounded-xl shadow-2xl">
-        <motion.img
-          layoutId={`album-image-${id}`}
-          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-          src={image}
-          alt={name}
+      <div className="relative aspect-square mb-4 rounded-md overflow-hidden shadow-2xl">
+        <img 
+          src={image} 
+          alt={name} 
+          className="w-full h-full object-cover" 
+          loading="lazy"
         />
-        <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-[1px]">
-          <div className="w-12 h-12 bg-[#1db954] rounded-full flex items-center justify-center text-black font-bold shadow-2xl scale-50 group-hover:scale-100 transition-transform duration-300">
-            ▶
-          </div>
+        <div className="absolute bottom-2 right-2 w-10 h-10 bg-[#1db954] rounded-full flex items-center justify-center shadow-xl opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300">
+          <div className="w-0 h-0 border-t-[6px] border-t-transparent border-l-[12px] border-l-black border-b-[6px] border-b-transparent ml-1" />
         </div>
       </div>
 
-      <div className="flex flex-col gap-1">
-        <motion.p 
-          layoutId={`album-name-${id}`} 
-          className="font-black text-sm text-white truncate tracking-tight"
-        >
-          {name}
-        </motion.p>
-        <p className="text-[11px] text-gray-500 font-medium line-clamp-2 leading-relaxed">
-          {desc}
-        </p>
+      <div className="min-w-0">
+        <p className="font-bold text-[14px] text-white truncate mb-1">{name}</p>
+        <p className="text-[#a7a7a7] text-[12px] font-medium truncate">{desc}</p>
       </div>
-    </motion.div>
+    </div>
   );
 };
 

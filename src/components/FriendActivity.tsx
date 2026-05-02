@@ -1,94 +1,102 @@
-import React from "react";
+import React, { memo } from "react";
 import usePlayerStore from "../store/usePlayerStore";
 import { useToastStore } from "../store/useToastStore";
-import { assets, songsData } from "../assets/assets";
+import { assets } from "../assets/assets";
 import { motion } from "framer-motion";
 
 /**
- * Modern Social Hub — Friend Activity
- * - Real-time "Listening Now" status.
- * - "Join Session" interactivity.
- * - High-fidelity glass styling.
+ * Elite Social Hub — Friend Activity Refined
+ * - Replaced clashing avatars with professional stylized indicators.
+ * - Improved typography and spacing for a cleaner social feed.
  */
 const FriendActivity = () => {
   const { playWithId } = usePlayerStore();
   const { addToast } = useToastStore();
 
   const friends = [
-    { name: "Alex", song: "Blinding Lights", artist: "The Weeknd", id: 0, avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Alex" },
-    { name: "Sarah", song: "Levitating", artist: "Dua Lipa", id: 2, avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah" },
-    { name: "Mike", song: "Stay", artist: "Justin Bieber", id: 1, avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Mike" },
+    { name: "Alex", song: "Blinding Lights", artist: "The Weeknd", id: 0, color: "bg-indigo-500" },
+    { name: "Sarah", song: "Levitating", artist: "Dua Lipa", id: 2, color: "bg-pink-500" },
+    { name: "Mike", song: "Stay", artist: "Justin Bieber", id: 1, color: "bg-amber-500" },
   ];
 
   const handleJoin = (friendName: string, songId: number) => {
     playWithId(songId);
-    addToast(`You are now listening with ${friendName}!`, "success");
+    addToast(`Syncing with ${friendName}...`, "success");
   };
 
   return (
-    <div className="w-[280px] h-full hidden xl:flex flex-col bg-black/20 border-l border-white/5 select-none">
-      <div className="p-6 flex items-center justify-between">
-        <h2 className="font-black text-xs tracking-[0.3em] text-gray-500 uppercase">Friend Activity</h2>
-        <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center">
-          <img className="w-4 opacity-40" src={assets.plus_icon} alt="Invite" />
+    <div className="w-[300px] h-full hidden xl:flex flex-col bg-black/40 backdrop-blur-3xl border-l border-white/5 select-none relative z-40">
+      <div className="p-8 flex items-center justify-between">
+        <div className="flex flex-col">
+          <span className="text-[9px] font-black tracking-[0.4em] text-gray-500 uppercase opacity-60">Social</span>
+          <h2 className="font-bold text-sm text-white tracking-tight">Friend Activity</h2>
+        </div>
+        <div className="w-8 h-8 rounded-xl bg-white/5 border border-white/5 flex items-center justify-center hover:bg-white/10 transition-colors cursor-pointer">
+          <img className="w-3 opacity-30" src={assets.plus_icon} alt="Invite" />
         </div>
       </div>
 
-      <div className="flex-grow overflow-y-auto px-4 space-y-6 hide-scrollbar">
+      <div className="flex-grow overflow-y-auto px-6 space-y-8 hide-scrollbar pb-32">
         {friends.map((friend, index) => (
           <motion.div
             key={friend.name}
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: index * 0.1 }}
-            className="group relative"
+            className="group relative cursor-default"
           >
             <div className="flex gap-4">
-              <div className="relative">
-                <img className="w-10 h-10 rounded-full border border-white/10" src={friend.avatar} alt={friend.name} />
-                <div className="absolute bottom-0 right-0 w-3 h-3 bg-[#1db954] border-2 border-black rounded-full" />
+              <div className="relative flex-shrink-0">
+                <div className={`w-11 h-11 rounded-[14px] flex items-center justify-center border border-white/10 shadow-lg group-hover:scale-105 transition-transform duration-500 ${friend.color}`}>
+                  <span className="text-sm font-black text-white/90">{friend.name[0]}</span>
+                </div>
+                <div className="absolute -bottom-1 -right-1 w-3.5 h-3.5 bg-[#1db954] border-[2.5px] border-black rounded-full shadow-lg" />
               </div>
               
               <div className="flex flex-col min-w-0 flex-grow">
-                <div className="flex justify-between items-center">
-                  <span className="font-bold text-sm text-gray-300 group-hover:text-white transition">{friend.name}</span>
-                  <span className="text-[10px] text-gray-500">2m</span>
+                <div className="flex justify-between items-center mb-1">
+                  <span className="font-bold text-[13px] text-gray-300 group-hover:text-white transition tracking-tight">{friend.name}</span>
+                  <span className="text-[9px] font-bold text-gray-600 uppercase tracking-widest opacity-60">2m</span>
                 </div>
-                <p className="text-[11px] text-gray-500 truncate mt-0.5">
-                  <span className="text-[#1db954] font-bold">{friend.song}</span> • {friend.artist}
-                </p>
+                <div className="flex flex-col gap-0.5 min-w-0">
+                  <p className="text-[11px] font-bold text-[#1db954] truncate group-hover:translate-x-1 transition-transform">
+                    {friend.song}
+                  </p>
+                  <p className="text-[10px] text-gray-500 font-bold uppercase tracking-wider truncate opacity-40">
+                    {friend.artist}
+                  </p>
+                </div>
                 
-                {/* Interactive Join Button */}
                 <button
                   onClick={() => handleJoin(friend.name, friend.id)}
-                  className="mt-2 w-full py-1.5 rounded-lg bg-white/5 text-[10px] font-black tracking-widest text-[#1db954] opacity-0 group-hover:opacity-100 transition-all border border-[#1db95433] hover:bg-[#1db954] hover:text-black"
+                  className="mt-3 w-full py-2 rounded-xl bg-white text-black text-[9px] font-black tracking-[0.2em] opacity-0 group-hover:opacity-100 transition-all shadow-xl hover:scale-105 active:scale-95 uppercase"
                 >
-                  JOIN SESSION
+                  Join Session
                 </button>
               </div>
             </div>
           </motion.div>
         ))}
 
-        {/* Social Empty State */}
-        <div className="mt-8 p-6 rounded-2xl glass-card text-center border-dashed border-white/5">
-          <p className="text-[11px] text-gray-500 leading-relaxed">
-            Connect with Facebook to see what your friends are playing.
+        {/* PROMO CARD */}
+        <div className="mt-12 p-8 rounded-[2rem] bg-white/[0.02] border border-white/5 text-center relative overflow-hidden group">
+          <p className="text-[11px] font-bold text-gray-500 uppercase tracking-widest leading-relaxed relative z-10 opacity-60">
+            Expand your circle.
           </p>
-          <button className="mt-4 px-6 py-2 rounded-full bg-white text-black text-[10px] font-black uppercase tracking-widest hover:scale-105 active:scale-95 transition">
-            Connect
+          <button className="mt-6 w-full py-3 rounded-2xl border border-white/10 text-white text-[10px] font-black uppercase tracking-[0.3em] hover:bg-white hover:text-black transition-all shadow-2xl relative z-10">
+            Find Friends
           </button>
         </div>
       </div>
 
-      <div className="p-6 mt-auto border-t border-white/5">
-        <div className="flex items-center gap-3 opacity-40 hover:opacity-100 transition cursor-pointer">
+      <div className="p-8 border-t border-white/5 bg-gradient-to-t from-black/40 to-transparent">
+        <div className="flex items-center gap-3 opacity-30 hover:opacity-100 transition cursor-pointer group">
           <div className="w-2 h-2 rounded-full bg-[#1db954]" />
-          <span className="text-[10px] font-bold tracking-widest uppercase">Live Activity On</span>
+          <span className="text-[9px] font-black tracking-[0.3em] uppercase text-gray-400">Live Activity: On</span>
         </div>
       </div>
     </div>
   );
 };
 
-export default FriendActivity;
+export default memo(FriendActivity);

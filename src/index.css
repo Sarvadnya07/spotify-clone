@@ -1,116 +1,67 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --spotify-green: #1db954;
-  --glass-bg: rgba(255, 255, 255, 0.03);
-  --glass-border: rgba(255, 255, 255, 0.08);
-  --glass-hover: rgba(255, 255, 255, 0.1);
-  --primary-accent: #1db954;
-  --weather-primary: #1db954;
-  --weather-secondary: #050505;
+  --player-progress: 0%;
 }
 
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Outfit', sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
 body {
-  background-color: #050505;
-  color: white;
-  overflow: hidden;
+  @apply bg-[#09090b] text-[#fafafa] antialiased select-none overflow-hidden;
+  /* Optimization: Disable touch delay for instant taps */
+  touch-action: manipulation;
 }
 
-/* CUSTOM SCROLLBAR (Ultra-Minimal) */
-::-webkit-scrollbar {
-  width: 3px;
-}
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 10px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: var(--weather-primary);
-}
-
+/* Scrollbar Hardening */
 .hide-scrollbar::-webkit-scrollbar {
   display: none;
 }
-
-/* ANIMATED BACKGROUND GRADIENT - WEATHER AWARE */
-.bg-gradient-animate {
-  background: linear-gradient(
-    -45deg, 
-    #050505, 
-    var(--weather-primary), 
-    #000000, 
-    var(--weather-secondary)
-  );
-  background-size: 400% 400%;
-  animation: gradient 18s ease-in-out infinite;
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
-@keyframes gradient {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
 }
 
-/* ELITE GLASSMORPHISM - PERFORMANCE OPTIMIZED */
-.glass-panel {
-  background: var(--glass-bg);
-  backdrop-filter: blur(18px) saturate(160%);
-  -webkit-backdrop-filter: blur(18px) saturate(160%);
-  border: 1px solid var(--glass-border);
-  will-change: backdrop-filter;
+/* Optimization: Prevent Layout Thrashing */
+.gpu {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+  will-change: transform;
 }
 
-.glass-card {
-  background: rgba(255, 255, 255, 0.02);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.04);
-  transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+/* Optimization: Layout Containment */
+.contain-layout {
+  contain: layout style;
 }
 
-.glass-card:hover {
-  background: rgba(255, 255, 255, 0.06);
-  border-color: rgba(255, 255, 255, 0.12);
-  transform: translateY(-8px) scale(1.02);
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+.card-hover {
+  @apply transition-all duration-300 hover:bg-white/[0.05] hover:border-white/[0.1];
 }
 
-/* TYPOGRAPHY UTILITIES */
-.text-glow {
-  text-shadow: 0 0 20px var(--weather-primary);
-}
-
-.text-gradient {
-  background: linear-gradient(to bottom right, #ffffff, #a1a1a1);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-/* PLAYER PROGRESS - High Performance */
-:root {
-  --player-progress: 0%;
-}
-
-/* BUTTONS */
-.btn-primary {
-  @apply px-8 py-3 rounded-full bg-white text-black font-black uppercase tracking-widest hover:scale-105 active:scale-95 transition-all shadow-2xl hover:shadow-white/10;
-}
-
-.btn-secondary {
-  @apply px-6 py-2 rounded-full glass-panel border-white/10 text-white text-[11px] font-black uppercase tracking-widest hover:bg-white/5 transition-all;
+/* High-Performance Progress Bar */
+[style*="--player-progress"] {
+  will-change: width;
 }

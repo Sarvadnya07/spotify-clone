@@ -8,177 +8,121 @@ import { motion } from "framer-motion";
 import usePlayerStore from "../store/usePlayerStore";
 
 /**
- * DisplayHome Component - Elite UX
- * Features dynamic, weather-aware algorithmic recommendations.
+ * High-Efficiency DisplayHome
+ * - Optimized with layout containment (content-visibility).
+ * - Surgical state subscriptions.
+ * - Hardware-accelerated transitions.
  */
 const DisplayHome = () => {
   const [albums, setAlbums] = useState<Album[]>([]);
   const [songs, setSongs] = useState<Song[]>([]);
   const [loading, setLoading] = useState(true);
-  const { history, currentWeather } = usePlayerStore();
+  
+  // Use specific selectors to prevent re-renders when other state (like volume) changes
+  const history = usePlayerStore(state => state.history);
+  const mood = usePlayerStore(state => state.currentWeather?.mood);
 
   useEffect(() => {
-    const fetchData = async () => {
+    let active = true;
+    async function init() {
       try {
-        const [albumsData, songsData] = await Promise.all([
+        const [a, s] = await Promise.all([
           musicService.getAlbums(),
           musicService.getSongs()
         ]);
-        setAlbums(albumsData);
-        setSongs(songsData);
-      } catch (error) {
-        console.error("Failed to fetch data:", error);
+        if (active) {
+          setAlbums(a || []);
+          setSongs(s || []);
+        }
+      } catch (e) {
+        console.error("Home Init Error:", e);
       } finally {
-        setLoading(false);
+        if (active) setLoading(false);
       }
-    };
-
-    fetchData();
+    }
+    init();
+    return () => { active = false; };
   }, []);
 
-  // Algorithmic Recommendation Logic
   const personalizedMix = useMemo(() => {
-    if (loading || songs.length === 0) return [];
-    
-    if (history.length === 0) {
-      return songs.slice(0, 5);
-    }
-
-    const lastItem = history[0];
-    if (typeof lastItem !== 'object') return songs.slice(0, 5);
-    
-    const lastSong = songs.find(s => s.id === lastItem.songId);
-    if (!lastSong) return songs.slice(0, 5);
-
-    const artistName = lastSong.desc.split('•')[0].trim();
-    const related = songs.filter(s => s.desc.includes(artistName) && s.id !== lastItem.songId);
-    const others = songs.filter(s => !s.desc.includes(artistName) && !history.some(h => (h as any).songId === s.id));
-    
+    if (!songs || songs.length === 0) return [];
+    if (!history || history.length === 0) return songs.slice(0, 6);
+    const last = history[0] as any;
+    const lastSong = songs.find(s => s.id === last?.songId);
+    if (!lastSong) return songs.slice(0, 6);
+    const artist = lastSong.desc.split('•')[0].trim();
+    const related = songs.filter(s => s.desc.includes(artist) && s.id !== lastSong.id);
+    const others = songs.filter(s => !s.desc.includes(artist));
     return [...related, ...others].slice(0, 6);
-  }, [loading, songs, history]);
+  }, [songs, history]);
 
-  const renderSkeleton = () => (
-    <div className="flex gap-4 overflow-hidden pb-4">
-      {[1, 2, 3, 4, 5].map((i) => (
-        <div key={i} className="min-w-[180px] p-2 rounded-2xl bg-white/[0.03] animate-pulse">
-          <div className="w-full aspect-square bg-white/[0.05] rounded-xl mb-4" />
-          <div className="h-4 bg-white/[0.05] rounded w-3/4 mb-2" />
-          <div className="h-3 bg-white/[0.05] rounded w-1/2" />
+  if (loading) {
+    return (
+      <div className="h-full flex flex-col bg-[#121212]">
+        <Navbar />
+        <div className="flex-grow flex items-center justify-center">
+          <div className="w-8 h-8 border-2 border-white/10 border-t-white rounded-full animate-spin" />
         </div>
-      ))}
-    </div>
-  );
-
-  const SectionHeader = ({ title, badge, sub }: any) => (
-    <div className="flex flex-col gap-1 mb-6">
-      <div className="flex items-center gap-3">
-        <h2 className="text-2xl font-black tracking-tighter text-white">{title}</h2>
-        {badge && (
-          <span className="text-[9px] bg-[#1db954] text-black px-2 py-0.5 rounded-full font-black uppercase tracking-tighter shadow-lg shadow-[#1db95422]">
-            {badge}
-          </span>
-        )}
       </div>
-      {sub && <p className="text-xs font-bold text-gray-500 uppercase tracking-widest">{sub}</p>}
-    </div>
-  );
+    );
+  }
 
-  const scrollClass = "flex overflow-auto gap-6 pb-6 pr-4 hide-scrollbar transition-all ease-in-out";
+  const sectionStyle = { contentVisibility: 'auto', containIntrinsicSize: '0 320px' } as React.CSSProperties;
 
   return (
     <motion.div 
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className="flex-grow h-full overflow-y-auto bg-gradient-to-b from-white/[0.02] to-transparent"
+      className="flex-grow h-full overflow-y-auto bg-[#121212] custom-scrollbar gpu"
     >
       <Navbar />
 
-      <main className="px-6 md:px-8 lg:px-10 pt-10">
-        
-        {/* Personalized Daily Mix Section */}
-        {!loading && (
-          <section className="mb-14">
-            <SectionHeader 
-              title="Made For You" 
-              badge="New Mix" 
-              sub={currentWeather ? `Synced with ${currentWeather.mood}` : "Based on your history"}
-            />
-            <div className={scrollClass} role="region" aria-label="Personalized mix list">
-              {personalizedMix.map((item, index) => (
-                <motion.div
-                  key={`mix-${item.id}`}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1, duration: 0.6 }}
-                >
-                  <SongItem {...item} />
-                </motion.div>
-              ))}
-              {personalizedMix.length === 0 && (
-                <p className="text-gray-500 text-sm italic py-4">Keep listening to generate your custom mix!</p>
-              )}
-            </div>
-          </section>
-        )}
-
-        {/* Featured Charts Section */}
-        <section className="mb-14">
-          <SectionHeader title="Featured Charts" sub="Global Trends" />
-          {loading ? (
-            renderSkeleton()
-          ) : (
-            <div className={scrollClass} role="region" aria-label="Featured album list">
-              {albums.map((item) => (
-                <AlbumItem key={item.id} {...item} />
-              ))}
-            </div>
-          )}
+      <main className="px-8 pt-8 pb-32 space-y-12">
+        <section style={sectionStyle}>
+          <div className="flex flex-col gap-1 mb-6">
+            <h2 className="text-2xl font-bold tracking-tight text-white">Made For You</h2>
+            {mood && <p className="text-[11px] font-bold text-[#a7a7a7] uppercase tracking-widest">Synced with {mood}</p>}
+          </div>
+          <div className="flex overflow-x-auto gap-6 pb-4 hide-scrollbar">
+            {personalizedMix.map(item => <SongItem key={`mix-${item.id}`} {...item} />)}
+          </div>
         </section>
 
-        {/* Biggest Hits Section */}
-        <section className="mb-14">
-          <SectionHeader title="Today's biggest hits" sub="Popular Now" />
-          {loading ? (
-            renderSkeleton()
-          ) : (
-            <div className={scrollClass} role="region" aria-label="Trending songs list">
-              {songs.map((item, index) => (
-                <motion.div
-                  key={item.id}
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: index * 0.05 }}
-                >
-                  <SongItem {...item} />
-                </motion.div>
-              ))}
-            </div>
-          )}
+        <section style={sectionStyle}>
+          <div className="mb-6">
+            <h2 className="text-2xl font-bold tracking-tight text-white">Featured Charts</h2>
+          </div>
+          <div className="flex overflow-x-auto gap-6 pb-4 hide-scrollbar">
+            {albums.map(item => <AlbumItem key={item.id} {...item} />)}
+          </div>
         </section>
 
-        {/* Dynamic Intelligence Footer */}
-        <section className="mt-20 mb-32">
-          <motion.div 
-            initial={{ y: 30, opacity: 0 }}
-            whileInView={{ y: 0, opacity: 1 }}
-            viewport={{ once: true }}
-            className="rounded-[2.5rem] p-10 glass-panel border-white/5 relative overflow-hidden group"
-          >
-            <div className="absolute inset-0 bg-gradient-to-br from-[#1db95411] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
-            <div className="absolute top-0 right-0 w-96 h-96 bg-[#1db954] opacity-[0.05] blur-[120px] -mr-32 -mt-32" />
-            
-            <div className="max-w-2xl relative z-10">
-              <h2 className="text-4xl font-black tracking-tighter text-white mb-4">Elite Audio Intelligence</h2>
-              <p className="text-gray-400 text-lg leading-relaxed mb-8">
-                Your experience is being personalized in real-time. We analyze your environment, history, and current vibes to curate the perfect soundtrack for your life.
-              </p>
-              <div className="flex gap-4">
-                <span className="px-4 py-2 rounded-full bg-white/5 border border-white/5 text-[10px] font-black text-[#1db954] uppercase tracking-widest">Environment Sync: Active</span>
-                <span className="px-4 py-2 rounded-full bg-white/5 border border-white/5 text-[10px] font-black text-gray-500 uppercase tracking-widest">AI Mood: Analysis Level High</span>
+        <section style={sectionStyle}>
+          <div className="mb-6">
+            <h2 className="text-2xl font-bold tracking-tight text-white">Trending Now</h2>
+          </div>
+          <div className="flex overflow-x-auto gap-6 pb-4 hide-scrollbar">
+            {songs.map(item => <SongItem key={item.id} {...item} />)}
+          </div>
+        </section>
+
+        <section className="mt-16 py-12 border-t border-white/5" style={sectionStyle}>
+          <div className="max-w-2xl">
+            <h3 className="text-xl font-bold text-white mb-4 tracking-tight">System Observability</h3>
+            <p className="text-[#a7a7a7] text-sm leading-relaxed mb-8">
+              Engineered for extreme performance using layout containment, granular state subscriptions, and hardware-accelerated painting.
+            </p>
+            <div className="flex gap-8">
+              <div className="flex flex-col">
+                <span className="text-[10px] font-bold text-[#a7a7a7] uppercase tracking-widest mb-1">Rendering</span>
+                <span className="text-xs font-bold text-white">Direct-to-GPU</span>
+              </div>
+              <div className="flex flex-col">
+                <span className="text-[10px] font-bold text-[#a7a7a7] uppercase tracking-widest mb-1">State Bus</span>
+                <span className="text-xs font-bold text-white">Surgical Subscriptions</span>
               </div>
             </div>
-          </motion.div>
+          </div>
         </section>
       </main>
     </motion.div>
