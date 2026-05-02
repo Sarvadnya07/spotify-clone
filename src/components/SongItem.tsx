@@ -3,7 +3,14 @@ import usePlayerStore from "../store/usePlayerStore";
 
 // Enhanced SongItem component with richer UI feedback, animations,
 // lazy-loading, accessible labels, and better performance handling.
-const SongItem = ({ name, image, desc, id }) => {
+interface SongItemProps {
+  name: string;
+  image: string;
+  desc: string;
+  id: number;
+}
+
+const SongItem: React.FC<SongItemProps> = ({ name, image, desc, id }) => {
   const { playWithId } = usePlayerStore();
 
   // Local UI states

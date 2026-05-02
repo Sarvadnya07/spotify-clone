@@ -29,23 +29,26 @@ export interface PlayerTime {
 }
 
 export interface PlayerStore {
-  audioRef: React.MutableRefObject<HTMLAudioElement | null>;
-  seekBar: React.MutableRefObject<HTMLDivElement | null>;
-  seekBg: React.MutableRefObject<HTMLDivElement | null>;
   track: Song;
   playStatus: boolean;
   isReady: boolean;
+  isBuffering: boolean;
+  volume: number;
   error: string | null;
   time: PlayerTime;
+  
+  // Actions
   setTrack: (track: Song) => void;
   setPlayStatus: (status: boolean) => void;
   setIsReady: (status: boolean) => void;
+  setIsBuffering: (status: boolean) => void;
   setError: (error: string | null) => void;
   setTime: (time: PlayerTime) => void;
+  setVolume: (val: number) => void;
+  
+  // Logical Actions
   play: () => void;
   pause: () => void;
-  playWithId: (id: number) => Promise<void>;
-  updateTime: () => void;
-  handleSeek: (e: React.MouseEvent<HTMLDivElement>) => void;
-  setVolume: (val: number) => void;
+  playWithId: (id: number) => void;
+  togglePlay: () => void;
 }
