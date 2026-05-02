@@ -6,9 +6,10 @@ import { PlayerTime } from "../types";
 import Visualizer from "./Visualizer";
 
 /**
- * Enhanced Player Component
- * - Optimized for both Desktop (Keyboard) and Mobile (Touch).
- * - High-performance visual updates via CSS variables.
+ * Modern Docked Player Component
+ * - Seamlessly integrated at the bottom.
+ * - Glassmorphism design without floating gaps.
+ * - Maximizes usability and edge-to-edge aesthetics.
  */
 const Player = () => {
   const {
@@ -22,6 +23,12 @@ const Player = () => {
     volume,
     setVolume,
     isBuffering,
+    showLyrics,
+    toggleLyrics,
+    shuffleMode,
+    toggleShuffle,
+    showQueue,
+    toggleQueue
   } = usePlayerStore();
 
   const { seek } = useAudioEngine();
@@ -51,105 +58,88 @@ const Player = () => {
   );
 
   return (
-    <div className="h-[10%] min-h-[80px] bg-black text-white flex justify-between items-center px-4 select-none border-t border-[#222]">
+    <div className="h-[95px] glass-panel border-x-0 border-b-0 flex justify-between items-center px-8 shadow-2xl z-[60] relative">
       
-      {/* LEFT — Current Song Information */}
-      <div className="hidden lg:flex items-center gap-4 w-[30%] min-w-[280px]">
-        <img
-          className={`w-14 h-14 rounded shadow-md transition-all duration-300 ${isBuffering ? 'opacity-40 grayscale blur-[1px]' : 'opacity-100'}`}
-          src={track.image}
-          alt={track.name}
-        />
-        <div className="leading-tight flex flex-col gap-1">
-          <p className="font-semibold text-sm truncate max-w-[150px]">{track.name}</p>
-          <p className="text-xs text-gray-400 truncate max-w-[150px]">{track.desc}</p>
-          <div className="h-6 mt-1 overflow-hidden">
+      {/* LEFT — Track Info */}
+      <div className="hidden lg:flex items-center gap-4 w-[28%] min-w-[280px]">
+        <div className="relative">
+          <img
+            className={`w-14 h-14 rounded-lg shadow-xl transition-all duration-500 ${isBuffering ? 'opacity-40 grayscale blur-[2px]' : 'opacity-100'}`}
+            src={track.image}
+            alt={track.name}
+          />
+        </div>
+        <div className="leading-tight flex flex-col gap-0.5 min-w-0">
+          <p className="font-bold text-sm truncate text-white">{track.name}</p>
+          <p className="text-[11px] text-gray-400 truncate hover:text-[#1db954] transition-colors cursor-pointer">{track.desc}</p>
+          <div className="h-4 mt-1">
             <Visualizer />
           </div>
         </div>
       </div>
 
-      {/* CENTER — Player Controls + Seek Bar */}
-      <div className="flex flex-col items-center gap-1 flex-grow max-w-full lg:max-w-[40%]">
-        <div className="flex gap-6 justify-center items-center">
-          <img className="w-4 opacity-70 hover:opacity-100 cursor-pointer transition active:scale-90" src={assets.shuffle_icon} alt="Shuffle" />
-          <img onClick={playPrevious} className="w-5 opacity-70 hover:opacity-100 cursor-pointer transition active:scale-90" src={assets.prev_icon} alt="Previous" />
+      {/* CENTER — Control Hub */}
+      <div className="flex flex-col items-center gap-1.5 flex-grow lg:max-w-[44%] w-full">
+        <div className="flex gap-8 justify-center items-center">
+          <button onClick={toggleShuffle} className={`transition-all ${shuffleMode ? 'text-[#1db954]' : 'text-gray-500 hover:text-white'}`}>
+            <img className="w-4" src={assets.shuffle_icon} style={{ filter: shuffleMode ? 'invert(42%) sepia(93%) saturate(1352%) hue-rotate(116deg) brightness(100%) contrast(100%)' : 'none' }} alt="S" />
+          </button>
+
+          <img onClick={playPrevious} className="w-5 opacity-60 hover:opacity-100 cursor-pointer active:scale-90 transition" src={assets.prev_icon} alt="P" />
           
           <button 
             onClick={playStatus ? pause : play}
-            onKeyDown={togglePlay}
-            className="w-9 h-9 flex items-center justify-center bg-white rounded-full hover:scale-105 active:scale-95 transition shadow-lg"
+            className="w-10 h-10 flex items-center justify-center bg-white text-black rounded-full hover:scale-105 active:scale-90 transition shadow-xl"
           >
-            <img 
-              className="w-4 invert" 
-              src={playStatus ? assets.pause_icon : assets.play_icon} 
-              alt={playStatus ? "Pause" : "Play"} 
-            />
+            <img className="w-4 invert" src={playStatus ? assets.pause_icon : assets.play_icon} alt="P/P" />
           </button>
 
-          <img onClick={playNext} className="w-5 opacity-70 hover:opacity-100 cursor-pointer transition active:scale-90" src={assets.next_icon} alt="Next" />
-          <img className="w-4 opacity-70 hover:opacity-100 cursor-pointer transition active:scale-90" src={assets.loop_icon} alt="Loop" />
+          <img onClick={playNext} className="w-5 opacity-60 hover:opacity-100 cursor-pointer active:scale-90 transition" src={assets.next_icon} alt="N" />
+          <img className="w-4 opacity-60 hover:opacity-100 cursor-pointer transition" src={assets.loop_icon} alt="L" />
         </div>
 
-        <div className="flex items-center gap-3 w-full justify-center group">
-          <p className="text-[10px] tabular-nums opacity-60 w-10 text-right">
-            {formatTime(time.currentTime)}
-          </p>
-
-          {/* Hit Area Wrapper (Optimized for Touch) */}
+        {/* Seek Bar */}
+        <div className="flex items-center gap-3 w-full px-4">
+          <span className="text-[10px] font-medium text-gray-500 w-8 text-right">{formatTime(time.currentTime)}</span>
           <div
             ref={seekBg}
             onClick={handleSeek}
-            onTouchStart={handleSeek}
-            className="relative flex-grow h-6 flex items-center cursor-pointer"
+            className="relative flex-grow h-1.5 bg-white/10 rounded-full cursor-pointer group/seek overflow-hidden"
           >
-            <div className="w-full h-1 bg-[#4d4d4d] rounded-full overflow-hidden">
-              <div
-                className="h-full bg-white group-hover:bg-[#1db954] transition-colors"
-                style={{ width: 'var(--player-progress, 0%)' }}
-              />
-            </div>
-            {/* Visual Knob */}
-            <div 
-              className="absolute top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full opacity-0 group-hover:opacity-100 shadow-xl transition-opacity pointer-events-none"
-              style={{ left: 'calc(var(--player-progress, 0%) - 6px)' }}
+            <div
+              className="h-full bg-white group-hover/seek:bg-[#1db954] transition-all"
+              style={{ width: 'var(--player-progress, 0%)' }}
             />
           </div>
-
-          <p className="text-[10px] tabular-nums opacity-60 w-10">
-            {formatTime(time.totalTime)}
-          </p>
+          <span className="text-[10px] font-medium text-gray-500 w-8">{formatTime(time.totalTime)}</span>
         </div>
       </div>
 
-      {/* RIGHT — Volume & Extra Controls */}
-      <div className="hidden lg:flex items-center gap-3 w-[22%] justify-end">
-        <img className="w-4 cursor-pointer opacity-70 hover:opacity-100" src={assets.mic_icon} alt="Lyrics" />
-        <img className="w-4 cursor-pointer opacity-70 hover:opacity-100" src={assets.queue_icon} alt="Queue" />
-        <img className="w-4 cursor-pointer opacity-70 hover:opacity-100" src={assets.speaker_icon} alt="Devices" />
+      {/* RIGHT — Utility Bar */}
+      <div className="hidden lg:flex items-center gap-4 w-[28%] justify-end">
+        <button onClick={toggleLyrics} className={`transition-all ${showLyrics ? 'text-[#1db954]' : 'text-gray-500 hover:text-white'}`}>
+          <img className="w-4" src={assets.mic_icon} style={{ filter: showLyrics ? 'invert(42%) sepia(93%) saturate(1352%) hue-rotate(116deg) brightness(100%) contrast(100%)' : 'none' }} alt="L" />
+        </button>
+        <button onClick={toggleQueue} className={`transition-all ${showQueue ? 'text-[#1db954]' : 'text-gray-500 hover:text-white'}`}>
+          <img className="w-4" src={assets.queue_icon} style={{ filter: showQueue ? 'invert(42%) sepia(93%) saturate(1352%) hue-rotate(116deg) brightness(100%) contrast(100%)' : 'none' }} alt="Q" />
+        </button>
         
-        <div className="flex items-center gap-2 group w-32 ml-2">
-          <img className="w-4 opacity-70" src={assets.volume_icon} alt="Volume" />
-          <div className="relative flex-grow h-6 flex items-center cursor-pointer">
-            <div className="w-full h-1 bg-[#4d4d4d] rounded-full overflow-hidden">
-              <div 
-                className="h-full bg-white group-hover:bg-[#1db954]"
-                style={{ width: `${volume * 100}%` }}
-              />
-            </div>
+        {/* Volume */}
+        <div className="flex items-center gap-3 w-32 group/vol">
+          <img className="w-4 opacity-50" src={assets.volume_icon} alt="V" />
+          <div className="relative flex-grow h-1 bg-white/10 rounded-full overflow-hidden">
+            <div className="h-full bg-white group-hover/vol:bg-[#1db954] transition-all" style={{ width: `${volume * 100}%` }} />
             <input 
-              type="range"
-              min="0"
-              max="1"
-              step="0.01"
-              value={volume}
+              type="range" min="0" max="1" step="0.01" value={volume}
               onChange={(e) => setVolume(parseFloat(e.target.value))}
-              className="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer"
+              className="absolute inset-0 opacity-0 cursor-pointer"
             />
           </div>
         </div>
 
-        <img className="w-4 cursor-pointer opacity-70 hover:opacity-100" src={assets.zoom_icon} alt="Full Screen" />
+        <button onClick={toggleMiniplayer} className={`transition-all ${showMiniplayer ? 'text-[#1db954]' : 'text-gray-500 hover:text-white'}`}>
+          <img className="w-4" src={assets.zoom_icon} style={{ filter: showMiniplayer ? 'invert(42%) sepia(93%) saturate(1352%) hue-rotate(116deg) brightness(100%) contrast(100%)' : 'none' }} alt="M" />
+        </button>
       </div>
     </div>
   );

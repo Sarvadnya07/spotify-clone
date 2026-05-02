@@ -1,136 +1,67 @@
-import React, { useCallback } from "react";
+import React from "react";
 import { assets } from "../assets/assets";
 import { useNavigate } from "react-router-dom";
+import { useAuthStore } from "../store/useAuthStore";
+import { useToastStore } from "../store/useToastStore";
 
 /**
- * Enhanced Navbar Component (100+ lines)
- * - Maintains original logic (navigate(-1), navigate(1), same classes, no ID changes)
- * - Adds semantic structure and wrappers
- * - Adds keyboard actions for navigation arrows
- * - Adds slight visual interactions
- * - Adds expanded layout container
- * - Introduces safe callbacks
- * - Adds ARIA labels and some defensive UI elements
- * - Adds extender block for future menus
- * - Fully expanded to 100+ lines without breaking anything
+ * Modern Glass Navbar
+ * - Features dynamic user profile synchronization.
+ * - Integrated Premium Upgrade flow.
+ * - Optimized for the "Modern Glass" aesthetic.
  */
-
 const Navbar = () => {
   const navigate = useNavigate();
+  const { user, upgradeToPremium } = useAuthStore();
+  const { addToast } = useToastStore();
 
-  // Wrapped navigation to ensure smooth behavior
-  const goBack = useCallback(() => {
-    navigate(-1);
-  }, [navigate]);
-
-  const goForward = useCallback(() => {
-    navigate(1);
-  }, [navigate]);
-
-  // Optional keyboard support for accessibility
-  const handleKey = (e: React.KeyboardEvent, action: () => void) => {
-    if (e.key === "Enter" || e.key === " ") {
-      e.preventDefault();
-      action();
-    }
+  const handleUpgrade = () => {
+    upgradeToPremium();
+    addToast("Welcome to Spotify Premium!", "success");
   };
 
   return (
-    <>
-      {/* Main Top Navbar Row */}
-      <header className="w-full flex justify-between items-center font-semibold z-50 relative">
-        
-        {/* Left Navigation Arrows */}
-        <div className="flex items-center gap-2 select-none">
-          
-          <img
-            src={assets.arrow_left}
-            alt="Go Back"
-            className="w-8 bg-black p-2 rounded-2xl cursor-pointer hover:opacity-80 active:scale-95 transition"
-            onClick={goBack}
-            tabIndex={0}
-            onKeyDown={(e) => handleKey(e, goBack)}
-            role="button"
-            aria-label="Navigate Back"
-          />
-
-          <img
-            src={assets.arrow_right}
-            alt="Go Forward"
-            className="w-8 bg-black p-2 rounded-2xl cursor-pointer hover:opacity-80 active:scale-95 transition"
-            onClick={goForward}
-            tabIndex={0}
-            onKeyDown={(e) => handleKey(e, goForward)}
-            role="button"
-            aria-label="Navigate Forward"
-          />
+    <nav className="w-full h-[64px] glass-panel border-x-0 border-t-0 px-6 flex justify-between items-center z-50 sticky top-0 bg-black/40 backdrop-blur-xl">
+      <div className="flex items-center gap-2">
+        <div 
+          onClick={() => navigate(-1)}
+          className="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center cursor-pointer transition-all active:scale-90"
+        >
+          <img className="w-2.5 opacity-60" src={assets.arrow_left} alt="Back" />
         </div>
+        <div 
+          onClick={() => navigate(1)}
+          className="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center cursor-pointer transition-all active:scale-90"
+        >
+          <img className="w-2.5 opacity-60" src={assets.arrow_right} alt="Forward" />
+        </div>
+      </div>
 
-        {/* Right User Actions */}
-        <nav className="flex items-center gap-4">
-          <p
-            className="bg-white text-black twxt-[15] px-4 py-1 rounded-2xl hidden md:block cursor-pointer hover:bg-gray-200 transition"
-            tabIndex={0}
-            aria-label="Explore Premium"
+      <div className="flex items-center gap-4">
+        {user?.tier === 'Free' && (
+          <button
+            onClick={handleUpgrade}
+            className="hidden md:block px-6 py-2 rounded-full bg-white text-black text-[11px] font-black uppercase tracking-widest hover:scale-105 active:scale-95 transition-all shadow-[0_0_20px_rgba(255,255,255,0.2)]"
           >
             Explore Premium
-          </p>
-
-          <p
-            className="bg-black py-1 px-3 rounded-2xl text-[15px] cursor pointer hover:bg-[#1a1a1a] transition"
-            tabIndex={0}
-            aria-label="Install App"
-          >
-            Install App
-          </p>
-
-          {/* Avatar */}
-          <p
-            className="bg-purple-500 text-black w-7 h-7 rounded-full flex items-center justify-center hover:opacity-90 transition"
-            aria-label="User Profile"
-            tabIndex={0}
-          >
-            D
-          </p>
-        </nav>
-      </header>
-
-      {/* Category Filters */}
-      <div className="flex items-center gap-2 mt-4 select-none">
+          </button>
+        )}
         
-        <p
-          className="bg-white text-black px-4 py-1 rounded-2xl cursor-pointer hover:bg-gray-200 transition"
-          aria-label="Show All"
-          tabIndex={0}
-        >
-          All
-        </p>
+        <button className="hidden md:block px-4 py-2 rounded-full glass-panel border-white/10 text-white text-[11px] font-black uppercase tracking-widest hover:bg-white/5 transition-all">
+          Install App
+        </button>
 
-        <p
-          className="bg-black px-4 py-1 rounded-2xl cursor-pointer hover:bg-[#1a1a1a] transition"
-          aria-label="Show Music"
-          tabIndex={0}
-        >
-          Music
-        </p>
-
-        <p
-          className="bg-black px-4 py-1 rounded-2xl cursor-pointer hover:bg-[#1a1a1a] transition"
-          aria-label="Show Podcasts"
-          tabIndex={0}
-        >
-          Podcasts
-        </p>
-      </div>
-
-      {/* Extended Empty Space for future menu expansion */}
-      <div className="mt-6">
-        <div className="rounded-lg bg-[#111111] border border-[#222] p-3 text-gray-500 text-xs opacity-70 hover:opacity-100 transition-all duration-300 min-h-[40px] flex items-center justify-center">
-          {/* This block intentionally left for future dropdowns, search bars, or menus */}
-          Adjustable navigation extension zone
+        <div className="flex items-center gap-3 p-1.5 px-3 glass-panel rounded-full border-white/10 cursor-pointer hover:bg-white/5 transition-all group">
+          <div className="w-7 h-7 rounded-full overflow-hidden border border-white/20 group-hover:scale-110 transition-transform">
+            <img src={user?.avatar} alt="P" className="w-full h-full" />
+          </div>
+          <span className="text-[11px] font-bold text-gray-300 group-hover:text-white transition-colors">{user?.name}</span>
+          {user?.tier === 'Premium' && (
+            <span className="text-[9px] font-black text-[#1db954] bg-[#1db95422] px-1.5 py-0.5 rounded uppercase tracking-tighter">Pro</span>
+          )}
         </div>
       </div>
-    </>
+    </nav>
   );
 };
 

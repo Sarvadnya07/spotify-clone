@@ -7,7 +7,7 @@ import { useAudioEngine } from './useAudioEngine';
  * Global hook to handle keyboard interactions for playback control.
  * Implements standard Spotify hotkeys.
  */
-export const useKeyboardShortcuts = () => {
+export const useKeyboardShortcuts = (onHelpToggle?: () => void) => {
   const { 
     togglePlay, 
     playNext, 
@@ -34,12 +34,16 @@ export const useKeyboardShortcuts = () => {
         case 'l': // L - Toggle Like
           toggleLike(track.id);
           break;
+        case '?': // ? - Toggle Help
+        case '/': // Often used as help too
+          if (onHelpToggle) {
+            e.preventDefault();
+            onHelpToggle();
+          }
+          break;
         case 'arrowright': // ArrowRight - Skip Forward 10s or Next
           if (e.shiftKey) {
             playNext();
-          } else {
-            // Seek logic would need current time, but for simple shortcuts
-            // we'll stick to navigation and basic controls
           }
           break;
         case 'arrowleft': // ArrowLeft - Skip Back or Previous
@@ -63,5 +67,5 @@ export const useKeyboardShortcuts = () => {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [togglePlay, playNext, playPrevious, volume, setVolume, track.id, toggleLike, seek]);
+  }, [togglePlay, playNext, playPrevious, volume, setVolume, track.id, toggleLike, seek, onHelpToggle]);
 };

@@ -10,20 +10,28 @@ import { useParams } from "react-router-dom";
 import { assets } from "../assets/assets";
 import { musicService } from "../services/musicService";
 import usePlayerStore from "../store/usePlayerStore";
+import { useToastStore } from "../store/useToastStore";
 import { Album, Song } from "../types";
 import { motion } from "framer-motion";
 import { getAverageColor } from "../utils/colorExtractor";
 import ContextMenu from "./common/ContextMenu";
 import { useContextMenu } from "../hooks/useContextMenu";
 
+/**
+ * Modern Glass DisplayAlbum
+ * - Features a dynamic, blurred glass header.
+ * - Staggered track animations.
+ * - Integrated with the new design system (rounded-3xl, Outfit font).
+ */
 const DisplayAlbum = () => {
   const { id } = useParams<{ id: string }>();
   const [album, setAlbum] = useState<Album | null>(null);
   const [songs, setSongs] = useState<Song[]>([]);
   const [loading, setLoading] = useState(true);
-  const [dynamicColor, setDynamicColor] = useState("#121212");
+  const [dynamicColor, setDynamicColor] = useState("#1db954");
   
-  const { playWithId, likedSongs, toggleLike } = usePlayerStore();
+  const { playWithId, likedSongs, toggleLike, playlists, addSongToPlaylist, addToQueue } = usePlayerStore();
+  const { addToast } = useToastStore();
   const scrollContainer = useRef<HTMLDivElement>(null);
   const { visible, x, y, data, showMenu, closeMenu } = useContextMenu();
 
@@ -55,12 +63,28 @@ const DisplayAlbum = () => {
     playWithId(id);
   }, [playWithId]);
 
+  const handleShare = (song?: Song) => {
+    navigator.clipboard.writeText(window.location.href);
+    addToast(song ? `Link to ${song.name} copied!` : "Album link copied!", 'success');
+  };
+
+  const handleToggleLike = (songId: number) => {
+    toggleLike(songId);
+    const isNowLiked = !likedSongs.includes(songId);
+    addToast(isNowLiked ? "Added to Liked Songs" : "Removed from Liked Songs", 'info');
+  };
+
+  const handleAddToPlaylist = (songId: number, playlistId: string, playlistName: string) => {
+    addSongToPlaylist(songId, playlistId);
+    addToast(`Added to ${playlistName}`, 'success');
+  };
+
   if (loading) {
     return (
-      <div className="h-full flex flex-col">
+      <div className="h-full flex flex-col bg-black/40 backdrop-blur-3xl">
         <Navbar />
         <div className="flex-grow flex items-center justify-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#1db954]" />
+          <div className="w-12 h-12 border-4 border-[#1db954] border-t-transparent rounded-full animate-spin shadow-[0_0_20px_rgba(29,185,84,0.3)]" />
         </div>
       </div>
     );
@@ -73,85 +97,106 @@ const DisplayAlbum = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="h-full flex flex-col"
+      className="h-full flex flex-col relative"
     >
       <Navbar />
+      
       <div 
         ref={scrollContainer}
-        className="flex-grow overflow-y-auto px-6 pt-10 transition-colors duration-1000"
-        style={{ 
-          background: `linear-gradient(${dynamicColor}, #121212 400px, #121212)` 
-        }}
+        className="flex-grow overflow-y-auto px-6 pt-10 hide-scrollbar"
       >
-        <div className="flex flex-col md:flex-row md:items-end gap-8 mb-10">
-          <motion.img
+        {/* Modern Header Section */}
+        <div className="flex flex-col md:flex-row md:items-end gap-10 mb-12 relative z-10">
+          <motion.div
             layoutId={`album-image-${id}`}
-            src={album.image}
-            alt={album.name}
-            className="w-48 h-48 lg:w-60 lg:h-60 rounded shadow-2xl object-cover"
-          />
-          <div className="flex flex-col gap-2">
-            <span className="text-xs font-bold uppercase tracking-wider">Playlist</span>
+            className="w-56 h-56 lg:w-72 lg:h-72 rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] overflow-hidden border border-white/10 group"
+          >
+            <img 
+              src={album.image} 
+              alt={album.name} 
+              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
+            />
+          </motion.div>
+          
+          <div className="flex flex-col gap-4 pb-2">
+            <div className="flex items-center gap-2">
+              <span className="bg-[#1db954] text-black text-[10px] font-black px-2 py-0.5 rounded uppercase tracking-widest">Album</span>
+              <span className="text-white/40 text-[10px] font-bold uppercase tracking-widest">Verified Collection</span>
+            </div>
+            
             <motion.h1 
               layoutId={`album-name-${id}`}
-              className="text-4xl md:text-7xl font-black mb-2"
+              className="text-5xl md:text-8xl font-black tracking-tighter leading-none text-gradient"
             >
               {album.name}
             </motion.h1>
-            <div className="flex items-center gap-2 text-sm font-medium">
-              <img className="w-6" src={assets.spotify_logo} alt="Spotify" />
-              <span>Spotify</span>
-              <span className="opacity-60">• 1,323,154 likes • {songs.length} songs</span>
+
+            <div className="flex items-center gap-4 text-sm font-medium">
+              <div className="flex items-center gap-2 text-white">
+                <img className="w-6 h-6 rounded-full" src={assets.spotify_logo} alt="S" />
+                <span className="font-bold">Spotify</span>
+              </div>
+              <span className="text-white/40">•</span>
+              <span className="text-white/60">1.2M Likes</span>
+              <span className="text-white/40">•</span>
+              <span className="text-white/60 font-bold">{songs.length} Tracks</span>
             </div>
           </div>
         </div>
 
-        {/* Header Row */}
-        <div className="grid grid-cols-[16px_1fr_1fr_80px] gap-4 px-4 py-2 text-xs font-bold uppercase tracking-widest text-gray-400 border-b border-white/10 mb-4 sticky top-0 bg-[#121212]/80 backdrop-blur-md z-10">
+        {/* Dynamic Background Glow */}
+        <div 
+          className="absolute top-0 left-0 w-full h-[500px] pointer-events-none opacity-20 blur-[120px] transition-colors duration-1000"
+          style={{ backgroundColor: dynamicColor }}
+        />
+
+        {/* Track List Header */}
+        <div className="grid grid-cols-[30px_1fr_1fr_100px] gap-4 px-6 py-4 text-[10px] font-black uppercase tracking-[0.3em] text-gray-500 border-b border-white/5 mb-4 sticky top-0 bg-[#121212]/40 backdrop-blur-xl z-20 rounded-t-2xl">
           <span>#</span>
           <span>Title</span>
           <span className="hidden md:block">Album</span>
-          <img className="w-4 ml-auto" src={assets.clock_icon} alt="Duration" />
+          <div className="flex justify-end pr-4">
+            <img className="w-4 opacity-40" src={assets.clock_icon} alt="Time" />
+          </div>
         </div>
 
         {/* Song List */}
-        <motion.div 
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.2 }}
-          className="flex flex-col mb-20"
-        >
+        <div className="flex flex-col mb-32 relative z-10 gap-1">
           {songs.map((song, index) => {
             const isLiked = likedSongs.includes(song.id);
             return (
               <motion.div
                 key={song.id}
-                whileHover={{ backgroundColor: "rgba(255, 255, 255, 0.1)" }}
+                initial={{ x: -20, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                transition={{ delay: index * 0.05 }}
                 onContextMenu={(e) => showMenu(e, song)}
-                className="grid grid-cols-[16px_1fr_1fr_80px] gap-4 px-4 py-3 items-center text-gray-400 rounded-md group cursor-pointer transition-colors"
+                className="grid grid-cols-[30px_1fr_1fr_100px] gap-4 px-6 py-4 items-center rounded-2xl group hover:bg-white/5 transition-all cursor-pointer border border-transparent hover:border-white/5"
               >
-                <span className="text-sm group-hover:text-white" onClick={() => handleSongClick(song.id)}>{index + 1}</span>
-                <div className="flex items-center gap-3" onClick={() => handleSongClick(song.id)}>
-                  <img className="w-10 h-10 rounded" src={song.image} alt={song.name} />
-                  <div className="flex flex-col">
-                    <span className="text-white font-medium truncate max-w-[200px]">{song.name}</span>
-                    <span className="text-xs group-hover:text-white transition-colors">{song.desc}</span>
+                <span className="text-xs font-black text-gray-500 group-hover:text-[#1db954]" onClick={() => handleSongClick(song.id)}>{index + 1}</span>
+                <div className="flex items-center gap-4 min-w-0" onClick={() => handleSongClick(song.id)}>
+                  <img className="w-12 h-12 rounded-xl shadow-lg group-hover:scale-110 transition-transform" src={song.image} alt={song.name} />
+                  <div className="flex flex-col min-w-0">
+                    <span className="text-white font-bold truncate group-hover:text-[#1db954] transition-colors">{song.name}</span>
+                    <span className="text-[11px] text-gray-500 font-medium group-hover:text-white/60 transition-colors">{song.desc}</span>
                   </div>
                 </div>
-                <div className="flex items-center gap-4 hidden md:flex">
-                  <span className="text-sm group-hover:text-white transition-colors flex-grow truncate">{album.name}</span>
+                <div className="hidden md:flex items-center gap-4">
+                  <span className="text-xs text-gray-500 font-medium truncate flex-grow group-hover:text-white/40 transition-colors">{album.name}</span>
                   <button 
-                    onClick={(e) => { e.stopPropagation(); toggleLike(song.id); }}
-                    className={`opacity-0 group-hover:opacity-100 transition-opacity ${isLiked ? 'opacity-100 text-[#1db954]' : 'text-gray-400 hover:text-white'}`}
+                    onClick={(e) => { e.stopPropagation(); handleToggleLike(song.id); }}
+                    className={`transition-all duration-300 transform ${isLiked ? 'text-[#1db954] scale-110' : 'text-gray-500 opacity-0 group-hover:opacity-100 hover:text-white'}`}
                   >
                     {isLiked ? '❤️' : '🤍'}
                   </button>
                 </div>
-                <span className="text-sm ml-auto">{song.duration}</span>
+                <div className="flex justify-end pr-4">
+                  <span className="text-xs font-mono text-gray-500 group-hover:text-white transition-colors">{song.duration}</span>
+                </div>
               </motion.div>
             );
           })}
-        </motion.div>
+        </div>
       </div>
 
       <ContextMenu 
@@ -161,10 +206,14 @@ const DisplayAlbum = () => {
         onClose={closeMenu}
         options={[
           { label: 'Play Now', icon: '▶', onClick: () => playWithId(data?.id) },
-          { label: likedSongs.includes(data?.id) ? 'Remove from Liked' : 'Add to Liked', icon: '❤️', onClick: () => toggleLike(data?.id) },
-          { label: 'Add to Queue', icon: '➕', onClick: () => console.log('Added to queue') },
-          { label: 'Share', icon: '🔗', onClick: () => navigator.clipboard.writeText(window.location.href) },
-          { label: 'Delete', icon: '🗑', onClick: () => console.log('Delete'), variant: 'danger' },
+          { label: likedSongs.includes(data?.id) ? 'Remove from Liked' : 'Add to Liked', icon: '❤️', onClick: () => handleToggleLike(data?.id) },
+          { label: 'Add to Queue', icon: '➕', onClick: () => { addToQueue(data?.id); addToast("Added to Queue", 'success'); } },
+          ...playlists.map(p => ({
+            label: `Add to ${p.name}`,
+            icon: '📂',
+            onClick: () => handleAddToPlaylist(data?.id, p.id, p.name)
+          })),
+          { label: 'Share', icon: '🔗', onClick: () => handleShare(data) },
         ]}
       />
     </motion.div>

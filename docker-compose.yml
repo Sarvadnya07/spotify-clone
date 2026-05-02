@@ -1,0 +1,10 @@
+version: '3.8'
+
+services:
+  spotify-clone:
+    build: .
+    ports:
+      - "8080:80"
+    environment:
+      - VITE_MUSIC_PROVIDER=local
+    restart: always

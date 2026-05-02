@@ -17,6 +17,22 @@ export interface Album {
   bgColor: string;
 }
 
+export interface User {
+  id: string;
+  name: string;
+  image: string;
+  isPremium: boolean;
+  followers: number;
+}
+
+export interface Playlist {
+  id: string;
+  name: string;
+  desc: string;
+  image: string;
+  songIds: number[];
+}
+
 export interface PlayerTime {
   currentTime: {
     second: number;
@@ -36,6 +52,11 @@ export interface PlayerStore {
   volume: number;
   error: string | null;
   time: PlayerTime;
+  showLyrics: boolean;
+  shuffleMode: boolean;
+  listeningHistory: number[];
+  queue: number[];
+  showQueue: boolean;
   
   // Actions
   setTrack: (track: Song) => void;
@@ -54,5 +75,15 @@ export interface PlayerStore {
   playNext: () => void;
   playPrevious: () => void;
   likedSongs: number[];
+  playlists: Playlist[];
   toggleLike: (id: number) => void;
+  toggleLyrics: () => void;
+  toggleShuffle: () => void;
+  toggleQueue: () => void;
+  createPlaylist: (name: string) => void;
+  addSongToPlaylist: (songId: number, playlistId: string) => void;
+  deletePlaylist: (playlistId: string) => void;
+  addToQueue: (songId: number) => void;
+  removeFromQueue: (songId: number) => void;
+  clearQueue: () => void;
 }

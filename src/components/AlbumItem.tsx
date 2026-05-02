@@ -1,14 +1,7 @@
-import React, {
-  useCallback,
-  memo,
-} from "react";
+import React, { useCallback, memo } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 
-/**
- * AlbumItem Component
- * Enhanced with Framer Motion for shared layout transitions.
- */
 interface AlbumItemProps {
   image: string;
   name: string;
@@ -16,49 +9,50 @@ interface AlbumItemProps {
   id: number;
 }
 
+/**
+ * Modern Glass AlbumItem
+ * - High-fidelity card layout with depth effects.
+ * - Supports shared element transition patterns.
+ */
 const AlbumItem: React.FC<AlbumItemProps> = ({ image, name, desc, id }) => {
   const navigate = useNavigate();
 
   const handleClick = useCallback(() => {
-    if (id !== undefined) {
-      navigate(`/album/${id}`);
-    }
+    navigate(`/album/${id}`);
   }, [navigate, id]);
 
   return (
     <motion.div
-      onClick={handleClick}
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      whileHover={{ scale: 1.05, backgroundColor: "rgba(255, 255, 255, 0.1)" }}
+      whileHover={{ y: -5 }}
       whileTap={{ scale: 0.95 }}
-      className="min-w-[180px] p-4 rounded-lg cursor-pointer transition-colors duration-200 group"
-      role="button"
-      tabIndex={0}
-      aria-label={name}
+      onClick={handleClick}
+      className="min-w-[180px] p-4 rounded-2xl glass-card cursor-pointer group flex flex-col gap-3 select-none"
     >
-      <div className="relative mb-4 shadow-lg group-hover:shadow-2xl transition-shadow duration-300">
+      <div className="relative aspect-square overflow-hidden rounded-xl shadow-2xl">
         <motion.img
           layoutId={`album-image-${id}`}
-          className="rounded-md w-full aspect-square object-cover"
+          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
           src={image}
           alt={name}
         />
-        <motion.div 
-          initial={{ opacity: 0, y: 10 }}
-          whileHover={{ opacity: 1, y: 0 }}
-          className="absolute bottom-2 right-2 w-12 h-12 bg-[#1db954] rounded-full flex items-center justify-center shadow-xl text-black"
-        >
-          <span className="text-xl">▶</span>
-        </motion.div>
+        <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-[1px]">
+          <div className="w-12 h-12 bg-[#1db954] rounded-full flex items-center justify-center text-black font-bold shadow-2xl scale-50 group-hover:scale-100 transition-transform duration-300">
+            ▶
+          </div>
+        </div>
       </div>
 
-      <motion.p layoutId={`album-name-${id}`} className="font-bold text-white truncate mb-1">
-        {name}
-      </motion.p>
-      <p className="text-gray-400 text-sm line-clamp-2 leading-snug">
-        {desc}
-      </p>
+      <div className="flex flex-col gap-1">
+        <motion.p 
+          layoutId={`album-name-${id}`} 
+          className="font-black text-sm text-white truncate tracking-tight"
+        >
+          {name}
+        </motion.p>
+        <p className="text-[11px] text-gray-500 font-medium line-clamp-2 leading-relaxed">
+          {desc}
+        </p>
+      </div>
     </motion.div>
   );
 };
