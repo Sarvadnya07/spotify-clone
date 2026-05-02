@@ -40,14 +40,14 @@ const DisplayHome = () => {
   const personalizedMix = useMemo(() => {
     if (loading || songs.length === 0) return [];
     
-    if (listeningHistory.length === 0) {
+    if (history.length === 0) {
       // Default recommendation: Popular/First few songs
       return songs.slice(0, 5);
     }
 
     // Smart Mix Strategy:
     // 1. Get most recent artist/vibe from history
-    const lastSongId = listeningHistory[0];
+    const lastSongId = history[0];
     const lastSong = songs.find(s => s.id === lastSongId);
     if (!lastSong) return songs.slice(0, 5);
 
@@ -57,10 +57,10 @@ const DisplayHome = () => {
     const related = songs.filter(s => s.desc.includes(artistName) && s.id !== lastSongId);
     
     // 3. Combine with some random discoverable tracks
-    const others = songs.filter(s => !s.desc.includes(artistName) && !listeningHistory.includes(s.id));
+    const others = songs.filter(s => !s.desc.includes(artistName) && !history.includes(s.id));
     
     return [...related, ...others].slice(0, 6);
-  }, [loading, songs, listeningHistory]);
+  }, [loading, songs, history]);
 
   const renderSkeleton = () => (
     <div className="flex gap-4 overflow-hidden pb-4">

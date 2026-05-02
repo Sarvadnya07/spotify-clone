@@ -28,7 +28,9 @@ const Player = () => {
     shuffleMode,
     toggleShuffle,
     showQueue,
-    toggleQueue
+    toggleQueue,
+    showMiniplayer,
+    toggleMiniplayer
   } = usePlayerStore();
 
   const { seek } = useAudioEngine();
