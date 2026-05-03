@@ -14,6 +14,7 @@ import DJOverlay from "./components/DJOverlay";
 import Miniplayer from "./components/Miniplayer";
 import ToastContainer from "./components/ToastContainer";
 import ShortcutsModal from "./components/common/ShortcutsModal";
+import ErrorBoundary from "./components/common/ErrorBoundary";
 import ReactiveBackground from "./components/ReactiveBackground";
 import { useAudioEngine } from "./hooks/useAudioEngine";
 import { useKeyboardShortcuts } from "./hooks/useKeyboardShortcuts";
@@ -52,16 +53,24 @@ const App: React.FC = () => {
       
       <div className="h-full flex flex-col relative z-10">
         <div className="flex-grow flex overflow-hidden">
-          <Sidebar onShowShortcuts={toggleShortcuts} />
+          <ErrorBoundary>
+            <Sidebar onShowShortcuts={toggleShortcuts} />
+          </ErrorBoundary>
           
           <div className="flex-grow overflow-hidden relative bg-[#121212]">
-            <Display />
+            <ErrorBoundary>
+              <Display />
+            </ErrorBoundary>
           </div>
 
-          <FriendActivity />
+          <ErrorBoundary>
+            <FriendActivity />
+          </ErrorBoundary>
         </div>
 
-        <Player />
+        <ErrorBoundary>
+          <Player />
+        </ErrorBoundary>
 
         {/* OVERLAYS & MODALS */}
         <Lyrics />

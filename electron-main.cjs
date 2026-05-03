@@ -30,22 +30,29 @@ function createWindow() {
 
   // GLOBAL HOTKEYS REGISTRATION
   // These work even when the app is in the background
-  app.whenReady().then(() => {
-    globalShortcut.register('MediaPlayPause', () => {
-      mainWindow.webContents.send('media-play-pause');
-    });
+  globalShortcut.register('MediaPlayPause', () => {
+    mainWindow.webContents.send('media-play-pause');
+  });
 
-    globalShortcut.register('MediaNextTrack', () => {
-      mainWindow.webContents.send('media-next');
-    });
+  globalShortcut.register('MediaNextTrack', () => {
+    mainWindow.webContents.send('media-next');
+  });
 
-    globalShortcut.register('MediaPreviousTrack', () => {
-      mainWindow.webContents.send('media-prev');
-    });
+  globalShortcut.register('MediaPreviousTrack', () => {
+    mainWindow.webContents.send('media-prev');
   });
 
   mainWindow.webContents.setWindowOpenHandler(({ url }) => {
-    shell.openExternal(url);
+    let parsed;
+    try {
+      parsed = new URL(url);
+    } catch {
+      return { action: 'deny' };
+    }
+
+    if (parsed.protocol === 'https:' || parsed.protocol === 'http:') {
+      shell.openExternal(url);
+    }
     return { action: 'deny' };
   });
 

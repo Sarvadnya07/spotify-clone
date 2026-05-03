@@ -127,6 +127,8 @@ export const useAudioEngine = () => {
     return () => {
       navigator.mediaSession.setActionHandler('play', null);
       navigator.mediaSession.setActionHandler('pause', null);
+      navigator.mediaSession.setActionHandler('previoustrack', null);
+      navigator.mediaSession.setActionHandler('nexttrack', null);
     };
   }, [track, play, pause, playNext, playPrevious]);
 
@@ -140,7 +142,11 @@ export const useAudioEngine = () => {
     };
 
     const onWaiting = () => setIsBuffering(true);
-    const onError = () => setError('Failed to load audio.');
+    const onError = () => {
+      setIsBuffering(false);
+      setPlayStatus(false);
+      setError('Failed to load audio.');
+    };
     const onEnded = () => playNext();
     
     const onPlay = () => {
@@ -172,11 +178,11 @@ export const useAudioEngine = () => {
   useEffect(() => {
     if (!track) return;
     const audio = audioInstance;
-    const nextSrc = track.file;
+    const nextSrc = new URL(track.file, window.location.href).href;
 
     if (audio.src !== nextSrc) {
       setIsReady(false);
-      audio.src = nextSrc;
+      audio.src = track.file;
       audio.load();
     }
   }, [track, setIsReady]);

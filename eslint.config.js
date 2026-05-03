@@ -12,10 +12,6 @@ import react from "eslint-plugin-react";
 import reactHooks from "eslint-plugin-react-hooks";
 import reactRefresh from "eslint-plugin-react-refresh";
 
-// Extra plugins (safe + optional, not changing original behavior)
-import eslintPluginImport from "eslint-plugin-import";
-import eslintA11y from "eslint-plugin-jsx-a11y"; // improves ARIA & accessibility checks
-import eslintPerf from "eslint-plugin-performance"; // warns about slow patterns
 
 // ============================================================================
 // Exported ESLint Configuration Array
@@ -34,7 +30,7 @@ export default [
   // 2) Core Rules Applied to JS/JSX Files
   // --------------------------------------------------------------------------
   {
-    files: ["**/*.{js,jsx}"],
+    files: ["src/**/*.{js,jsx}"],
 
     // ------------------------------------------------------------------------
     // Language Options
@@ -71,10 +67,6 @@ export default [
       "react-hooks": reactHooks,
       "react-refresh": reactRefresh,
 
-      // Added safe enhancements (non-breaking)
-      import: eslintPluginImport,
-      "jsx-a11y": eslintA11y,
-      performance: eslintPerf,
     },
 
     // ------------------------------------------------------------------------
@@ -97,33 +89,9 @@ export default [
       // Additional SAFE enhancements (non-breaking)
       // --------------------------------------------------------------------
 
-      // Import sorting (helps keep files clean)
-      "import/order": [
-        "warn",
-        {
-          groups: [
-            "builtin",
-            "external",
-            "internal",
-            "parent",
-            "sibling",
-            "index",
-          ],
-          alphabetize: { order: "asc", caseInsensitive: true },
-        },
-      ],
-
       // Avoid unused imports (common React cleanup rule)
       "no-unused-vars": ["warn", { argsIgnorePattern: "^_" }],
       "no-unused-imports/no-unused-imports": "off", // kept off to avoid breaking builds
-
-      // Accessibility improvements
-      "jsx-a11y/alt-text": "warn",
-      "jsx-a11y/no-autofocus": "off", // safe to keep off for custom players UI
-
-      // Performance hints (does NOT break builds)
-      "performance/no-misplaced-spread": "warn",
-      "performance/no-new-date": "off", // allowed for UI formatting
 
       // React pseudo warnings for best practices
       "react/no-direct-mutation-state": "warn",
@@ -138,6 +106,30 @@ export default [
       "no-debugger": "warn",
 
       // Stylistic
+      semi: ["warn", "always"],
+      quotes: ["warn", "double", { avoidEscape: true }],
+    },
+  },
+  {
+    files: [
+      "*.js",
+      "*.cjs",
+      "electron-*.js",
+      "electron-*.cjs",
+    ],
+    languageOptions: {
+      ecmaVersion: 2020,
+      globals: globals.node,
+      parserOptions: {
+        ecmaVersion: "latest",
+        sourceType: "module",
+      },
+    },
+    rules: {
+      ...js.configs.recommended.rules,
+      "no-unused-vars": ["warn", { argsIgnorePattern: "^_" }],
+      "no-console": "off",
+      "no-debugger": "warn",
       semi: ["warn", "always"],
       quotes: ["warn", "double", { avoidEscape: true }],
     },

@@ -15,10 +15,15 @@ export const useElectronHotkeys = () => {
     if (!electron) return;
 
     // Register listeners
-    electron.onPlayPause(togglePlay);
-    electron.onNext(playNext);
-    electron.onPrev(playPrevious);
+    const unsubscribePlayPause = electron.onPlayPause(togglePlay);
+    const unsubscribeNext = electron.onNext(playNext);
+    const unsubscribePrev = electron.onPrev(playPrevious);
 
     console.log('[Electron] Native Hotkeys Initialized');
+    return () => {
+      unsubscribePlayPause?.();
+      unsubscribeNext?.();
+      unsubscribePrev?.();
+    };
   }, [togglePlay, playNext, playPrevious]);
 };

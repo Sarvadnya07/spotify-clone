@@ -9,7 +9,8 @@ import { useToastStore } from '../store/useToastStore';
  * Polls for environment changes and synchronizes the global store.
  */
 export const useWeather = () => {
-  const { setWeather, currentWeather } = usePlayerStore();
+  const setWeather = usePlayerStore((state) => state.setWeather);
+  const currentCondition = usePlayerStore((state) => state.currentWeather?.condition);
   const { addToast } = useToastStore();
   const initialFetch = useRef(false);
 
@@ -19,7 +20,7 @@ export const useWeather = () => {
         const data = await weatherService.getCurrentWeather();
         
         // Only announce/update if the condition has changed to prevent fatigue
-        if (data.condition !== currentWeather?.condition) {
+        if (data.condition !== currentCondition) {
           setWeather(data);
           
           if (initialFetch.current) {
@@ -38,5 +39,5 @@ export const useWeather = () => {
     const interval = setInterval(fetchWeather, 900000);
     
     return () => clearInterval(interval);
-  }, [setWeather, currentWeather?.condition, addToast]);
+  }, [setWeather, currentCondition, addToast]);
 };

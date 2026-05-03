@@ -13,12 +13,10 @@ import { motion } from 'framer-motion';
 const DisplayAlbum = () => {
     const { id } = useParams();
     const albumId = Number(id);
-    const albumData = albumsData[albumId];
+    const albumData = albumsData.find((album) => album.id === albumId);
     const { playWithId } = usePlayerStore();
 
-    const albumSongs = useMemo(() => {
-        return songsData.slice(0, 8);
-    }, [albumId]);
+    const albumSongs = useMemo(() => songsData.slice(0, 8), []);
 
     if (!albumData) return null;
 
@@ -46,7 +44,7 @@ const DisplayAlbum = () => {
                         
                         <div className="flex items-center gap-6 mt-8">
                             <button 
-                                onClick={() => playWithId(albumSongs[0].id)}
+                                onClick={() => albumSongs[0] && playWithId(albumSongs[0].id)}
                                 className="w-14 h-14 bg-[#1db954] rounded-full flex items-center justify-center shadow-xl hover:scale-105 active:scale-95 transition-all"
                             >
                                 <div className="w-0 h-0 border-t-[10px] border-t-transparent border-l-[16px] border-l-black border-b-[10px] border-b-transparent ml-1" />

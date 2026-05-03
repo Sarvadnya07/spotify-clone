@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
+import { persist } from 'zustand/middleware';
 import { songsData } from '../assets/assets';
 import { Song, PlayerTime } from '../types';
 import { WeatherData } from '../services/WeatherService';
@@ -33,6 +33,7 @@ interface PlayerState {
   setTrack: (track: Song) => void;
   play: () => void;
   pause: () => void;
+  togglePlay: () => void;
   playWithId: (id: number) => void;
   playNext: () => void;
   playPrevious: () => void;
@@ -82,6 +83,7 @@ const usePlayerStore = create<PlayerState>()(
       setTrack: (track) => set({ track }),
       play: () => set({ playStatus: true }),
       pause: () => set({ playStatus: false }),
+      togglePlay: () => set((state) => ({ playStatus: !state.playStatus })),
       
       playWithId: (id) => {
         const track = songsData.find(s => s.id === id);
@@ -115,19 +117,23 @@ const usePlayerStore = create<PlayerState>()(
           set((state) => ({ queue: state.queue.slice(1) }));
           get().playWithId(nextId);
         } else {
-          const nextIndex = (track.id + 1) % songsData.length;
+          const currentIndex = songsData.findIndex((song) => song.id === track.id);
+          const safeIndex = currentIndex === -1 ? 0 : currentIndex;
+          const nextIndex = (safeIndex + 1) % songsData.length;
           get().playWithId(songsData[nextIndex].id);
         }
       },
 
       playPrevious: () => {
         const { track } = get();
-        const prevIndex = (track.id - 1 + songsData.length) % songsData.length;
+        const currentIndex = songsData.findIndex((song) => song.id === track.id);
+        const safeIndex = currentIndex === -1 ? 0 : currentIndex;
+        const prevIndex = (safeIndex - 1 + songsData.length) % songsData.length;
         get().playWithId(songsData[prevIndex].id);
       },
 
       setTime: (time) => set({ time }),
-      setVolume: (volume) => set({ volume }),
+      setVolume: (volume) => set({ volume: Math.max(0, Math.min(1, volume)) }),
       setIsBuffering: (status) => set({ isBuffering: status }),
       setIsReady: (status) => set({ isReady: status }),
       setError: (error) => set({ error }),
@@ -139,7 +145,11 @@ const usePlayerStore = create<PlayerState>()(
       
       setWeather: (weather) => set({ currentWeather: weather }),
       
-      addToQueue: (id) => set((state) => ({ queue: [...state.queue, id] })),
+      addToQueue: (id) => set((state) => {
+        const exists = songsData.some((song) => song.id === id);
+        if (!exists) return state;
+        return { queue: [...state.queue, id] };
+      }),
       removeFromQueue: (id) => set((state) => ({ queue: state.queue.filter(i => i !== id) })),
       clearQueue: () => set({ queue: [] }),
       
@@ -166,6 +176,7 @@ const usePlayerStore = create<PlayerState>()(
       name: 'player-storage',
       version: 2,
       migrate: (persistedState: any, version: number) => {
+        if (!persistedState) return persistedState;
         if (version === 1) {
           return {
             ...persistedState,

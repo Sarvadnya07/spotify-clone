@@ -1,63 +1,53 @@
-# 🚀 Future Scope & Roadmap — Spotify Clone
+# Future Scope — Spotify Elite Roadmap
 
-This roadmap outlines the evolution of the Spotify Clone from a production-ready frontend to a full-featured music platform.
-
----
-
-## ✅ COMPLETED (Phase 1 & 2)
-
-### 1. Architectural Hardening
-- [x] **State Persistence**: Volume and last-played track saved via Zustand `persist`.
-- [x] **Audio Engine Optimization**: Zero-render seek bar updates and singleton management.
-- [x] **Media Session API**: OS-level playback controls and lock screen metadata.
-
-### 2. Immersive UI & UX
-- [x] **Motion Design**: Shared layout transitions (morphing covers) and route animations.
-- [x] **Dynamic Theming**: Real-time average color extraction from album art for adaptive backgrounds.
-- [x] **Audio Visualization**: High-performance Canvas-based frequency visualizer.
-
-### 3. Core Features
-- [x] **Search Engine**: Real-time fuzzy search for songs and albums.
-- [x] **Favorites System**: Persistent "Liked Songs" with heart interactions.
-- [x] **Async Data Layer**: Abstracted music service with loading skeletons.
+This document outlines the strategic vision and upcoming technical enhancements for the Spotify Elite platform.
 
 ---
 
-## 🟡 SHORT-TERM (Next Steps)
+## 📅 Short-Term Improvements (Q2 2026)
 
-### 1. Mobile & Accessibility
-- [x] **Mobile Touch Optimization**: Increased hit areas for seek/volume bars and added touch event support.
-- [x] **Keyboard Shortcuts**: Implemented global hotkeys (Space, L, M, Arrows) for a native desktop feel.
-
-### 2. Refined Content
-- [x] **Context Menus**: Implemented custom right-click menus for quick actions (Play, Like, Share) in Album and Search views.
-- [x] **Lyrics Integration**: Added a full-screen, synchronized lyrics overlay with auto-scroll and dynamic typography.
-- [x] **Keyboard Shortcuts Help**: Developed a premium help modal (triggered by "?") for discovering global hotkeys.
+- **Production API Integration**: Transition from `LocalMusicService` to real-world **Spotify Web API** for global catalog access.
+- **Real-Time Weather Telemetry**: Switch from simulated weather mood to live **OpenWeatherMap API** integration.
+- **Search Hardening**: Implement debounced server-side search with category-based filtering.
+- **PWA Excellence**: Full Service Worker implementation for offline playback support.
 
 ---
 
-## 🟠 MID-TERM (Feature Expansion)
+## 🚀 Mid-Term Enhancements (Q3-Q4 2026)
 
-### 1. Functional Enhancements
-- [x] **Create Playlist**: Fully functional flow for creating custom collections and adding tracks via context menus.
-- [x] **Queue Management**: Advanced "Up Next" system with persistent queueing and manual management overlay.
-- [x] **Auth & Profile**: Integrated user identity system with persistent profiles and premium status indicators.
-- [x] **Spotify API**: OAuth2 integration architecture completed; developed IMusicService provider pattern for seamless data swapping (Research Phase).
-- [ ] **Cloud Persistence**: Sync liked songs and settings to a Firebase/MongoDB backend (Architecture Ready).
-
-### 2. Social & Sharing
-- [x] **Friend Activity**: Implemented a responsive right-hand sidebar simulating real-time social listening activity.
-- [x] **Shareable Links**: Implemented functional "Copy Link" sharing for albums and tracks with a custom Toast notification system.
-- [x] **Search Filters**: Added granular category chips (Songs, Albums) to the search engine for refined discovery.
+- **Cloud Persistence**: Migrate from `localStorage` to **Firebase or PostgreSQL** for cross-device library synchronization.
+- **Collaborative Listening**: Real-time "Join Room" feature using **WebSockets (Socket.io)** for synchronized social playback.
+- **Smart Queue Engine**: AI-driven "Next Track" prediction based on atmospheric context and skip-rates.
+- **Artist Dashboard**: A dedicated view for content creators to view streaming analytics.
 
 ---
 
-## 🔴 LONG-TERM (Platform Vision)
+## 🔮 Long-Term Vision (2027+)
 
-### 1. Desktop App (Electron)
-- [x] **Native Experience**: Developed Electron main and preload configurations for cross-platform desktop distribution (Architecture Ready).
-- [x] **Global Hotkeys**: Implemented native OS media key integration via Electron IPC, allowing background control.
+- **Neural Recommendation Engine**: Machine learning model that predicts music preferences based on biometrics (if hardware available) and deep behavioral patterns.
+- **Spatial Audio Simulation**: Web Audio API implementation of 362° spatial sound for immersive listening.
+- **Full Social Network**: Profiles, following systems, and "Discover Weekly" algorithmic sharing.
 
-### 2. Audio Intelligence
-- [x] **Smart Shuffle**: Implemented a weighted randomization algorithm that prioritizes similar artist/genre continuity (70% weight).
-- [x] **Personalized Mixes**: Implemented a real-time "Made For You" engine that curates a dynamic Daily Mix based on persistent listening history.
+---
+
+## 🛡 Security & Reliability Upgrades
+
+- **OAuth 2.0 PKCE**: Implement the most secure authentication flow for Spotify API integration.
+- **End-to-End Encryption**: Encrypted messaging for collaborative sessions.
+- **Rate Limiting**: Implementation of intelligent request throttling at the service layer.
+
+---
+
+## ⚡ Scalability & Performance
+
+- **Edge Caching**: Deploying asset pre-loads to Edge locations for <10ms metadata retrieval.
+- **Web Workers**: Moving heavy audio analysis and data processing to background threads to ensure the UI remains strictly 60FPS.
+- **Micro-Frontend Architecture**: Splitting the app into modular micro-frontends (Player, Library, Search) for independent scaling and development.
+
+---
+
+## 🎨 UI/UX Opportunities
+
+- **Dynamic Theme Engine**: UI colors that adapt perfectly to the primary color of the current track's artwork (ColorThief integration).
+- **Haptic Feedback**: Support for mobile haptics during playback control interactions.
+- **Accessibility Hardening**: 100% WCAG 2.1 compliance for inclusive streaming.

@@ -22,10 +22,12 @@ if (!rootElement) {
 
 const DiagnosticsWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   useEffect(() => {
-    console.log(
-      "%c[INIT] Spotify Clone initialized.",
-      "color:#1db954;font-weight:bold;"
-    );
+    if (import.meta.env.DEV) {
+      console.log(
+        "%c[INIT] Spotify Clone initialized.",
+        "color:#1db954;font-weight:bold;"
+      );
+    }
   }, []);
 
   return (

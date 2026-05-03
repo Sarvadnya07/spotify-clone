@@ -1,48 +1,50 @@
-import React, { Component, ErrorInfo, ReactNode } from "react";
+﻿import React, { Component, ErrorInfo, ReactNode } from "react";
 
 interface Props {
-  children?: ReactNode;
+  children: ReactNode;
   fallback?: ReactNode;
 }
 
 interface State {
   hasError: boolean;
+  error: Error | null;
 }
 
 /**
- * Global Error Boundary
- * Catches runtime errors in the component tree and displays a graceful fallback.
- * Critical for production stability in high-performance audio apps.
+ * Production-Grade Error Boundary
+ * - Catches runtime errors in the component tree.
+ * - Provides a clean fallback UI to prevent total app failure.
  */
 class ErrorBoundary extends Component<Props, State> {
   public state: State = {
-    hasError: false
+    hasError: false,
+    error: null,
   };
 
-  public static getDerivedStateFromError(_: Error): State {
-    return { hasError: true };
+  public static getDerivedStateFromError(error: Error): State {
+    return { hasError: true, error };
   }
 
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error("Uncaught error:", error, errorInfo);
+    console.error("[ERROR_BOUNDARY] Uncaught error:", error, errorInfo);
   }
 
   public render() {
     if (this.state.hasError) {
       return this.props.fallback || (
-        <div className="h-screen w-full flex flex-col items-center justify-center bg-[#050505] text-white p-6 text-center">
-          <div className="w-20 h-20 bg-red-500/10 rounded-3xl flex items-center justify-center mb-6 border border-red-500/20">
-            <span className="text-4xl">⚠️</span>
+        <div className="h-full flex flex-col items-center justify-center p-8 text-center bg-[#121212]">
+          <div className="w-16 h-16 mb-6 rounded-full bg-red-500/10 flex items-center justify-center">
+            <span className="text-3xl">!</span>
           </div>
-          <h1 className="text-3xl font-black tracking-tighter mb-4">Something went wrong</h1>
-          <p className="text-gray-500 max-w-md mb-8 leading-relaxed">
-            The application encountered an unexpected error. This might be due to a corrupted audio stream or a temporary connectivity issue.
+          <h2 className="text-xl font-bold text-white mb-2">Something went wrong</h2>
+          <p className="text-gray-400 text-sm max-w-xs mb-6">
+            The component failed to render. We've logged the error and are working on it.
           </p>
           <button
             onClick={() => window.location.reload()}
-            className="px-8 py-3 bg-white text-black rounded-xl font-bold hover:scale-105 active:scale-95 transition"
+            className="px-6 py-2 rounded-full bg-white text-black text-xs font-bold hover:scale-105 transition-transform"
           >
-            Reload Platform
+            Reload Application
           </button>
         </div>
       );
@@ -53,3 +55,5 @@ class ErrorBoundary extends Component<Props, State> {
 }
 
 export default ErrorBoundary;
+
+

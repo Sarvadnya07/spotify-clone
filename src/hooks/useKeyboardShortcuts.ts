@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 import usePlayerStore from '../store/usePlayerStore';
-import { useAudioEngine } from './useAudioEngine';
 
 /**
  * useKeyboardShortcuts
@@ -18,8 +17,6 @@ export const useKeyboardShortcuts = (onHelpToggle?: () => void) => {
     toggleLike 
   } = usePlayerStore();
   
-  const { seek } = useAudioEngine();
-
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       // Don't trigger shortcuts if user is typing in an input (like search)
@@ -67,5 +64,5 @@ export const useKeyboardShortcuts = (onHelpToggle?: () => void) => {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [togglePlay, playNext, playPrevious, volume, setVolume, track.id, toggleLike, seek, onHelpToggle]);
+  }, [togglePlay, playNext, playPrevious, volume, setVolume, track.id, toggleLike, onHelpToggle]);
 };

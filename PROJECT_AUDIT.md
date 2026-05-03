@@ -1,46 +1,53 @@
-# 🛠 Project Improvement Audit — Spotify Clone
+# Project Engineering Audit — Spotify Elite
 
-This audit identifies critical technical debt and provides a roadmap for elevating the project to a production-grade engineering standard.
-
----
-
-## ✅ COMPLETED CHANGES
-
-### 1. High-Frequency Render Optimization
-- [x] **Decoupled Coarse/Fine Time**: Implemented visual progress via CSS variables (`--player-progress`) and `requestAnimationFrame`.
-- [x] **Minimized Re-renders**: React only re-renders the player once per second (for MM:SS text), while the bar updates smoothly at 60FPS.
-
-### 2. Audio Event Cleanup & Lifecycle
-- [x] **Audio Singleton**: Moved the `Audio` instance outside the hook lifecycle to prevent leaks and overlapping playback.
-- [x] **Strict Event Removal**: Ensured all listeners (play, pause, ended, etc.) are cleaned up on unmount.
-
-### 3. Asynchronous Data Fetching
-- [x] **Music Service Layer**: Abstracted data access into `src/services/musicService.ts`.
-- [x] **Async UI Handling**: Implemented loading states and skeletons in `DisplayHome` and `DisplayAlbum`.
-
-### 4. Comprehensive Error Boundaries
-- [x] **Global Boundary**: Implemented `ErrorBoundary` component with a polished recovery UI.
-- [x] **Route Safety**: Wrapped the core application tree in `main.tsx`.
+**Audit Date**: May 3, 2026
+**Lead Auditor**: Senior Software Engineer / Architect
 
 ---
 
-## 🟡 OPTIONAL ENHANCEMENTS (UX & Polish)
+## 🔍 Required Changes (Critical Hardening)
 
-### 1. Motion Design
-- [x] **Framer Motion**: Integrated shared layout transitions (layoutId) and route-based AnimatePresence.
-- [x] **Micro-animations**: Added interactions for hover/click states and staggered list entries.
+### 1. Persistence Layer Transition
+- **Issue**: Currently relying on `localStorage` for library and history data.
+- **Impact**: Data is volatile and device-specific.
+- **Solution**: Implement a transactional backend (Firebase/Supabase) to ensure data durability and cross-device synchronization.
 
-### 2. Audio Visualizer
-- [x] **Web Audio API**: Implemented a high-performance Canvas-based waveform visualizer using `AudioContext` and `AnalyserNode`.
+### 2. Service Provider Integration
+- **Issue**: Core music and weather data are locally mocked.
+- **Impact**: Limited catalog and static environmental data.
+- **Solution**: Connect the `SpotifyApiService` and `WeatherService` to production endpoints.
 
-### 3. Media Session API Support
-- [x] **Lock Screen Controls**: Implemented `navigator.mediaSession` for OS-level integration.
+### 3. Comprehensive Testing Suite [IN PROGRESS]
+- **Status**: ✅ Configuration & Core Audio Tests implemented.
+- **Next**: Implement Playwright E2E flows.
+- **Solution**: Implement **Vitest** for unit testing hooks and **Playwright** for E2E testing the playback lifecycle.
 
-### 4. Persisted State
-- [x] **User Preferences**: Save volume and last-played track using Zustand `persist` middleware.
+### 4. CI/CD Infrastructure
+- **Issue**: Deployment is manual.
+- **Impact**: Inconsistent build environments and high overhead.
+- **Solution**: Configure **GitHub Actions** for automated linting, testing, and Vercel deployment.
 
 ---
 
-## 📈 Architecture Progress
+## 💡 Optional Enhancements (Elite Upgrades)
 
-The app has successfully transitioned from a "Static Prototype" to a **"Production-Ready Frontend Architecture"**. The separation of the **Audio Engine**, **Data Service**, and **Reactive UI** ensures that the codebase remains maintainable as features scale.
+### 1. Dynamic UI Theming
+- **Enhancement**: Use the `ColorThief` library to extract primary colors from album art.
+- **Value**: Creates a cinematic, immersive UI that adapts to the current song.
+
+### 2. WebSocket Real-Time Sync
+- **Enhancement**: Use Socket.io for real-time friend activity updates.
+- **Value**: Moves from simulated friend activity to a real-time social listening platform.
+
+### 3. Web Worker Offloading
+- **Enhancement**: Offload heavy Web Audio API frequency analysis to a dedicated Web Worker.
+- **Value**: Ensures zero UI jitter during high-load playback scenarios.
+
+---
+
+## 🛠 Refactoring Suggestions
+
+- **Custom Hook Decoupling**: Split `useAudioEngine.ts` into smaller specialized hooks (`useMediaSession`, `useVisualizer`, `usePlaybackSync`).
+- **Path Aliasing**: ✅ COMPLETED (Vite & TSConfig configured).
+- **Error Boundaries**: ✅ COMPLETED (Production-grade boundary implemented).
+

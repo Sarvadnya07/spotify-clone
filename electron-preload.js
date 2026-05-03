@@ -9,7 +9,19 @@ contextBridge.exposeInMainWorld('electronAPI', {
   sendNotification: (title, body) => ipcRenderer.send('notify', { title, body }),
   
   // Media Control Listeners (Global Hotkeys)
-  onPlayPause: (callback) => ipcRenderer.on('media-play-pause', () => callback()),
-  onNext: (callback) => ipcRenderer.on('media-next', () => callback()),
-  onPrev: (callback) => ipcRenderer.on('media-prev', () => callback()),
+  onPlayPause: (callback) => {
+    const listener = () => callback();
+    ipcRenderer.on('media-play-pause', listener);
+    return () => ipcRenderer.removeListener('media-play-pause', listener);
+  },
+  onNext: (callback) => {
+    const listener = () => callback();
+    ipcRenderer.on('media-next', listener);
+    return () => ipcRenderer.removeListener('media-next', listener);
+  },
+  onPrev: (callback) => {
+    const listener = () => callback();
+    ipcRenderer.on('media-prev', listener);
+    return () => ipcRenderer.removeListener('media-prev', listener);
+  },
 });
