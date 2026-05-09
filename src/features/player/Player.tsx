@@ -2,6 +2,7 @@ import React, { memo, useCallback } from 'react';
 import { assets } from '../../assets/assets';
 import usePlayerStore from '../../store/usePlayerStore';
 import Visualizer from '../../components/animations/Visualizer';
+import SpatialControls from './components/SpatialControls';
 
 /**
  * Top-Tier High Performance Player
@@ -33,19 +34,19 @@ const Player = () => {
   }, []);
 
   return (
-    <footer className="h-[90px] bg-[#000000] border-t border-white/5 px-6 flex items-center justify-between z-[100] relative select-none gpu">
+    <footer className="h-[96px] bg-background border-t border-white/5 px-6 flex items-center justify-between z-[100] relative select-none gpu backdrop-blur-3xl">
       
       {/* TRACK INFO - OPTIMIZED */}
       <div className="flex items-center gap-4 w-[30%] min-w-[280px]">
         <img 
-          className="w-14 h-14 rounded-md shadow-lg border border-white/5 object-cover will-change-transform" 
+          className={`w-14 h-14 rounded-md shadow-lg border border-white/5 object-cover will-change-transform ${playStatus ? 'animate-[pulse_4s_ease-in-out_infinite] scale-[1.02]' : ''}`} 
           src={track.image} 
           alt={track.name} 
           loading="eager"
         />
         <div className="flex flex-col min-w-0">
-          <p className="text-sm font-bold text-white truncate hover:underline cursor-pointer tracking-tight">{track.name}</p>
-          <p className="text-[11px] text-[#a7a7a7] truncate hover:text-white transition-colors cursor-pointer mt-0.5">{track.desc}</p>
+          <p className="text-sm font-black text-text-base truncate hover:text-primary transition-colors cursor-pointer tracking-tight">{track.name}</p>
+          <p className="text-[11px] font-bold text-text-muted truncate hover:text-text-base transition-colors cursor-pointer mt-0.5 uppercase tracking-widest">{track.desc}</p>
         </div>
         <button className="ml-4 p-2 transition-transform hover:scale-110 active:scale-90">
           <img className="w-4 opacity-40 hover:opacity-100" src={assets.like_icon} alt="Like" />
@@ -78,19 +79,20 @@ const Player = () => {
         </div>
 
         <div className="flex items-center gap-3 w-full max-w-[600px]">
-          <span className="text-[11px] text-[#a7a7a7] font-medium tabular-nums w-10 text-right">{formatTime(time.currentTime)}</span>
-          <div className="flex-grow h-1 bg-[#4d4d4d] rounded-full relative group cursor-pointer overflow-hidden">
+          <span className="text-[11px] text-text-dim font-bold tabular-nums w-10 text-right tracking-tighter">{formatTime(time.currentTime)}</span>
+          <div className="flex-grow h-1.5 bg-white/10 rounded-full relative group cursor-pointer overflow-hidden">
             <div 
-              className="absolute inset-y-0 left-0 bg-white group-hover:bg-[#1db954] transition-colors rounded-full"
+              className="absolute inset-y-0 left-0 bg-white group-hover:bg-primary transition-colors rounded-full shadow-[0_0_8px_rgba(255,255,255,0.4)]"
               style={{ width: 'var(--player-progress, 0%)' }}
             />
           </div>
-          <span className="text-[11px] text-[#a7a7a7] font-medium tabular-nums w-10">{track.duration}</span>
+          <span className="text-[11px] text-text-dim font-bold tabular-nums w-10 tracking-tighter">{track.duration}</span>
         </div>
       </div>
 
       {/* UTILITIES - SURGICAL UPDATES */}
-      <div className="flex items-center justify-end gap-5 w-[30%] min-w-[280px]">
+      <div className="flex items-center justify-end gap-5 w-[30%] min-w-[320px]">
+        <SpatialControls />
         <Visualizer />
         
         <div className="flex items-center gap-1">
@@ -106,10 +108,10 @@ const Player = () => {
         </div>
         
         <div className="flex items-center gap-3 group w-32 ml-2">
-          <img className="w-4 opacity-50 group-hover:opacity-100 transition duration-300" src={assets.volume_icon} alt="V" />
-          <div className="flex-grow h-1 bg-[#4d4d4d] rounded-full relative cursor-pointer overflow-hidden">
+          <img className="w-4 opacity-40 group-hover:opacity-100 group-hover:scale-110 transition-all duration-300" src={assets.volume_icon} alt="V" />
+          <div className="flex-grow h-1.5 bg-white/10 rounded-full relative cursor-pointer overflow-hidden">
             <div 
-              className="absolute inset-y-0 left-0 bg-white group-hover:bg-[#1db954] transition-colors" 
+              className="absolute inset-y-0 left-0 bg-white group-hover:bg-primary transition-colors" 
               style={{ width: `${volume * 100}%` }} 
             />
             <input 

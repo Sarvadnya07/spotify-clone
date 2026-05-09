@@ -1,6 +1,6 @@
 
 import { useEffect } from 'react';
-import { Song } from '../core/types';
+import { Song } from '../../../core/types';
 
 /**
  * useMediaSession

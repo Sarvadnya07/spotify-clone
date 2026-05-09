@@ -8,13 +8,15 @@ export default {
   theme: {
     extend: {
       colors: {
-        spotify: {
-          green: "#1DB954",
-          black: "#121212",
-          dark: "#181818",
-          light: "#282828",
-          gray: "#B3B3B3",
-          white: "#FFFFFF",
+        background: "#09090b",
+        surface: "#121212",
+        "surface-bright": "#1a1a1a",
+        primary: "#1DB954",
+        secondary: "#19e68c",
+        text: {
+          base: "#fafafa",
+          muted: "#a7a7a7",
+          dim: "#727272"
         },
         accent: {
           neon: "#14F195",
@@ -45,9 +47,13 @@ export default {
       },
 
       borderRadius: {
-        xl2: "1rem",
-        xl3: "1.5rem",
-        round: "2rem",
+        xs: "4px",
+        sm: "8px",
+        md: "12px",
+        lg: "16px",
+        xl: "24px",
+        "2xl": "32px",
+        full: "9999px",
       },
 
       keyframes: {

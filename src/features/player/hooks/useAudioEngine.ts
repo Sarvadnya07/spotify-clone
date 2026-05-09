@@ -11,6 +11,9 @@ const audioInstance = new Audio();
 // Web Audio API Singletons
 export let audioContext: AudioContext | null = null;
 export let analyser: AnalyserNode | null = null;
+let panner: PannerNode | null = null;
+let compressor: DynamicsCompressorNode | null = null;
+let gainNode: GainNode | null = null;
 export let source: MediaElementAudioSourceNode | null = null;
 export { audioInstance };
 
@@ -48,11 +51,32 @@ export const useAudioEngine = () => {
   const initVisualizer = useCallback(() => {
     if (!audioContext) {
       audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
-      analyser = audioContext.createAnalyser();
-      analyser.fftSize = 32;
+      const source = audioContext.createMediaElementSource(audioInstance);
       
-      source = audioContext.createMediaElementSource(audioInstance);
-      source.connect(analyser);
+      // 1. Dynamics Compression (Normalization)
+      compressor = audioContext.createDynamicsCompressor();
+      compressor.threshold.setValueAtTime(-24, audioContext.currentTime);
+      compressor.knee.setValueAtTime(40, audioContext.currentTime);
+      compressor.ratio.setValueAtTime(12, audioContext.currentTime);
+      compressor.attack.setValueAtTime(0, audioContext.currentTime);
+      compressor.release.setValueAtTime(0.25, audioContext.currentTime);
+
+      // 2. Spatial Panning (3D Simulation)
+      panner = audioContext.createPanner();
+      panner.panningModel = 'HRTF';
+      panner.distanceModel = 'inverse';
+      panner.positionX.setValueAtTime(0, audioContext.currentTime);
+      panner.positionY.setValueAtTime(0, audioContext.currentTime);
+      panner.positionZ.setValueAtTime(1, audioContext.currentTime);
+
+      // 3. Frequency Analysis
+      analyser = audioContext.createAnalyser();
+      analyser.fftSize = 512;
+
+      // 4. Connect the Chain: Source -> Compressor -> Panner -> Analyser -> Destination
+      source.connect(compressor);
+      compressor.connect(panner);
+      panner.connect(analyser);
       analyser.connect(audioContext.destination);
     }
     

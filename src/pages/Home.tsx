@@ -77,36 +77,34 @@ const Home = () => {
     >
       <Navbar />
 
-      <main className="px-8 pt-8 pb-32 space-y-12">
-        <section style={sectionStyle}>
-          <div className="flex flex-col gap-1 mb-6">
-            <h2 className="text-2xl font-bold tracking-tight text-white">Made For You</h2>
-            {mood && <p className="text-[11px] font-bold text-[#a7a7a7] uppercase tracking-widest">Synced with {mood}</p>}
+      <main className="p-8 space-y-12">
+        {/* TOP SECTION: FEATURED CHARTS */}
+        <section>
+          <div className="flex items-center justify-between mb-6">
+            <h1 className="text-2xl font-black text-white tracking-tighter uppercase text-glow">Featured Charts</h1>
+            <button className="text-[10px] font-black text-text-muted uppercase tracking-[0.2em] hover:text-white transition-colors">Show All</button>
           </div>
-          <div className="flex overflow-x-auto gap-6 pb-4 hide-scrollbar">
-            {personalizedMix.map(item => <SongItem key={`mix-${item.id}`} {...item} />)}
-          </div>
-        </section>
-
-        <section style={sectionStyle}>
-          <div className="mb-6">
-            <h2 className="text-2xl font-bold tracking-tight text-white">Featured Charts</h2>
-          </div>
-          <div className="flex overflow-x-auto gap-6 pb-4 hide-scrollbar contain-layout">
-            {albums.map(item => <AlbumItem key={item.id} {...item} />)}
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+            {albums.map((item, index) => (
+              <AlbumItem key={index} {...item} />
+            ))}
           </div>
         </section>
 
-        <section style={sectionStyle}>
-          <div className="mb-6">
-            <h2 className="text-2xl font-bold tracking-tight text-white">Trending Now</h2>
+        {/* BOTTOM SECTION: TRENDING NOW */}
+        <section>
+          <div className="flex items-center justify-between mb-6">
+            <h1 className="text-2xl font-black text-white tracking-tighter uppercase text-glow">Trending Now</h1>
+            <button className="text-[10px] font-black text-text-muted uppercase tracking-[0.2em] hover:text-white transition-colors">Show All</button>
           </div>
-          <div className="flex overflow-x-auto gap-6 pb-4 hide-scrollbar contain-layout">
-            {songs.map(item => <SongItem key={item.id} {...item} />)}
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 pb-20">
+            {songs.map((item, index) => (
+              <SongItem key={index} {...item} />
+            ))}
           </div>
         </section>
 
-        <section className="mt-16 py-12 border-t border-white/5" style={sectionStyle}>
+        <section className="mt-16 py-12 border-t border-white/5">
           <div className="max-w-2xl">
             <h3 className="text-xl font-bold text-white mb-4 tracking-tight">System Observability</h3>
             <p className="text-[#a7a7a7] text-sm leading-relaxed mb-8">

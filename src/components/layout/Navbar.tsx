@@ -19,27 +19,21 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="w-full h-[64px] flex justify-between items-center px-8 sticky top-0 bg-[#121212]/80 backdrop-blur-md z-50">
+    <header className="sticky top-0 h-16 bg-background/60 backdrop-blur-3xl flex items-center justify-between px-8 z-40 border-b border-white/[0.03]">
       <div className="flex items-center gap-3">
-        <button 
-          onClick={() => navigate(-1)}
-          className="w-8 h-8 rounded-full bg-black flex items-center justify-center hover:bg-[#282828] transition-colors"
-        >
-          <img className="w-2.5 opacity-60" src={assets.arrow_left} alt="Back" />
+        <button onClick={() => navigate(-1)} className="w-8 h-8 rounded-full bg-black/40 flex items-center justify-center hover:bg-black/60 transition-all border border-white/5 active:scale-95">
+          <img className="w-4 opacity-60" src={assets.arrow_left} alt="<" />
         </button>
-        <button 
-          onClick={() => navigate(1)}
-          className="w-8 h-8 rounded-full bg-black flex items-center justify-center hover:bg-[#282828] transition-colors"
-        >
-          <img className="w-2.5 opacity-60" src={assets.arrow_right} alt="Forward" />
+        <button onClick={() => navigate(1)} className="w-8 h-8 rounded-full bg-black/40 flex items-center justify-center hover:bg-black/60 transition-all border border-white/5 active:scale-95">
+          <img className="w-4 opacity-60" src={assets.arrow_right} alt=">" />
         </button>
       </div>
 
-      <div className="flex items-center gap-6">
+      <div className="flex items-center gap-4">
         {user?.tier === 'Free' && (
           <button
             onClick={handleUpgrade}
-            className="hidden md:block px-5 py-1.5 rounded-full bg-white text-black text-xs font-bold hover:scale-105 transition-transform"
+            className="hidden md:block px-4 py-1.5 rounded-full bg-white text-black text-[11px] font-black uppercase tracking-widest hover:scale-105 active:scale-95 transition-all shadow-xl"
           >
             Explore Premium
           </button>
@@ -63,7 +57,7 @@ const Navbar = () => {
           <span className="text-xs font-bold text-[#a7a7a7] group-hover:text-white transition-colors">{user?.name}</span>
         </div>
       </div>
-    </nav>
+    </header>
   );
 };
 

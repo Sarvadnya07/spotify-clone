@@ -24,7 +24,7 @@ const AlbumDetails = () => {
         <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="h-full flex flex-col bg-[#121212] overflow-hidden"
+            className="h-full flex flex-col bg-background overflow-hidden"
         >
             <Navbar />
             
@@ -38,22 +38,22 @@ const AlbumDetails = () => {
                     />
                     
                     <div className="flex flex-col gap-3 mb-2">
-                        <span className="text-[11px] font-bold uppercase tracking-[0.3em] text-[#a7a7a7]">Playlist</span>
-                        <h2 className="text-5xl md:text-7xl font-bold tracking-tight text-white leading-none">{albumData.name}</h2>
-                        <p className="text-sm font-medium text-[#a7a7a7] max-w-2xl mt-2 leading-relaxed">{albumData.desc}</p>
+                        <span className="text-[11px] font-black uppercase tracking-[0.3em] text-text-muted">Album</span>
+                        <h2 className="text-5xl md:text-7xl font-black tracking-tighter text-white leading-none text-glow">{albumData.name}</h2>
+                        <p className="text-sm font-bold text-text-muted max-w-2xl mt-2 leading-relaxed opacity-80">{albumData.desc}</p>
                         
                         <div className="flex items-center gap-6 mt-8">
                             <button 
                                 onClick={() => albumSongs[0] && playWithId(albumSongs[0].id)}
-                                className="w-14 h-14 bg-[#1db954] rounded-full flex items-center justify-center shadow-xl hover:scale-105 active:scale-95 transition-all"
+                                className="w-14 h-14 bg-primary rounded-full flex items-center justify-center shadow-2xl hover:scale-105 active:scale-95 transition-all"
                             >
-                                <div className="w-0 h-0 border-t-[10px] border-t-transparent border-l-[16px] border-l-black border-b-[10px] border-b-transparent ml-1" />
+                                <img className="w-5 brightness-0 ml-1" src={assets.play_icon} alt="Play" />
                             </button>
                             
                             <div className="flex items-center gap-2">
                                 <img className="w-5 h-5" src={assets.spotify_logo} alt="Spotify" />
-                                <span className="text-sm font-bold text-white tracking-tight">Spotify Elite</span>
-                                <span className="text-[#a7a7a7] text-sm">• {albumSongs.length} tracks</span>
+                                <span className="text-sm font-black text-white tracking-tight uppercase">Spotify Elite</span>
+                                <span className="text-text-muted text-sm font-bold">• {albumSongs.length} tracks</span>
                             </div>
                         </div>
                     </div>
@@ -78,20 +78,20 @@ const AlbumDetails = () => {
                             <div 
                                 key={item.id}
                                 onClick={() => playWithId(item.id)}
-                                className="grid grid-cols-3 sm:grid-cols-4 gap-4 px-4 py-2.5 rounded-md hover:bg-white/5 cursor-pointer group transition-colors"
+                                className="grid grid-cols-3 sm:grid-cols-4 gap-4 px-4 py-3 rounded-md hover:bg-white/[0.05] cursor-pointer group transition-all duration-300 border border-transparent hover:border-white/5"
                             >
                                 <div className="flex items-center gap-4 min-w-0">
-                                    <span className="w-4 text-center text-xs font-medium text-[#a7a7a7] group-hover:text-white">{index + 1}</span>
-                                    <img className="w-10 h-10 rounded shadow-md" src={item.image} alt={item.name} />
+                                    <span className="w-4 text-center text-xs font-bold text-text-dim group-hover:text-white tabular-nums">{index + 1}</span>
+                                    <img className="w-10 h-10 rounded shadow-2xl group-hover:scale-110 transition-transform duration-500" src={item.image} alt={item.name} />
                                     <div className="flex flex-col min-w-0">
-                                        <span className="text-sm font-bold text-white truncate group-hover:text-[#1db954] transition-colors">{item.name}</span>
-                                        <span className="text-[11px] text-[#a7a7a7] font-medium truncate">{item.desc}</span>
+                                        <span className="text-sm font-black text-white truncate group-hover:text-primary transition-colors">{item.name}</span>
+                                        <span className="text-[11px] text-text-muted font-bold truncate uppercase tracking-widest opacity-60">{item.desc}</span>
                                     </div>
                                 </div>
-                                <span className="hidden sm:flex items-center text-xs font-medium text-[#a7a7a7] truncate">{albumData.name}</span>
-                                <span className="hidden md:flex items-center text-xs font-medium text-[#a7a7a7] truncate">5d ago</span>
+                                <span className="hidden sm:flex items-center text-xs font-bold text-text-muted truncate uppercase tracking-widest opacity-60">{albumData.name}</span>
+                                <span className="hidden md:flex items-center text-xs font-bold text-text-muted truncate uppercase tracking-widest opacity-60">5d ago</span>
                                 <div className="flex items-center justify-end pr-4">
-                                    <span className="text-[11px] font-medium text-[#a7a7a7] tabular-nums">{item.duration}</span>
+                                    <span className="text-[11px] font-bold text-text-dim tabular-nums group-hover:text-white transition-colors">{item.duration}</span>
                                 </div>
                             </div>
                         ))}
