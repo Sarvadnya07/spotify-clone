@@ -1,5 +1,5 @@
 import React, { memo, useMemo } from 'react';
-import Navbar from './Navbar';
+import Navbar from '../components/layout/Navbar';
 import { useParams } from 'react-router-dom';
 import { albumsData, assets, songsData } from '../assets/assets';
 import usePlayerStore from '../store/usePlayerStore';
@@ -10,7 +10,7 @@ import { motion } from 'framer-motion';
  * - Professional hero section with clean typography.
  * - High-performance tracklisting grid.
  */
-const DisplayAlbum = () => {
+const AlbumDetails = () => {
     const { id } = useParams();
     const albumId = Number(id);
     const albumData = albumsData.find((album) => album.id === albumId);
@@ -102,4 +102,4 @@ const DisplayAlbum = () => {
     );
 };
 
-export default memo(DisplayAlbum);
+export default memo(AlbumDetails);

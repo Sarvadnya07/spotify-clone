@@ -69,7 +69,7 @@ export const assets = {
     clock_icon
 }
 
-import { Album, Song } from '../types';
+import { Album, Song } from '../core/types';
 
 export const albumsData: Album[] = [
     {   

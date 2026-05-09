@@ -1,9 +1,9 @@
 import React, { memo } from "react";
-import { assets } from "../assets/assets";
+import { assets } from "../../assets/assets";
 import { useNavigate, useLocation } from "react-router-dom";
-import usePlayerStore from "../store/usePlayerStore";
-import { useToastStore } from "../store/useToastStore";
-import WeatherHub from "./WeatherHub";
+import usePlayerStore from "../../store/usePlayerStore";
+import { useToastStore } from "../../store/useToastStore";
+import WeatherHub from "../../features/weather/WeatherHub";
 
 interface SidebarProps {
   onShowShortcuts: () => void;

@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import usePlayerStore from '../store/usePlayerStore';
-import { songsData } from '../assets/assets';
+import usePlayerStore from '../../store/usePlayerStore';
+import { assets, songsData } from '../../assets/assets';
 
 /**
  * Modern Glass Queue Component

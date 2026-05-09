@@ -1,6 +1,6 @@
 import { IMusicService } from './IMusicService';
 import { albumsData, songsData } from '../assets/assets';
-import { Album, Song } from '../types';
+import { Album, Song } from '../core/types';
 
 /**
  * LocalMusicService

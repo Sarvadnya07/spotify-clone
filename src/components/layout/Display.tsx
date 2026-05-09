@@ -1,9 +1,9 @@
 import React, { useRef, memo } from "react";
-import DisplayHome from "./DisplayHome";
+import DisplayHome from "../../pages/Home";
 import { Route, Routes, useLocation } from "react-router-dom";
-import DisplayAlbum from "./DisplayAlbum";
-import Search from "./Search";
-import WeatherJournal from "./WeatherJournal";
+import DisplayAlbum from "../../pages/AlbumDetails";
+import Search from "../../pages/Search";
+import WeatherJournal from "../../features/weather/WeatherJournal";
 import { AnimatePresence } from "framer-motion";
 
 /**

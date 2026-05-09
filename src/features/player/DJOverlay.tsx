@@ -1,8 +1,9 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import usePlayerStore from '../store/usePlayerStore';
-import { useAuthStore } from '../store/useAuthStore';
-import { aiDjService } from '../services/AiDjService';
+import { assets } from '../../assets/assets';
+import usePlayerStore from '../../store/usePlayerStore';
+import { useAuthStore } from '../../store/useAuthStore';
+import { aiDjService } from '../../services/AiDjService';
 
 /**
  * Modern Glass DJOverlay - Weather Aware

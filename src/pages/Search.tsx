@@ -1,7 +1,7 @@
 import React, { useState, useMemo, memo } from 'react';
-import Navbar from './Navbar';
+import Navbar from '../components/layout/Navbar';
 import { songsData } from '../assets/assets';
-import SongItem from './SongItem';
+import SongItem from '../features/music/SongItem';
 import { motion, AnimatePresence } from 'framer-motion';
 
 /**

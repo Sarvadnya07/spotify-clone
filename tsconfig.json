@@ -21,9 +21,11 @@
       "@components/*": ["src/components/*"],
       "@pages/*": ["src/pages/*"],
       "@hooks/*": ["src/hooks/*"],
-      "@context/*": ["src/context/*"],
+      "@features/*": ["src/features/*"],
+      "@core/*": ["src/core/*"],
       "@assets/*": ["src/assets/*"],
-      "@utils/*": ["src/utils/*"],
+      "@services/*": ["src/services/*"],
+      "@store/*": ["src/store/*"],
       "@styles/*": ["src/styles/*"]
     }
   },

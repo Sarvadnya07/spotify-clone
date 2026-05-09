@@ -1,5 +1,5 @@
-import { Song, Album } from '../types';
-import { WeatherData } from './WeatherService';
+import { Song, Album } from '../core/types';
+import { WeatherData } from '../features/weather/WeatherService';
 
 /**
  * IAiService

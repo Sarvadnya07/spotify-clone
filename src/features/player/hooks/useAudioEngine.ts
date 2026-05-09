@@ -1,6 +1,6 @@
 import { useEffect, useRef, useCallback } from 'react';
-import usePlayerStore from '../store/usePlayerStore';
-import { songsData } from '../assets/assets';
+import usePlayerStore from '../../../store/usePlayerStore';
+import { songsData } from '../../../assets/assets';
 
 /**
  * Singleton Audio instance to ensure consistent state across the app lifecycle.

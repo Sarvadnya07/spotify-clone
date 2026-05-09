@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, memo } from 'react';
-import { analyser } from '../hooks/useAudioEngine';
-import usePlayerStore from '../store/usePlayerStore';
+import { analyser } from '../../features/player/hooks/useAudioEngine';
+import usePlayerStore from '../../store/usePlayerStore';
 
 /**
  * Elite Visualizer Component

@@ -17,15 +17,15 @@ function createWindow() {
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
-      preload: path.join(__dirname, 'electron-preload.js'),
+      preload: path.join(__dirname, 'preload.js'),
     },
-    icon: path.join(__dirname, 'public/favicon.ico'),
+    icon: path.join(__dirname, '../public/favicon.ico'),
   });
 
   if (isDev) {
     mainWindow.loadURL('http://localhost:5173');
   } else {
-    mainWindow.loadFile(path.join(__dirname, 'dist/index.html'));
+    mainWindow.loadFile(path.join(__dirname, '../dist/index.html'));
   }
 
   // GLOBAL HOTKEYS REGISTRATION

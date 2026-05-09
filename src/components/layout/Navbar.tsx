@@ -1,8 +1,8 @@
 import React from "react";
-import { assets } from "../assets/assets";
+import { assets } from "../../assets/assets";
 import { useNavigate } from "react-router-dom";
-import { useAuthStore } from "../store/useAuthStore";
-import { useToastStore } from "../store/useToastStore";
+import { useAuthStore } from "../../store/useAuthStore";
+import { useToastStore } from "../../store/useToastStore";
 
 /**
  * Production Navbar

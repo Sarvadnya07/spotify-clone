@@ -1,9 +1,9 @@
 import React, { useEffect, useState, useMemo } from "react";
-import Navbar from "./Navbar";
-import AlbumItem from "./AlbumItem";
-import SongItem from "./SongItem";
+import Navbar from "../components/layout/Navbar";
+import AlbumItem from "../features/music/AlbumItem";
+import SongItem from "../features/music/SongItem";
 import { musicService } from "../services/musicService";
-import { Album, Song } from "../types";
+import { Album, Song } from "../core/types";
 import { motion } from "framer-motion";
 import usePlayerStore from "../store/usePlayerStore";
 
@@ -13,7 +13,7 @@ import usePlayerStore from "../store/usePlayerStore";
  * - Surgical state subscriptions.
  * - Hardware-accelerated transitions.
  */
-const DisplayHome = () => {
+const Home = () => {
   const [albums, setAlbums] = useState<Album[]>([]);
   const [songs, setSongs] = useState<Song[]>([]);
   const [loading, setLoading] = useState(true);
@@ -129,4 +129,4 @@ const DisplayHome = () => {
   );
 };
 
-export default DisplayHome;
+export default Home;

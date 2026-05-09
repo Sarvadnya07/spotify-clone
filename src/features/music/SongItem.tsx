@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import usePlayerStore from '../store/usePlayerStore';
+import usePlayerStore from '../../store/usePlayerStore';
 
 interface SongItemProps {
   name: string;

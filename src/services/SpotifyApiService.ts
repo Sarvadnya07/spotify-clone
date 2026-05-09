@@ -1,4 +1,4 @@
-import { Album, Song } from '../types';
+import { Album, Song } from '../core/types';
 import { IMusicService } from './IMusicService';
 
 /**

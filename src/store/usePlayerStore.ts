@@ -1,8 +1,8 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { songsData } from '../assets/assets';
-import { Song, PlayerTime } from '../types';
-import { WeatherData } from '../services/WeatherService';
+import { Song, PlayerTime } from '../core/types';
+import { WeatherData } from '../features/weather/WeatherService';
 
 export type UserTier = 'Free' | 'Premium';
 

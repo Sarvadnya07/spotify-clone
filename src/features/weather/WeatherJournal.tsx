@@ -1,8 +1,8 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import usePlayerStore from '../store/usePlayerStore';
-import { songsData } from '../assets/assets';
-import Navbar from './Navbar';
+import usePlayerStore from '../../store/usePlayerStore';
+import { songsData } from '../../assets/assets';
+import Navbar from '../../components/layout/Navbar';
 
 /**
  * WeatherJournal Component - High Fidelity Timeline

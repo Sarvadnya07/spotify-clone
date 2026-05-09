@@ -1,7 +1,7 @@
 import React, { memo, useCallback } from 'react';
-import { assets } from '../assets/assets';
-import usePlayerStore from '../store/usePlayerStore';
-import Visualizer from './Visualizer';
+import { assets } from '../../assets/assets';
+import usePlayerStore from '../../store/usePlayerStore';
+import Visualizer from '../../components/animations/Visualizer';
 
 /**
  * Top-Tier High Performance Player

@@ -4,24 +4,24 @@ import React, {
   memo,
   useCallback,
 } from "react";
-import Sidebar from "./components/Sidebar";
-import Player from "./components/Player";
-import Display from "./components/Display";
-import Lyrics from "./components/Lyrics";
-import Queue from "./components/Queue";
-import FriendActivity from "./components/FriendActivity";
-import DJOverlay from "./components/DJOverlay";
-import Miniplayer from "./components/Miniplayer";
-import ToastContainer from "./components/ToastContainer";
-import ShortcutsModal from "./components/common/ShortcutsModal";
-import ErrorBoundary from "./components/common/ErrorBoundary";
-import ReactiveBackground from "./components/ReactiveBackground";
-import { useAudioEngine } from "./hooks/useAudioEngine";
+import Sidebar from "./components/layout/Sidebar";
+import Player from "./features/player/Player";
+import Display from "./components/layout/Display";
+import Lyrics from "./features/player/Lyrics";
+import Queue from "./features/player/Queue";
+import FriendActivity from "./features/friend-activity/FriendActivity";
+import DJOverlay from "./features/player/DJOverlay";
+import Miniplayer from "./features/player/Miniplayer";
+import ToastContainer from "./components/ui/ToastContainer";
+import ShortcutsModal from "./components/ui/ShortcutsModal";
+import ErrorBoundary from "./components/ui/ErrorBoundary";
+import ReactiveBackground from "./components/animations/ReactiveBackground";
+import { useAudioEngine } from "./features/player/hooks/useAudioEngine";
 import { useKeyboardShortcuts } from "./hooks/useKeyboardShortcuts";
 import { useElectronHotkeys } from "./hooks/useElectronHotkeys";
 import { useWeather } from "./hooks/useWeather";
 import usePlayerStore from "./store/usePlayerStore";
-import ErrorToast from "./components/ErrorToast";
+import ErrorToast from "./components/ui/ErrorToast";
 
 /**
  * App Root - Production Hardened

@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import usePlayerStore from '../store/usePlayerStore';
-import { assets } from '../assets/assets';
+import usePlayerStore from '../../store/usePlayerStore';
+import { assets } from '../../assets/assets';
 
 interface MiniplayerProps {
   isOpen: boolean;

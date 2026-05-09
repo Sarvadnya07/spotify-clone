@@ -1,9 +1,9 @@
 import { StrictMode, Suspense, useEffect } from "react";
 import { createRoot } from "react-dom/client";
 import App from "./App";
-import "./index.css";
+import "./styles/global.css";
 import { BrowserRouter } from "react-router-dom";
-import ErrorBoundary from "./components/common/ErrorBoundary";
+import ErrorBoundary from "./components/ui/ErrorBoundary";
 
 /* -----------------------------------------------------
    ⚡ Root Element Lookup (failsafe)

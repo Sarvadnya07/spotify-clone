@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import usePlayerStore from '../store/usePlayerStore';
+import usePlayerStore from '../../store/usePlayerStore';
 import { motion } from 'framer-motion';
 
 /**
@@ -29,7 +29,7 @@ const WeatherHub = () => {
                             {currentWeather?.temp || 24}°
                         </span>
                         <span className="text-[10px] font-bold text-[#a7a7a7] uppercase tracking-widest mt-1">
-                            {currentWeather?.location || 'Global'}
+                            {currentWeather?.city || 'Global'}
                         </span>
                     </div>
                     <div className="flex flex-col items-end gap-1.5">

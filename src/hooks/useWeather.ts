@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { weatherService, WeatherData } from '../services/WeatherService';
+import { weatherService, WeatherData } from '../features/weather/WeatherService';
 import usePlayerStore from '../store/usePlayerStore';
 import { useToastStore } from '../store/useToastStore';
 

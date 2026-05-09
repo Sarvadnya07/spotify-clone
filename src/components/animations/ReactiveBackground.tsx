@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from 'react';
-import { useVisualizer } from '../hooks/useVisualizer';
-import usePlayerStore from '../store/usePlayerStore';
-import { weatherService } from '../services/WeatherService';
+import { useVisualizer } from '../../hooks/useVisualizer';
+import usePlayerStore from '../../store/usePlayerStore';
+import { weatherService } from '../../features/weather/WeatherService';
 
 /**
  * ReactiveBackground Component
