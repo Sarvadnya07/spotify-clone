@@ -35,7 +35,7 @@ const Search = () => {
       <div className="flex-grow overflow-y-auto px-6 md:px-10 pt-10 pb-40 custom-scrollbar">
         {/* Search Header */}
         <div className="mb-12">
-          <h1 className="text-5xl font-black tracking-tighter mb-8 text-white text-glow">Search</h1>
+          <h1 className="text-5xl font-black tracking-tighter mb-8 text-white">Search</h1>
           <div className="relative group max-w-2xl">
             <input 
               type="text" 
@@ -63,7 +63,7 @@ const Search = () => {
                 {categories.map((cat, i) => (
                   <div 
                     key={cat.name}
-                    className={`aspect-square rounded-lg bg-gradient-to-br ${cat.color} p-6 cursor-pointer relative overflow-hidden group hover:scale-[1.02] transition-all duration-500 shadow-2xl`}
+                    className={`aspect-square rounded-lg bg-gradient-to-br ${cat.color} p-6 cursor-pointer relative overflow-hidden group hover:scale-[1.02] transition-all duration-500`}
                   >
                     <span className="text-2xl font-black tracking-tighter text-white relative z-10">{cat.name}</span>
                     <div className="absolute -right-4 -bottom-4 w-24 h-24 bg-white/10 rotate-[25deg] group-hover:rotate-[15deg] transition-transform duration-700" />

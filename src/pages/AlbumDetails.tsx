@@ -39,7 +39,7 @@ const AlbumDetails = () => {
                     
                     <div className="flex flex-col gap-3 mb-2">
                         <span className="text-[11px] font-black uppercase tracking-[0.3em] text-text-muted">Album</span>
-                        <h2 className="text-5xl md:text-7xl font-black tracking-tighter text-white leading-none text-glow">{albumData.name}</h2>
+                        <h2 className="text-5xl md:text-7xl font-black tracking-tighter text-white leading-none">{albumData.name}</h2>
                         <p className="text-sm font-bold text-text-muted max-w-2xl mt-2 leading-relaxed opacity-80">{albumData.desc}</p>
                         
                         <div className="flex items-center gap-6 mt-8">
@@ -78,11 +78,11 @@ const AlbumDetails = () => {
                             <div 
                                 key={item.id}
                                 onClick={() => playWithId(item.id)}
-                                className="grid grid-cols-3 sm:grid-cols-4 gap-4 px-4 py-3 rounded-md hover:bg-white/[0.05] cursor-pointer group transition-all duration-300 border border-transparent hover:border-white/5"
+                                className="grid grid-cols-3 sm:grid-cols-4 gap-4 px-4 py-3 rounded-md hover:bg-white/[0.05] cursor-pointer group transition-all duration-200 border border-transparent hover:border-white/5 will-change-transform active:scale-[0.99]"
                             >
                                 <div className="flex items-center gap-4 min-w-0">
                                     <span className="w-4 text-center text-xs font-bold text-text-dim group-hover:text-white tabular-nums">{index + 1}</span>
-                                    <img className="w-10 h-10 rounded shadow-2xl group-hover:scale-110 transition-transform duration-500" src={item.image} alt={item.name} />
+                                    <img className="w-10 h-10 rounded shadow-md" src={item.image} alt={item.name} />
                                     <div className="flex flex-col min-w-0">
                                         <span className="text-sm font-black text-white truncate group-hover:text-primary transition-colors">{item.name}</span>
                                         <span className="text-[11px] text-text-muted font-bold truncate uppercase tracking-widest opacity-60">{item.desc}</span>

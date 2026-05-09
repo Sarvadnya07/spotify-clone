@@ -81,7 +81,7 @@ const Home = () => {
         {/* TOP SECTION: FEATURED CHARTS */}
         <section>
           <div className="flex items-center justify-between mb-6">
-            <h1 className="text-2xl font-black text-white tracking-tighter uppercase text-glow">Featured Charts</h1>
+            <h1 className="text-2xl font-black text-white tracking-tighter uppercase">Featured Charts</h1>
             <button className="text-[10px] font-black text-text-muted uppercase tracking-[0.2em] hover:text-white transition-colors">Show All</button>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
@@ -94,7 +94,7 @@ const Home = () => {
         {/* BOTTOM SECTION: TRENDING NOW */}
         <section>
           <div className="flex items-center justify-between mb-6">
-            <h1 className="text-2xl font-black text-white tracking-tighter uppercase text-glow">Trending Now</h1>
+            <h1 className="text-2xl font-black text-white tracking-tighter uppercase">Trending Now</h1>
             <button className="text-[10px] font-black text-text-muted uppercase tracking-[0.2em] hover:text-white transition-colors">Show All</button>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 pb-20">

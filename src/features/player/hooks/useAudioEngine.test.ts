@@ -1,7 +1,7 @@
 import { renderHook } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { useAudioEngine, audioInstance } from './useAudioEngine';
-import { usePlayerStore } from '@store/usePlayerStore';
+import usePlayerStore from '@store/usePlayerStore';
 
 describe('useAudioEngine', () => {
   beforeEach(() => {

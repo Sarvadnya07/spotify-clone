@@ -19,7 +19,7 @@ const Navbar = () => {
   };
 
   return (
-    <header className="sticky top-0 h-16 bg-background/60 backdrop-blur-3xl flex items-center justify-between px-8 z-40 border-b border-white/[0.03]">
+    <header className="sticky top-0 h-16 bg-black flex items-center justify-between px-8 z-40 border-b border-white/5">
       <div className="flex items-center gap-3">
         <button onClick={() => navigate(-1)} className="w-8 h-8 rounded-full bg-black/40 flex items-center justify-center hover:bg-black/60 transition-all border border-white/5 active:scale-95">
           <img className="w-4 opacity-60" src={assets.arrow_left} alt="<" />

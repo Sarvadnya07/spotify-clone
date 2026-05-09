@@ -39,7 +39,7 @@ const Visualizer: React.FC = () => {
       }
 
       rafRef.current = requestAnimationFrame(draw);
-      analyser.getByteFrequencyData(dataArray);
+      analyser.getByteFrequencyData(dataArray as any);
 
       // Clear with slight fade for motion blur effect
       ctx.clearRect(0, 0, rect.width, rect.height);
@@ -56,31 +56,15 @@ const Visualizer: React.FC = () => {
         const step = Math.floor(bufferLength / barCount);
         let sum = 0;
         for (let j = 0; j < step; j++) {
-          sum += dataArray[i * step + j];
+          sum += (dataArray as Uint8Array)[i * step + j];
         }
         const average = sum / step;
         const barHeight = (average / 255) * rect.height;
 
-        const gradient = ctx.createLinearGradient(0, rect.height, 0, 0);
-        gradient.addColorStop(0, '#1db954');
-        gradient.addColorStop(1, '#1ed760');
-
-        ctx.fillStyle = gradient;
-        
-        // Manual rounded rect drawing for better compatibility and control
-        const radius = 2;
+        // High-performance minimalist bar drawing
+        ctx.fillStyle = '#1db954';
         const y = rect.height - barHeight;
-        
-        ctx.beginPath();
-        ctx.moveTo(x + radius, y);
-        ctx.lineTo(x + barWidth - radius, y);
-        ctx.quadraticCurveTo(x + barWidth, y, x + barWidth, y + radius);
-        ctx.lineTo(x + barWidth, rect.height);
-        ctx.lineTo(x, rect.height);
-        ctx.lineTo(x, y + radius);
-        ctx.quadraticCurveTo(x, y, x + radius, y);
-        ctx.closePath();
-        ctx.fill();
+        ctx.fillRect(x, y, barWidth, barHeight);
 
         x += barWidth + gap;
       }

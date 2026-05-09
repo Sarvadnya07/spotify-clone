@@ -1,7 +1,7 @@
 import React, { memo } from "react";
 import usePlayerStore from "../../store/usePlayerStore";
 import { useToastStore } from "../../store/useToastStore";
-import { assets } from "../../assets/assets";
+import { assets, songsData } from "../../assets/assets";
 import { motion, AnimatePresence } from "framer-motion";
 import { socketService } from "../../services/SocketService";
 
@@ -23,13 +23,13 @@ const FriendActivity = () => {
   const [liveFriends, setLiveFriends] = React.useState(friends);
 
   React.useEffect(() => {
-    const unsubscribe = socketService.on('SOCIAL_UPDATE', (data) => {
+    const unsubscribe = socketService.on('SOCIAL_UPDATE', (data: { user: string, trackId: number }) => {
       setLiveFriends(prev => {
         const index = prev.findIndex(f => f.name === data.user);
         if (index === -1) return prev;
         
         const updated = [...prev];
-        const song = assets.songsData.find(s => s.id === data.trackId);
+        const song = songsData.find((s: any) => s.id === data.trackId);
         if (song) {
           updated[index] = { 
             ...updated[index], 
@@ -52,7 +52,7 @@ const FriendActivity = () => {
   };
 
   return (
-    <div className="w-[300px] h-full hidden xl:flex flex-col bg-black/40 backdrop-blur-3xl border-l border-white/5 select-none relative z-40">
+    <div className="w-[300px] h-full hidden xl:flex flex-col bg-black/60 border-l border-white/5 select-none relative z-40">
       <div className="p-8 flex items-center justify-between">
         <div className="flex flex-col">
           <span className="text-[9px] font-black tracking-[0.4em] text-gray-500 uppercase opacity-60">Social</span>

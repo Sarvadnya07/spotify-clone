@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { audioContext } from '../hooks/useAudioEngine';
-import usePlayerStore from '../../../store/usePlayerStore';
+import { useToastStore } from '../../../store/useToastStore';
 
 /**
  * SpatialControls
@@ -9,7 +9,7 @@ import usePlayerStore from '../../../store/usePlayerStore';
  */
 const SpatialControls: React.FC = () => {
   const [mode, setMode] = useState<'standard' | 'studio' | 'concert'>('standard');
-  const { addToast } = usePlayerStore();
+  const { addToast } = useToastStore();
 
   const setAcousticMode = (newMode: 'standard' | 'studio' | 'concert') => {
     if (!audioContext) return;

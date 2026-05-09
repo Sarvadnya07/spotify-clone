@@ -34,7 +34,7 @@ const Player = () => {
   }, []);
 
   return (
-    <footer className="h-[96px] bg-background border-t border-white/5 px-6 flex items-center justify-between z-[100] relative select-none gpu backdrop-blur-3xl">
+    <footer className="h-[96px] bg-background border-t border-white/5 px-6 flex items-center justify-between z-[100] relative select-none gpu">
       
       {/* TRACK INFO - OPTIMIZED */}
       <div className="flex items-center gap-4 w-[30%] min-w-[280px]">
@@ -82,7 +82,7 @@ const Player = () => {
           <span className="text-[11px] text-text-dim font-bold tabular-nums w-10 text-right tracking-tighter">{formatTime(time.currentTime)}</span>
           <div className="flex-grow h-1.5 bg-white/10 rounded-full relative group cursor-pointer overflow-hidden">
             <div 
-              className="absolute inset-y-0 left-0 bg-white group-hover:bg-primary transition-colors rounded-full shadow-[0_0_8px_rgba(255,255,255,0.4)]"
+              className="absolute inset-y-0 left-0 bg-white group-hover:bg-primary transition-colors rounded-full"
               style={{ width: 'var(--player-progress, 0%)' }}
             />
           </div>

@@ -50,7 +50,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onShowShortcuts }) => {
 
   return (
     <aside
-      className="w-[260px] h-full flex flex-col hidden lg:flex bg-[#000000] border-r border-white/5 select-none z-50 gpu"
+      className="w-[280px] h-full flex flex-col bg-surface border-r border-white/5 select-none relative z-40"
       role="navigation"
     >
       <WeatherHub />

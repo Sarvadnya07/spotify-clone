@@ -1,4 +1,5 @@
 import React, { memo } from 'react';
+import { assets } from '../../assets/assets';
 import { useNavigate } from 'react-router-dom';
 
 interface AlbumItemProps {
@@ -18,11 +19,11 @@ const AlbumItem: React.FC<AlbumItemProps> = ({ image, name, desc, id }) => {
   return (
     <div 
       onClick={() => navigate(`/album/${id}`)} 
-      className="group p-4 rounded-lg bg-surface/40 hover:bg-white/[0.08] transition-all duration-300 cursor-pointer border border-white/5 backdrop-blur-xl relative overflow-hidden will-change-transform active:scale-[0.98]"
+      className="group p-4 rounded-lg bg-surface/60 hover:bg-white/[0.05] transition-all duration-200 cursor-pointer border border-white/5 relative overflow-hidden will-change-transform active:scale-[0.98]"
     >
-      <div className="relative mb-4 aspect-square overflow-hidden rounded-md shadow-2xl">
+      <div className="relative mb-4 aspect-square overflow-hidden rounded-md shadow-lg">
         <img 
-          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out" 
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out" 
           src={image} 
           alt={name} 
         />
