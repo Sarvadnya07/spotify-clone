@@ -11,13 +11,20 @@ import { weatherService } from '../../features/weather/WeatherService';
 const ReactiveBackground: React.FC = () => {
   const glowRef = useRef<HTMLDivElement>(null);
   const intensity = useVisualizer();
-  const { currentWeather } = usePlayerStore();
+  const { currentWeather, accentColor } = usePlayerStore();
 
-  // Weather Theme Logic (Memoized via component lifecycle)
-  const weatherTheme = React.useMemo(() => {
-    if (!currentWeather) return { primary: '#1db954', secondary: '#1ed760', blur: 'rgba(29, 185, 84, 0.1)' };
-    return weatherService.getWeatherTheme(currentWeather.condition);
-  }, [currentWeather]);
+  // High-Fidelity Theming: Blending Weather and Album Art
+  const theme = React.useMemo(() => {
+    const base = currentWeather 
+      ? weatherService.getWeatherTheme(currentWeather.condition)
+      : { primary: '#1db954', secondary: '#1ed760', blur: 'rgba(29, 185, 84, 0.1)' };
+
+    return {
+      primary: accentColor || base.primary,
+      secondary: base.secondary,
+      glow: `${accentColor}33` || base.blur // Use 20% opacity for glow
+    };
+  }, [currentWeather, accentColor]);
 
   // Direct DOM Update for the Glow - ZERO REACT RE-RENDERS for the main tree
   useEffect(() => {
@@ -32,10 +39,10 @@ const ReactiveBackground: React.FC = () => {
     <>
       {/* Base Weather Gradient - Static except when weather changes */}
       <div 
-        className="fixed inset-0 bg-gradient-animate z-[-2] pointer-events-none"
+        className="fixed inset-0 bg-gradient-animate z-[-2] pointer-events-none transition-all duration-1000"
         style={{ 
-          '--weather-primary': weatherTheme.primary,
-          '--weather-secondary': weatherTheme.secondary,
+          '--weather-primary': theme.primary,
+          '--weather-secondary': theme.secondary,
         } as any}
       />
 
@@ -44,7 +51,7 @@ const ReactiveBackground: React.FC = () => {
         ref={glowRef}
         className="fixed inset-0 pointer-events-none z-[-1] transition-opacity duration-300 ease-out"
         style={{ 
-          background: `radial-gradient(circle at 50% 50%, ${weatherTheme.blur} 0%, transparent 70%)`,
+          background: `radial-gradient(circle at 50% 50%, ${theme.glow} 0%, transparent 70%)`,
           willChange: 'transform, opacity, filter'
         }}
       />

@@ -58,28 +58,55 @@ class AiDjService implements IAiService {
 
   semanticSearch(query: string, songs: Song[]): Song[] {
     const q = query.toLowerCase();
-    const vibes = {
-      chill: ['relax', 'calm', 'soft', 'slow', 'peaceful'],
-      energetic: ['hype', 'fast', 'beat', 'dance', 'workout'],
-      focus: ['lofi', 'study', 'deep', 'ambient'],
-      happy: ['upbeat', 'feel good', 'sun', 'bright']
+    
+    // Advanced Vibe Mapping (Production Grade)
+    const vibeProfiles: Record<string, { keywords: string[], weights: Record<string, number> }> = {
+      chill: { 
+        keywords: ['relax', 'calm', 'soft', 'slow', 'peaceful', 'lofi', 'ambient', 'chill'], 
+        weights: { 'acoustic': 0.8, 'lo-fi': 0.9, 'jazz': 0.7 } 
+      },
+      energetic: { 
+        keywords: ['hype', 'fast', 'beat', 'dance', 'workout', 'power', 'gym', 'electronic'], 
+        weights: { 'dance': 0.9, 'pop': 0.7, 'high energy': 1.0 } 
+      },
+      focus: { 
+        keywords: ['study', 'deep', 'work', 'concentration', 'brain', 'minimal'], 
+        weights: { 'instrumental': 0.9, 'classical': 0.8, 'deep': 0.7 } 
+      },
+      atmospheric: { 
+        keywords: ['mood', 'space', 'cinematic', 'night', 'stars', 'ethereal'], 
+        weights: { 'ambient': 1.0, 'synth': 0.7, 'reverb': 0.8 } 
+      }
     };
 
-    let targetVibe: string | null = null;
-    for (const [vibe, keywords] of Object.entries(vibes)) {
-      if (keywords.some(k => q.includes(k)) || q.includes(vibe)) {
-        targetVibe = vibe;
-        break;
+    // 1. Keyword Scoring
+    const scoredSongs = songs.map(song => {
+      let score = 0;
+      const songText = `${song.name} ${song.desc}`.toLowerCase();
+      
+      // Match against vibe profiles
+      for (const [profile, data] of Object.entries(vibeProfiles)) {
+        if (data.keywords.some(k => q.includes(k))) {
+          // If query matches a vibe, score based on song metadata
+          if (songText.includes(profile)) score += 10;
+          for (const [meta, weight] of Object.entries(data.weights)) {
+            if (songText.includes(meta)) score += weight * 10;
+          }
+        }
       }
-    }
 
-    if (!targetVibe) return songs.filter(s => s.name.toLowerCase().includes(q));
+      // Basic text match bonus
+      if (songText.includes(q)) score += 5;
+      
+      return { song, score };
+    });
 
-    return songs.filter(s => {
-      if (targetVibe === 'chill') return s.id % 2 === 0;
-      if (targetVibe === 'energetic') return s.id % 2 !== 0;
-      return true;
-    }).slice(0, 5);
+    // 2. Rank and Filter
+    return scoredSongs
+      .filter(s => s.score > 0 || s.song.name.toLowerCase().includes(q))
+      .sort((a, b) => b.score - a.score)
+      .map(s => s.song)
+      .slice(0, 8);
   }
 }
 

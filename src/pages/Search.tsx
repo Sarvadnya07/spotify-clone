@@ -2,6 +2,7 @@ import React, { useState, useMemo, memo } from 'react';
 import Navbar from '../components/layout/Navbar';
 import { songsData } from '../assets/assets';
 import SongItem from '../features/music/SongItem';
+import { aiDjService } from '../services/AiDjService';
 import { motion, AnimatePresence } from 'framer-motion';
 
 /**
@@ -14,10 +15,8 @@ const Search = () => {
 
   const filteredSongs = useMemo(() => {
     if (!query) return songsData.slice(0, 8);
-    return songsData.filter(s => 
-      s.name.toLowerCase().includes(query.toLowerCase()) || 
-      s.desc.toLowerCase().includes(query.toLowerCase())
-    );
+    // Elite Move: Use AI Semantic Search for "vibe" queries
+    return aiDjService.semanticSearch(query, songsData);
   }, [query]);
 
   const categories = [

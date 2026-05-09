@@ -2,7 +2,8 @@ import React, { memo } from "react";
 import usePlayerStore from "../../store/usePlayerStore";
 import { useToastStore } from "../../store/useToastStore";
 import { assets } from "../../assets/assets";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import { socketService } from "../../services/SocketService";
 
 /**
  * Elite Social Hub — Friend Activity Refined
@@ -18,6 +19,32 @@ const FriendActivity = () => {
     { name: "Sarah", song: "Levitating", artist: "Dua Lipa", id: 2, color: "bg-pink-500" },
     { name: "Mike", song: "Stay", artist: "Justin Bieber", id: 1, color: "bg-amber-500" },
   ];
+
+  const [liveFriends, setLiveFriends] = React.useState(friends);
+
+  React.useEffect(() => {
+    const unsubscribe = socketService.on('SOCIAL_UPDATE', (data) => {
+      setLiveFriends(prev => {
+        const index = prev.findIndex(f => f.name === data.user);
+        if (index === -1) return prev;
+        
+        const updated = [...prev];
+        const song = assets.songsData.find(s => s.id === data.trackId);
+        if (song) {
+          updated[index] = { 
+            ...updated[index], 
+            song: song.name, 
+            artist: song.desc.split('•')[0].trim() 
+          };
+        }
+        return updated;
+      });
+      
+      addToast(`${data.user} is now listening to new music!`, 'info');
+    });
+
+    return () => unsubscribe();
+  }, [addToast]);
 
   const handleJoin = (friendName: string, songId: number) => {
     playWithId(songId);
@@ -37,46 +64,49 @@ const FriendActivity = () => {
       </div>
 
       <div className="flex-grow overflow-y-auto px-6 space-y-8 hide-scrollbar pb-32">
-        {friends.map((friend, index) => (
-          <motion.div
-            key={friend.name}
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: index * 0.1 }}
-            className="group relative cursor-default"
-          >
-            <div className="flex gap-4">
-              <div className="relative flex-shrink-0">
-                <div className={`w-11 h-11 rounded-[14px] flex items-center justify-center border border-white/10 shadow-lg group-hover:scale-105 transition-transform duration-500 ${friend.color}`}>
-                  <span className="text-sm font-black text-white/90">{friend.name[0]}</span>
-                </div>
-                <div className="absolute -bottom-1 -right-1 w-3.5 h-3.5 bg-[#1db954] border-[2.5px] border-black rounded-full shadow-lg" />
-              </div>
-              
-              <div className="flex flex-col min-w-0 flex-grow">
-                <div className="flex justify-between items-center mb-1">
-                  <span className="font-bold text-[13px] text-gray-300 group-hover:text-white transition tracking-tight">{friend.name}</span>
-                  <span className="text-[9px] font-bold text-gray-600 uppercase tracking-widest opacity-60">2m</span>
-                </div>
-                <div className="flex flex-col gap-0.5 min-w-0">
-                  <p className="text-[11px] font-bold text-[#1db954] truncate group-hover:translate-x-1 transition-transform">
-                    {friend.song}
-                  </p>
-                  <p className="text-[10px] text-gray-500 font-bold uppercase tracking-wider truncate opacity-40">
-                    {friend.artist}
-                  </p>
+        <AnimatePresence>
+          {liveFriends.map((friend, index) => (
+            <motion.div
+              key={friend.name}
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ delay: index * 0.1 }}
+              className="group relative cursor-default"
+            >
+              <div className="flex gap-4">
+                <div className="relative flex-shrink-0">
+                  <div className={`w-11 h-11 rounded-[14px] flex items-center justify-center border border-white/10 shadow-lg group-hover:scale-105 transition-transform duration-500 ${friend.color}`}>
+                    <span className="text-sm font-black text-white/90">{friend.name[0]}</span>
+                  </div>
+                  <div className="absolute -bottom-1 -right-1 w-3.5 h-3.5 bg-[#1db954] border-[2.5px] border-black rounded-full shadow-lg" />
                 </div>
                 
-                <button
-                  onClick={() => handleJoin(friend.name, friend.id)}
-                  className="mt-3 w-full py-2 rounded-xl bg-white text-black text-[9px] font-black tracking-[0.2em] opacity-0 group-hover:opacity-100 transition-all shadow-xl hover:scale-105 active:scale-95 uppercase"
-                >
-                  Join Session
-                </button>
+                <div className="flex flex-col min-w-0 flex-grow">
+                  <div className="flex justify-between items-center mb-1">
+                    <span className="font-bold text-[13px] text-gray-300 group-hover:text-white transition tracking-tight">{friend.name}</span>
+                    <span className="text-[9px] font-bold text-gray-600 uppercase tracking-widest opacity-60">Live</span>
+                  </div>
+                  <div className="flex flex-col gap-0.5 min-w-0">
+                    <p className="text-[11px] font-bold text-[#1db954] truncate group-hover:translate-x-1 transition-transform">
+                      {friend.song}
+                    </p>
+                    <p className="text-[10px] text-gray-500 font-bold uppercase tracking-wider truncate opacity-40">
+                      {friend.artist}
+                    </p>
+                  </div>
+                  
+                  <button
+                    onClick={() => handleJoin(friend.name, friend.id)}
+                    className="mt-3 w-full py-2 rounded-xl bg-white text-black text-[9px] font-black tracking-[0.2em] opacity-0 group-hover:opacity-100 transition-all shadow-xl hover:scale-105 active:scale-95 uppercase"
+                  >
+                    Join Session
+                  </button>
+                </div>
               </div>
-            </div>
-          </motion.div>
-        ))}
+            </motion.div>
+          ))}
+        </AnimatePresence>
 
         {/* PROMO CARD */}
         <div className="mt-12 p-8 rounded-[2rem] bg-white/[0.02] border border-white/5 text-center relative overflow-hidden group">

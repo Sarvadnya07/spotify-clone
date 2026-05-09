@@ -25,6 +25,7 @@ interface PlayerState {
   showQueue: boolean;
   showMiniplayer: boolean;
   currentWeather: WeatherData | null;
+  accentColor: string;
   queue: number[];
   contextQueue: number[]; // The sequence of songs in current context (album/playlist)
   likedSongs: number[];
@@ -49,6 +50,7 @@ interface PlayerState {
   toggleQueue: () => void;
   toggleMiniplayer: () => void;
   setWeather: (weather: WeatherData) => void;
+  setAccentColor: (color: string) => void;
   addToQueue: (id: number) => void;
   removeFromQueue: (id: number) => void;
   clearQueue: () => void;
@@ -75,6 +77,7 @@ const usePlayerStore = create<PlayerState>()(
       showQueue: false,
       showMiniplayer: false,
       currentWeather: null,
+      accentColor: '#1DB954',
       queue: [],
       contextQueue: songsData.map(s => s.id),
       likedSongs: [],
@@ -158,6 +161,7 @@ const usePlayerStore = create<PlayerState>()(
       toggleMiniplayer: () => set((state) => ({ showMiniplayer: !state.showMiniplayer })),
       
       setWeather: (weather) => set({ currentWeather: weather }),
+      setAccentColor: (color) => set({ accentColor: color }),
       
       addToQueue: (id) => set((state) => {
         const exists = songsData.some((song) => song.id === id);

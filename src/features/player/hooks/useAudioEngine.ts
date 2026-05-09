@@ -1,5 +1,6 @@
 import { useEffect, useRef, useCallback } from 'react';
 import usePlayerStore from '../../../store/usePlayerStore';
+import { colorService } from '../../../services/ColorService';
 import { songsData } from '../../../assets/assets';
 
 /**
@@ -39,6 +40,7 @@ export const useAudioEngine = () => {
   const playNext = usePlayerStore(state => state.playNext);
   const playPrevious = usePlayerStore(state => state.playPrevious);
   const getNextTrack = usePlayerStore(state => state.getNextTrack);
+  const setAccentColor = usePlayerStore(state => state.setAccentColor);
 
   /**
    * Initializes the AudioContext and AnalyserNode on first user interaction
@@ -174,7 +176,7 @@ export const useAudioEngine = () => {
     };
   }, [setIsReady, setIsBuffering, setError, setPlayStatus, syncProgress, playNext, initVisualizer]);
 
-  // Sync Track Source
+  // Sync Track Source & Extraction
   useEffect(() => {
     if (!track) return;
     const audio = audioInstance;
@@ -184,8 +186,11 @@ export const useAudioEngine = () => {
       setIsReady(false);
       audio.src = track.file;
       audio.load();
+      
+      // Dynamic Theming: Extract color from new track
+      colorService.getDominantColor(track.image).then(setAccentColor);
     }
-  }, [track, setIsReady]);
+  }, [track, setIsReady, setAccentColor]);
 
   // Sync Play/Pause
   useEffect(() => {
