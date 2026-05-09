@@ -2,6 +2,32 @@ import { Album, Song } from '../core/types';
 import { IMusicService } from './IMusicService';
 
 /**
+ * Spotify API Typings
+ */
+interface SpotifyImage {
+  url: string;
+}
+
+interface SpotifyArtist {
+  name: string;
+}
+
+interface SpotifyAlbum {
+  id: string;
+  name: string;
+  images: SpotifyImage[];
+  artists: SpotifyArtist[];
+}
+
+interface SpotifyTrack {
+  id: string;
+  name: string;
+  album: SpotifyAlbum;
+  artists: SpotifyArtist[];
+  preview_url: string;
+}
+
+/**
  * SpotifyApiService
  * Implementation of IMusicService that connects to the real Spotify Web API.
  * NOTE: Requires a valid Access Token obtained via OAuth2.
@@ -33,8 +59,8 @@ class SpotifyApiService implements IMusicService {
   async getAlbums(): Promise<Album[]> {
     // Example: Fetching "New Releases" or "Featured Playlists"
     const data = await this.fetchFromSpotify('/browse/new-releases');
-    return data.albums.items.map((item: any) => ({
-      id: item.id,
+    return data.albums.items.map((item: SpotifyAlbum) => ({
+      id: item.id as any,
       name: item.name,
       image: item.images[0]?.url,
       desc: item.artists[0]?.name,
@@ -56,8 +82,8 @@ class SpotifyApiService implements IMusicService {
   async getSongs(): Promise<Song[]> {
     // Example: Fetching User's Top Tracks
     const data = await this.fetchFromSpotify('/me/top/tracks');
-    return data.items.map((item: any) => ({
-      id: item.id,
+    return data.items.map((item: SpotifyTrack) => ({
+      id: item.id as any,
       name: item.name,
       image: item.album.images[0]?.url,
       file: item.preview_url, // Spotify previews are 30s
@@ -81,8 +107,8 @@ class SpotifyApiService implements IMusicService {
   async search(query: string): Promise<{ songs: Song[], albums: Album[] }> {
     const data = await this.fetchFromSpotify(`/search?q=${encodeURIComponent(query)}&type=track,album`);
     
-    const songs = data.tracks.items.map((item: any) => ({
-      id: item.id,
+    const songs = data.tracks.items.map((item: SpotifyTrack) => ({
+      id: item.id as any,
       name: item.name,
       image: item.album.images[0]?.url,
       file: item.preview_url,
@@ -90,8 +116,8 @@ class SpotifyApiService implements IMusicService {
       duration: '0:30'
     }));
 
-    const albums = data.albums.items.map((item: any) => ({
-      id: item.id,
+    const albums = data.albums.items.map((item: SpotifyAlbum) => ({
+      id: item.id as any,
       name: item.name,
       image: item.images[0]?.url,
       desc: item.artists[0]?.name,

@@ -24,22 +24,67 @@ class WeatherService {
   };
 
   async getCurrentWeather(): Promise<WeatherData> {
+    const apiKey = import.meta.env.VITE_WEATHER_API_KEY;
+    const provider = import.meta.env.VITE_WEATHER_PROVIDER || 'simulation';
+
+    if (apiKey && provider !== 'simulation') {
+      try {
+        // Production Grade: Real-time Geolocation + OpenWeather API
+        const pos = await new Promise<GeolocationPosition>((res, rej) => 
+          navigator.geolocation.getCurrentPosition(res, rej)
+        );
+        
+        const { latitude, longitude } = pos.coords;
+        const response = await fetch(
+          `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${apiKey}&units=metric`
+        );
+        const data = await response.json();
+
+        const conditionMap: Record<string, WeatherCondition> = {
+          'Clear': 'Clear',
+          'Rain': 'Rain',
+          'Drizzle': 'Rain',
+          'Clouds': 'Clouds',
+          'Snow': 'Snow',
+          'Thunderstorm': 'Storm',
+          'Mist': 'Clouds',
+          'Smoke': 'Clouds',
+          'Haze': 'Clouds',
+          'Dust': 'Clouds',
+          'Fog': 'Clouds',
+          'Sand': 'Clouds',
+          'Ash': 'Clouds',
+          'Squall': 'Storm',
+          'Tornado': 'Storm'
+        };
+
+        const condition = conditionMap[data.weather[0].main] || 'Clear';
+        const isNight = new Date().getHours() > 20 || new Date().getHours() < 6;
+
+        return {
+          temp: Math.round(data.main.temp),
+          condition: isNight ? 'Night' : condition,
+          city: data.name,
+          mood: this.moodMap[isNight ? 'Night' : condition]
+        };
+      } catch (error) {
+        console.warn("[WEATHER] Production API failed, falling back to simulation:", error);
+      }
+    }
+
+    // Fallback Simulation (High-Fidelity)
     return new Promise((resolve) => {
-      // Simulate Geolocation & API Latency
       setTimeout(() => {
         const hour = new Date().getHours();
         const isNight = hour > 20 || hour < 6;
-        
-        // Mock randomized weather for demo purposes
         const conditions: WeatherCondition[] = ['Clear', 'Rain', 'Clouds'];
         const randomCondition = conditions[Math.floor(Math.random() * conditions.length)];
-        
         const condition = isNight ? 'Night' : randomCondition;
 
         resolve({
           temp: 24,
           condition: condition,
-          city: 'London', // In production, use reverse geocoding
+          city: 'London',
           mood: this.moodMap[condition]
         });
       }, 1000);

@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import usePlayerStore from '../store/usePlayerStore';
-import { analyser } from './useAudioEngine';
+import { analyser } from '../features/player/hooks/useAudioEngine';
 
 /**
  * useVisualizer

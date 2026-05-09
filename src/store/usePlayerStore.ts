@@ -26,6 +26,7 @@ interface PlayerState {
   showMiniplayer: boolean;
   currentWeather: WeatherData | null;
   queue: number[];
+  contextQueue: number[]; // The sequence of songs in current context (album/playlist)
   likedSongs: number[];
   history: HistoryItem[]; 
   playlists: { id: string; name: string; desc: string; image: string; tracks: number[] }[];
@@ -34,7 +35,7 @@ interface PlayerState {
   play: () => void;
   pause: () => void;
   togglePlay: () => void;
-  playWithId: (id: number) => void;
+  playWithId: (id: number, context?: number[]) => void;
   playNext: () => void;
   playPrevious: () => void;
   setTime: (time: PlayerTime) => void;
@@ -53,6 +54,7 @@ interface PlayerState {
   clearQueue: () => void;
   toggleLike: (id: number) => void;
   createPlaylist: (name: string) => void;
+  getNextTrack: () => Song | null;
 }
 
 const usePlayerStore = create<PlayerState>()(
@@ -74,6 +76,7 @@ const usePlayerStore = create<PlayerState>()(
       showMiniplayer: false,
       currentWeather: null,
       queue: [],
+      contextQueue: songsData.map(s => s.id),
       likedSongs: [],
       history: [],
       playlists: [
@@ -85,51 +88,62 @@ const usePlayerStore = create<PlayerState>()(
       pause: () => set({ playStatus: false }),
       togglePlay: () => set((state) => ({ playStatus: !state.playStatus })),
       
-      playWithId: (id) => {
+      playWithId: (id, context) => {
         const track = songsData.find(s => s.id === id);
         if (track) {
-          const { currentWeather, history } = get();
+          const { currentWeather, history, contextQueue } = get();
           const newItem: HistoryItem = { 
             songId: id, 
             timestamp: Date.now(),
             weather: currentWeather || undefined
           };
           
-          const safeHistory = (history || []).filter(h => typeof h === 'object' && h !== null && (h as any).songId !== id);
+          const safeHistory = (history || []).filter(h => typeof h === 'object' && h !== null && h.songId !== id);
 
           set({
             track,
             playStatus: true,
-            history: [newItem, ...safeHistory].slice(0, 100)
+            history: [newItem, ...safeHistory].slice(0, 100),
+            contextQueue: context || contextQueue
           });
         }
       },
 
       playNext: () => {
-        const { track, queue, shuffleMode } = get();
-        if (shuffleMode) {
-          const randomIndex = Math.floor(Math.random() * songsData.length);
-          get().playWithId(songsData[randomIndex].id);
-          return;
-        }
+        const { track, queue, contextQueue, shuffleMode } = get();
+        
+        // 1. Priority: User Queue
         if (queue.length > 0) {
           const nextId = queue[0];
           set((state) => ({ queue: state.queue.slice(1) }));
           get().playWithId(nextId);
+          return;
+        }
+
+        // 2. Secondary: Context (Album/Playlist)
+        if (shuffleMode) {
+          const randomIndex = Math.floor(Math.random() * contextQueue.length);
+          get().playWithId(contextQueue[randomIndex]);
+          return;
+        }
+
+        const currentIndexInContext = contextQueue.indexOf(track.id);
+        if (currentIndexInContext !== -1 && currentIndexInContext < contextQueue.length - 1) {
+          get().playWithId(contextQueue[currentIndexInContext + 1]);
         } else {
-          const currentIndex = songsData.findIndex((song) => song.id === track.id);
-          const safeIndex = currentIndex === -1 ? 0 : currentIndex;
-          const nextIndex = (safeIndex + 1) % songsData.length;
-          get().playWithId(songsData[nextIndex].id);
+          // Loop or move to first if context ends
+          get().playWithId(contextQueue[0]);
         }
       },
 
       playPrevious: () => {
-        const { track } = get();
-        const currentIndex = songsData.findIndex((song) => song.id === track.id);
-        const safeIndex = currentIndex === -1 ? 0 : currentIndex;
-        const prevIndex = (safeIndex - 1 + songsData.length) % songsData.length;
-        get().playWithId(songsData[prevIndex].id);
+        const { track, contextQueue } = get();
+        const currentIndexInContext = contextQueue.indexOf(track.id);
+        if (currentIndexInContext !== -1 && currentIndexInContext > 0) {
+          get().playWithId(contextQueue[currentIndexInContext - 1]);
+        } else {
+          get().playWithId(contextQueue[contextQueue.length - 1]);
+        }
       },
 
       setTime: (time) => set({ time }),
@@ -170,18 +184,37 @@ const usePlayerStore = create<PlayerState>()(
           image: songsData[0].image,
           tracks: []
         }]
-      }))
+      })),
+
+      getNextTrack: () => {
+        const { track, queue, contextQueue, shuffleMode } = get();
+        if (queue.length > 0) {
+          const nextId = queue[0];
+          return songsData.find(s => s.id === nextId) || null;
+        }
+        if (shuffleMode) {
+          // Can't reliably predict next shuffle, but we can return a random one
+          return null; 
+        }
+        const currentIndexInContext = contextQueue.indexOf(track.id);
+        if (currentIndexInContext !== -1 && currentIndexInContext < contextQueue.length - 1) {
+          const nextId = contextQueue[currentIndexInContext + 1];
+          return songsData.find(s => s.id === nextId) || null;
+        }
+        return songsData.find(s => s.id === contextQueue[0]) || null;
+      }
     }),
     {
       name: 'player-storage',
       version: 2,
-      migrate: (persistedState: any, version: number) => {
+      migrate: (persistedState: unknown, version: number) => {
         if (!persistedState) return persistedState;
         if (version === 1) {
+          const state = persistedState as PlayerState;
           return {
-            ...persistedState,
-            history: (persistedState.history || []).map((id: number) => ({
-              songId: id,
+            ...state,
+            history: (state.history || []).map((item: any) => ({
+              songId: typeof item === 'number' ? item : item.songId,
               timestamp: Date.now(),
               weather: undefined
             }))

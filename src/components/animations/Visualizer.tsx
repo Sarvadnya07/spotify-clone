@@ -26,20 +26,25 @@ const Visualizer: React.FC = () => {
     canvas.height = rect.height * dpr;
     ctx.scale(dpr, dpr);
 
+    let dataArray: Uint8Array | null = null;
+    
     const draw = () => {
       if (!analyser) {
         rafRef.current = requestAnimationFrame(draw);
         return;
       }
 
-      const bufferLength = analyser.frequencyBinCount;
-      const dataArray = new Uint8Array(bufferLength);
-      
+      if (!dataArray) {
+        dataArray = new Uint8Array(analyser.frequencyBinCount);
+      }
+
       rafRef.current = requestAnimationFrame(draw);
       analyser.getByteFrequencyData(dataArray);
 
       // Clear with slight fade for motion blur effect
       ctx.clearRect(0, 0, rect.width, rect.height);
+
+      const bufferLength = dataArray.length;
 
       const barCount = 12; // Fewer, thicker bars for cleaner look
       const barWidth = (rect.width / barCount) * 0.8;

@@ -39,7 +39,7 @@ const WeatherJournal = () => {
           </p>
         </header>
 
-        <div className="relative border-l border-white/5 pl-10 ml-2 space-y-8 mb-40">
+        <div className="relative border-l border-white/5 pl-10 ml-2 space-y-8 mb-40 contain-layout">
           {history.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-64 text-center py-20">
               <div className="w-24 h-24 rounded-3xl bg-white/[0.03] border border-white/5 flex items-center justify-center mb-8 shadow-2xl">

@@ -1,7 +1,7 @@
 import React, { memo } from "react";
-import usePlayerStore from "../store/usePlayerStore";
-import { useToastStore } from "../store/useToastStore";
-import { assets } from "../assets/assets";
+import usePlayerStore from "../../store/usePlayerStore";
+import { useToastStore } from "../../store/useToastStore";
+import { assets } from "../../assets/assets";
 import { motion } from "framer-motion";
 
 /**

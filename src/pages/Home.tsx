@@ -92,7 +92,7 @@ const Home = () => {
           <div className="mb-6">
             <h2 className="text-2xl font-bold tracking-tight text-white">Featured Charts</h2>
           </div>
-          <div className="flex overflow-x-auto gap-6 pb-4 hide-scrollbar">
+          <div className="flex overflow-x-auto gap-6 pb-4 hide-scrollbar contain-layout">
             {albums.map(item => <AlbumItem key={item.id} {...item} />)}
           </div>
         </section>
@@ -101,7 +101,7 @@ const Home = () => {
           <div className="mb-6">
             <h2 className="text-2xl font-bold tracking-tight text-white">Trending Now</h2>
           </div>
-          <div className="flex overflow-x-auto gap-6 pb-4 hide-scrollbar">
+          <div className="flex overflow-x-auto gap-6 pb-4 hide-scrollbar contain-layout">
             {songs.map(item => <SongItem key={item.id} {...item} />)}
           </div>
         </section>

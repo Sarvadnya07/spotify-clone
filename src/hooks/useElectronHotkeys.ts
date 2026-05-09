@@ -11,7 +11,7 @@ export const useElectronHotkeys = () => {
 
   useEffect(() => {
     // Check if running in Electron environment
-    const electron = (window as any).electronAPI;
+    const electron = window.electronAPI;
     if (!electron) return;
 
     // Register listeners

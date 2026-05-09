@@ -38,6 +38,7 @@ export const useAudioEngine = () => {
   const pause = usePlayerStore(state => state.pause);
   const playNext = usePlayerStore(state => state.playNext);
   const playPrevious = usePlayerStore(state => state.playPrevious);
+  const getNextTrack = usePlayerStore(state => state.getNextTrack);
 
   /**
    * Initializes the AudioContext and AnalyserNode on first user interaction
@@ -60,9 +61,8 @@ export const useAudioEngine = () => {
 
   // Intelligence: Pre-fetch next track assets as the current song nears end
   const preloadNext = useCallback(() => {
-    const nextIndex = (track.id + 1) % songsData.length;
-    const nextTrack = songsData[nextIndex];
-    if (preloadedRef.current === nextTrack.id.toString()) return;
+    const nextTrack = getNextTrack();
+    if (!nextTrack || preloadedRef.current === nextTrack.id.toString()) return;
 
     console.log("[AUDIO] Pre-fetching next track assets:", nextTrack.name);
     const img = new Image();
@@ -73,7 +73,7 @@ export const useAudioEngine = () => {
     audio.preload = "auto";
     
     preloadedRef.current = nextTrack.id.toString();
-  }, [track.id]);
+  }, [getNextTrack]);
 
   // Optimized Progress Update Logic
   const syncProgress = useCallback(() => {

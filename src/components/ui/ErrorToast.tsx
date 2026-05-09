@@ -1,5 +1,5 @@
 import React from 'react';
-import usePlayerStore from '../store/usePlayerStore';
+import usePlayerStore from "../../store/usePlayerStore";
 
 const ErrorToast = () => {
   const { error, setError } = usePlayerStore();
