@@ -8,20 +8,17 @@ export default {
   theme: {
     extend: {
       colors: {
-        background: "#09090b",
+        background: "#000000",
         surface: "#121212",
-        "surface-bright": "#1a1a1a",
-        primary: "#1DB954",
-        secondary: "#19e68c",
+        "surface-bright": "#1f1f1f",
+        "surface-hover": "#2a2a2a",
+        primary: "#1ed760",
+        secondary: "#1db954",
         text: {
-          base: "#fafafa",
-          muted: "#a7a7a7",
+          base: "#ffffff",
+          muted: "#b3b3b3",
           dim: "#727272"
         },
-        accent: {
-          neon: "#14F195",
-          cyber: "#00E1FF",
-        }
       },
 
       spacing: {
@@ -36,8 +33,8 @@ export default {
       },
 
       fontFamily: {
-        sans: ["Inter", "system-ui", "Arial"],
-        display: ["Poppins", "Inter", "system-ui"],
+        sans: ["Inter", "system-ui", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Roboto", "sans-serif"],
+        display: ["Inter", "system-ui", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "sans-serif"],
       },
 
       boxShadow: {

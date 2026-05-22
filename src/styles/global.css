@@ -4,11 +4,11 @@
 
 @layer base {
   :root {
-    --primary: #1DB954;
-    --background: #09090b;
+    --primary: #1ed760;
+    --background: #000000;
     --surface: #121212;
-    --text-base: #fafafa;
-    --text-muted: #a7a7a7;
+    --text-base: #ffffff;
+    --text-muted: #b3b3b3;
     --player-progress: 0%;
   }
 
@@ -17,7 +17,6 @@
     font-feature-settings: "cv02", "cv05", "cv08", "ss01";
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    /* Optimization: Disable touch delay for instant taps */
     touch-action: manipulation;
   }
 }

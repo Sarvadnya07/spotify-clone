@@ -48,16 +48,16 @@ const App: React.FC = () => {
   }, []);
 
   return (
-    <div className={`h-screen overflow-hidden transition-opacity duration-700 ${isMounted ? 'opacity-100' : 'opacity-0'}`}>
+    <div className={`h-screen overflow-hidden transition-opacity duration-700 bg-black ${isMounted ? 'opacity-100' : 'opacity-0'}`}>
       <ReactiveBackground />
       
-      <div className="h-full flex flex-col relative z-10">
-        <div className="flex-grow flex overflow-hidden">
+      <div className="h-full flex flex-col relative z-10 bg-black">
+        <div className="flex-grow flex p-2 gap-2 overflow-hidden min-h-0">
           <ErrorBoundary>
             <Sidebar onShowShortcuts={toggleShortcuts} />
           </ErrorBoundary>
           
-          <div className="flex-grow overflow-hidden relative bg-[#121212]">
+          <div className="flex-grow overflow-hidden relative bg-[#121212] rounded-lg flex flex-col">
             <ErrorBoundary>
               <Display />
             </ErrorBoundary>

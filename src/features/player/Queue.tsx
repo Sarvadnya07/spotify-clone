@@ -4,10 +4,10 @@ import usePlayerStore from '../../store/usePlayerStore';
 import { assets, songsData } from '../../assets/assets';
 
 /**
- * Modern Glass Queue Component
- * - Integrated glass panel with deep blur.
- * - Refined spacing and typography using 'Outfit' font.
- * - Smooth slide-in animations consistent with the new UI.
+ * Enterprise Queue Component
+ * - Styled as a flat, elegant matching panel overlapping the Display content area.
+ * - Formatted standard playlist sequence list matching official Spotify Desktop.
+ * - Clean casing, minimalist fonts, zero all-caps techno headers.
  */
 const Queue = () => {
   const { queue, showQueue, toggleQueue, clearQueue, track, removeFromQueue, playWithId } = usePlayerStore();
@@ -22,78 +22,79 @@ const Queue = () => {
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: "100%", opacity: 0 }}
           transition={{ type: "spring", damping: 30, stiffness: 300 }}
-          className="fixed inset-x-2 bottom-24 top-20 glass-panel z-[55] rounded-3xl flex flex-col p-8 overflow-hidden shadow-[0_0_50px_rgba(0,0,0,0.8)] border border-white/10"
+          className="fixed inset-x-2 bottom-24 top-2 bg-[#121212] z-[55] rounded-lg flex flex-col p-6 overflow-hidden border border-white/5 shadow-2xl"
         >
           {/* Header */}
-          <div className="flex items-center justify-between mb-10">
+          <div className="flex items-center justify-between mb-6">
             <div className="flex flex-col">
-              <h1 className="text-4xl font-black tracking-tighter">Queue</h1>
-              <p className="text-gray-500 text-sm font-medium">Manage your upcoming tracks</p>
+              <h1 className="text-2xl font-bold text-white tracking-tight">Play Queue</h1>
+              <p className="text-xs text-[#b3b3b3] mt-0.5">Manage your upcoming listening sequence</p>
             </div>
             <button 
               onClick={toggleQueue}
-              className="w-12 h-12 rounded-full glass-panel flex items-center justify-center hover:bg-white/10 transition-all border border-white/10"
+              className="w-9 h-9 rounded-full bg-black/40 hover:bg-black/60 flex items-center justify-center text-white transition-all hover:scale-105 active:scale-95"
             >
               ✕
             </button>
           </div>
 
-          <div className="flex-grow overflow-y-auto pr-4 hide-scrollbar">
+          <div className="flex-grow overflow-y-auto pr-2 custom-scrollbar">
             {/* Now Playing Section */}
-            <section className="mb-12">
-              <h2 className="text-[10px] font-black text-[#1db954] uppercase tracking-[0.3em] mb-6">Currently Playing</h2>
-              <div className="flex items-center gap-6 p-4 glass-card rounded-2xl border border-[#1db95422]">
-                <img className="w-16 h-16 rounded-xl shadow-2xl" src={track.image} alt={track.name} />
+            <section className="mb-8">
+              <h2 className="text-sm font-bold text-white mb-3">Now playing</h2>
+              <div className="flex items-center gap-4 p-3 bg-[#181818] rounded-md border border-white/5">
+                <img className="w-12 h-12 rounded object-cover shadow-md" src={track.image} alt={track.name} />
                 <div className="flex flex-col min-w-0">
-                  <span className="text-white text-lg font-bold truncate">{track.name}</span>
-                  <span className="text-sm text-gray-400 font-medium">{track.desc}</span>
+                  <span className="text-white text-sm font-medium truncate">{track.name}</span>
+                  <span className="text-xs text-[#b3b3b3] mt-0.5 truncate">{track.desc}</span>
                 </div>
-                <div className="ml-auto flex gap-2 pr-4">
-                  <div className="w-1 h-4 bg-[#1db954] animate-pulse" />
-                  <div className="w-1 h-6 bg-[#1db954] animate-pulse" style={{ animationDelay: '0.2s' }} />
-                  <div className="w-1 h-3 bg-[#1db954] animate-pulse" style={{ animationDelay: '0.4s' }} />
+                <div className="ml-auto flex items-end gap-0.5 pr-2 h-4">
+                  <div className="w-[3px] bg-[#1ed760] rounded-full animate-[bounce_1.2s_ease-in-out_infinite]" />
+                  <div className="w-[3px] bg-[#1ed760] rounded-full animate-[bounce_1.2s_ease-in-out_infinite]" style={{ animationDelay: '0.2s' }} />
+                  <div className="w-[3px] bg-[#1ed760] rounded-full animate-[bounce_1.2s_ease-in-out_infinite]" style={{ animationDelay: '0.4s' }} />
                 </div>
               </div>
             </section>
 
             {/* Up Next Section */}
-            <section className="mb-10">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em]">Next in Line</h2>
+            <section className="mb-6">
+              <div className="flex items-center justify-between mb-3">
+                <h2 className="text-sm font-bold text-[#b3b3b3]">Next in line</h2>
                 {queue.length > 0 && (
                   <button 
                     onClick={clearQueue}
-                    className="text-xs font-black text-gray-400 hover:text-red-400 transition-colors tracking-widest"
+                    className="text-xs font-bold text-[#b3b3b3] hover:text-white transition-colors"
                   >
-                    CLEAR ALL
+                    Clear queue
                   </button>
                 )}
               </div>
 
               {queueTracks.length === 0 ? (
-                <div className="py-20 text-center glass-card rounded-3xl border-dashed border-white/5">
-                  <p className="text-gray-500 font-medium italic">The queue is empty. Explore and add more music!</p>
+                <div className="py-16 text-center bg-[#181818]/40 rounded-lg border border-dashed border-white/5">
+                  <p className="text-[#b3b3b3] text-sm italic font-normal">The queue is empty. Add songs from your library or search.</p>
                 </div>
               ) : (
-                <div className="flex flex-col gap-3">
+                <div className="flex flex-col gap-1">
                   {queueTracks.map((song, index) => (
                     <motion.div
                       key={`${song?.id}-${index}`}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: index * 0.05 }}
-                      className="group flex items-center justify-between p-4 rounded-2xl hover:bg-white/5 transition-all cursor-pointer border border-transparent hover:border-white/5"
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: index * 0.02, duration: 0.2 }}
+                      className="group flex items-center justify-between p-2 rounded-md hover:bg-white/5 transition-all cursor-pointer"
                     >
-                      <div className="flex items-center gap-5 flex-grow min-w-0" onClick={() => playWithId(song!.id)}>
-                        <img className="w-12 h-12 rounded-xl shadow-lg group-hover:scale-110 transition-transform" src={song?.image} alt={song?.name} />
+                      <div className="flex items-center gap-4 flex-grow min-w-0" onClick={() => playWithId(song!.id)}>
+                        <span className="text-xs text-[#b3b3b3] w-4 text-right flex-shrink-0 group-hover:text-white transition-colors">{index + 1}</span>
+                        <img className="w-10 h-10 rounded object-cover shadow flex-shrink-0" src={song?.image} alt={song?.name} />
                         <div className="flex flex-col min-w-0">
-                          <span className="text-white font-bold truncate group-hover:text-[#1db954] transition">{song?.name}</span>
-                          <span className="text-xs text-gray-500 font-medium truncate">{song?.desc}</span>
+                          <span className="text-white text-sm font-medium truncate group-hover:text-[#1ed760] transition-colors">{song?.name}</span>
+                          <span className="text-xs text-[#b3b3b3] truncate mt-0.5">{song?.desc}</span>
                         </div>
                       </div>
                       <button 
                         onClick={() => removeFromQueue(song!.id)}
-                        className="opacity-0 group-hover:opacity-100 p-2 text-gray-500 hover:text-white transition-opacity"
+                        className="opacity-0 group-hover:opacity-100 p-2 text-[#b3b3b3] hover:text-white transition-opacity"
                       >
                         ✕
                       </button>

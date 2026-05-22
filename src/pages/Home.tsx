@@ -77,14 +77,14 @@ const Home = () => {
     >
       <Navbar />
 
-      <main className="p-8 space-y-12">
+      <main className="p-6 md:p-8 space-y-10">
         {/* TOP SECTION: FEATURED CHARTS */}
         <section>
-          <div className="flex items-center justify-between mb-6">
-            <h1 className="text-2xl font-black text-white tracking-tighter uppercase">Featured Charts</h1>
-            <button className="text-[10px] font-black text-text-muted uppercase tracking-[0.2em] hover:text-white transition-colors">Show All</button>
+          <div className="flex items-end justify-between mb-4">
+            <h2 className="text-2xl font-bold text-white tracking-tight hover:underline cursor-pointer">Featured Charts</h2>
+            <button className="text-xs font-bold text-text-muted hover:underline transition-colors">Show all</button>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
             {albums.map((item, index) => (
               <AlbumItem key={index} {...item} />
             ))}
@@ -93,35 +93,56 @@ const Home = () => {
 
         {/* BOTTOM SECTION: TRENDING NOW */}
         <section>
-          <div className="flex items-center justify-between mb-6">
-            <h1 className="text-2xl font-black text-white tracking-tighter uppercase">Trending Now</h1>
-            <button className="text-[10px] font-black text-text-muted uppercase tracking-[0.2em] hover:text-white transition-colors">Show All</button>
+          <div className="flex items-end justify-between mb-4">
+            <h2 className="text-2xl font-bold text-white tracking-tight hover:underline cursor-pointer">Trending Now</h2>
+            <button className="text-xs font-bold text-text-muted hover:underline transition-colors">Show all</button>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 pb-20">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
             {songs.map((item, index) => (
               <SongItem key={index} {...item} />
             ))}
           </div>
         </section>
 
-        <section className="mt-16 py-12 border-t border-white/5">
-          <div className="max-w-2xl">
-            <h3 className="text-xl font-bold text-white mb-4 tracking-tight">System Observability</h3>
-            <p className="text-[#a7a7a7] text-sm leading-relaxed mb-8">
-              Engineered for extreme performance using layout containment, granular state subscriptions, and hardware-accelerated painting.
-            </p>
-            <div className="flex gap-8">
-              <div className="flex flex-col">
-                <span className="text-[10px] font-bold text-[#a7a7a7] uppercase tracking-widest mb-1">Rendering</span>
-                <span className="text-xs font-bold text-white">Direct-to-GPU</span>
-              </div>
-              <div className="flex flex-col">
-                <span className="text-[10px] font-bold text-[#a7a7a7] uppercase tracking-widest mb-1">State Bus</span>
-                <span className="text-xs font-bold text-white">Surgical Subscriptions</span>
-              </div>
-            </div>
+        {/* REAL-WORLD SPOTIFY FOOTER */}
+        <footer className="mt-20 pt-10 pb-16 border-t border-white/5 grid grid-cols-2 md:grid-cols-4 gap-8 text-xs">
+          <div className="flex flex-col gap-3">
+            <h4 className="font-bold text-white uppercase tracking-wider text-[10px]">Company</h4>
+            <a href="#" className="text-text-muted hover:text-white transition hover:underline">About</a>
+            <a href="#" className="text-text-muted hover:text-white transition hover:underline">Jobs</a>
+            <a href="#" className="text-text-muted hover:text-white transition hover:underline">For the Record</a>
           </div>
-        </section>
+          <div className="flex flex-col gap-3">
+            <h4 className="font-bold text-white uppercase tracking-wider text-[10px]">Communities</h4>
+            <a href="#" className="text-text-muted hover:text-white transition hover:underline">For Artists</a>
+            <a href="#" className="text-text-muted hover:text-white transition hover:underline">Developers</a>
+            <a href="#" className="text-text-muted hover:text-white transition hover:underline">Advertising</a>
+            <a href="#" className="text-text-muted hover:text-white transition hover:underline">Investors</a>
+            <a href="#" className="text-text-muted hover:text-white transition hover:underline">Vendors</a>
+          </div>
+          <div className="flex flex-col gap-3">
+            <h4 className="font-bold text-white uppercase tracking-wider text-[10px]">Useful links</h4>
+            <a href="#" className="text-text-muted hover:text-white transition hover:underline">Support</a>
+            <a href="#" className="text-text-muted hover:text-white transition hover:underline">Free Mobile App</a>
+          </div>
+          <div className="flex flex-col gap-3">
+            <h4 className="font-bold text-white uppercase tracking-wider text-[10px]">Spotify Plans</h4>
+            <a href="#" className="text-text-muted hover:text-white transition hover:underline">Premium Individual</a>
+            <a href="#" className="text-text-muted hover:text-white transition hover:underline">Premium Student</a>
+            <a href="#" className="text-text-muted hover:text-white transition hover:underline">Spotify Free</a>
+          </div>
+          <div className="col-span-full pt-10 mt-10 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4 text-text-muted text-[11px]">
+            <div className="flex flex-wrap gap-x-6 gap-y-2">
+              <a href="#" className="hover:text-white transition hover:underline">Legal</a>
+              <a href="#" className="hover:text-white transition hover:underline">Safety & Privacy Center</a>
+              <a href="#" className="hover:text-white transition hover:underline">Privacy Policy</a>
+              <a href="#" className="hover:text-white transition hover:underline">Cookies</a>
+              <a href="#" className="hover:text-white transition hover:underline">About Ads</a>
+              <a href="#" className="hover:text-white transition hover:underline">Accessibility</a>
+            </div>
+            <span>© 2026 Spotify AB</span>
+          </div>
+        </footer>
       </main>
     </motion.div>
   );
