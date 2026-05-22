@@ -14,10 +14,11 @@ Spotify Elite follows a decoupled, single-responsibility architecture built arou
 
 ```mermaid
 graph TD
-    App[App.tsx Root] --> |Layout Grid| Layout[Top Header & Layout]
-    Layout --> Sidebar[Sidebar Navigation Box]
-    Layout --> Main[Main Content Panel / Display]
-    Layout --> FriendSocial[Friend Social Hub]
+    App[App.tsx Root] --> Navbar[Global Top Navbar]
+    App --> |Flex Grid| Layout[Main Display Area]
+    Layout --> Sidebar[Dynamic Left Library Sidebar]
+    Layout --> Main[Center Content / Router Views]
+    Layout --> FriendSocial[Dynamic Right Friend Hub]
     
     App --> |Core Service| AudioEngine[Audio Engine Hook]
     AudioEngine <--> |Zustand Pub/Sub| Store[usePlayerStore]

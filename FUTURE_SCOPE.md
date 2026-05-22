@@ -14,6 +14,10 @@ This document outlines the long-term technical vision, architectural scaling pla
 - **Objective**: Establish full accessibility for keyboard-only and screen-reader navigation.
 - **Implementation**: Refactor all custom interactive elements to use standard semantic HTML tags (or apply correct `tabIndex` and `role="button"` values) and outline crisp, high-visibility focus indicator rings.
 
+### C. Advanced AI DJ Micro-Animations
+- **Objective**: Elevate the visual interaction of the AI DJ Alex voice overlay.
+- **Implementation**: Introduce smooth, physics-based micro-animations for the DJ character/icon reacting in real-time to the audio waveform and voice synthesis cadence, matching top-tier enterprise interaction standards.
+
 ---
 
 ## 🚀 2. Mid-Term Initiatives (Q4 2026)

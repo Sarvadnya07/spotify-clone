@@ -28,6 +28,8 @@ const Player = () => {
   const toggleQueue = usePlayerStore(state => state.toggleQueue);
   const showMiniplayer = usePlayerStore(state => state.showMiniplayer);
   const toggleMiniplayer = usePlayerStore(state => state.toggleMiniplayer);
+  const showDjOverlay = usePlayerStore(state => state.showDjOverlay);
+  const toggleDjOverlay = usePlayerStore(state => state.toggleDjOverlay);
 
   const formatTime = useCallback((time: { minute: number, second: number }) => {
     return `${time.minute}:${time.second.toString().padStart(2, '0')}`;

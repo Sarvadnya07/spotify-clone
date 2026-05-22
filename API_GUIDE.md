@@ -119,6 +119,11 @@ interface SpeechConfiguration {
 const prompt = `You are AI DJ Alex on Spotify. Introduce the song "${track.name}" by "${track.desc}" given the current weather is ${weather.temp}°C and ${weather.condition}. Keep it under 2 sentences, slick, cool, and highly conversational.`;
 ```
 
+### UI Integration & Store Triggers:
+The DJ overlay is tightly coupled to `usePlayerStore` via the `showDjOverlay` and `toggleDjOverlay` actions. 
+- The user triggers the overlay via a prominent, pulsing UI button in the Player control bar.
+- Upon activation, the `showDjOverlay` boolean flags the `DJOverlay.tsx` component to mount, rendering the animated DJ interface and automatically initiating the voice sequence.
+
 ---
 
 ## 🛡️ Integration Error Handling Guidelines

@@ -23,7 +23,8 @@
 
 ## ✨ Key Features
 
-- 🎙️ **Ambient AI DJ Alex**: A weather-aware voice assistant that narrates song transitions.
+- 🎨 **Enterprise-Grade UI/UX**: Pixel-perfect adherence to Spotify's desktop layout, featuring a centralized global Navbar, dynamic left/right collapsible sidebars, and premium modern aesthetics (2025+ standards).
+- 🎙️ **Ambient AI DJ Alex**: A weather-aware voice assistant that narratively bridges track transitions. Accessible via a prominent, pulsing UI action button directly from the player.
 - 📊 **Real-time Audio Visualizer**: A high-DPR rendering frequency bar powered by the Web Audio API.
 - 👥 **Real-time Social Hub**: Event-driven WebSockets sync playback queues and track listening states with online friends instantly.
 - 📖 **Weather Journal**: A timeline log tracking previously played songs alongside local weather conditions.
