@@ -24,6 +24,9 @@ interface PlayerState {
   shuffleMode: boolean;
   showQueue: boolean;
   showMiniplayer: boolean;
+  showDjOverlay: boolean;
+  showFriendActivity: boolean;
+  sidebarCollapsed: boolean;
   currentWeather: WeatherData | null;
   accentColor: string;
   queue: number[];
@@ -31,6 +34,7 @@ interface PlayerState {
   likedSongs: number[];
   history: HistoryItem[]; 
   playlists: { id: string; name: string; desc: string; image: string; tracks: number[] }[];
+  searchQuery: string;
   
   setTrack: (track: Song) => void;
   play: () => void;
@@ -49,6 +53,9 @@ interface PlayerState {
   toggleShuffle: () => void;
   toggleQueue: () => void;
   toggleMiniplayer: () => void;
+  toggleDjOverlay: () => void;
+  toggleFriendActivity: () => void;
+  toggleSidebarCollapsed: () => void;
   setWeather: (weather: WeatherData) => void;
   setAccentColor: (color: string) => void;
   addToQueue: (id: number) => void;
@@ -57,6 +64,7 @@ interface PlayerState {
   toggleLike: (id: number) => void;
   createPlaylist: (name: string) => void;
   getNextTrack: () => Song | null;
+  setSearchQuery: (query: string) => void;
 }
 
 const usePlayerStore = create<PlayerState>()(
@@ -76,6 +84,9 @@ const usePlayerStore = create<PlayerState>()(
       shuffleMode: false,
       showQueue: false,
       showMiniplayer: false,
+      showDjOverlay: false,
+      showFriendActivity: true,
+      sidebarCollapsed: false,
       currentWeather: null,
       accentColor: '#1DB954',
       queue: [],
@@ -85,6 +96,7 @@ const usePlayerStore = create<PlayerState>()(
       playlists: [
         { id: '1', name: 'My Playlist #1', desc: 'Playlist • By You', image: songsData[2].image, tracks: [0, 1, 2] }
       ],
+      searchQuery: '',
 
       setTrack: (track) => set({ track }),
       play: () => set({ playStatus: true }),
@@ -159,9 +171,13 @@ const usePlayerStore = create<PlayerState>()(
       toggleShuffle: () => set((state) => ({ shuffleMode: !state.shuffleMode })),
       toggleQueue: () => set((state) => ({ showQueue: !state.showQueue, showLyrics: false })),
       toggleMiniplayer: () => set((state) => ({ showMiniplayer: !state.showMiniplayer })),
+      toggleDjOverlay: () => set((state) => ({ showDjOverlay: !state.showDjOverlay })),
+      toggleFriendActivity: () => set((state) => ({ showFriendActivity: !state.showFriendActivity })),
+      toggleSidebarCollapsed: () => set((state) => ({ sidebarCollapsed: !state.sidebarCollapsed })),
       
       setWeather: (weather) => set({ currentWeather: weather }),
       setAccentColor: (color) => set({ accentColor: color }),
+      setSearchQuery: (query) => set({ searchQuery: query }),
       
       addToQueue: (id) => set((state) => {
         const exists = songsData.some((song) => song.id === id);
@@ -230,7 +246,10 @@ const usePlayerStore = create<PlayerState>()(
         likedSongs: state.likedSongs,
         history: state.history,
         playlists: state.playlists,
-        volume: state.volume
+        volume: state.volume,
+        showFriendActivity: state.showFriendActivity,
+        sidebarCollapsed: state.sidebarCollapsed,
+        showDjOverlay: state.showDjOverlay
       })
     }
   )

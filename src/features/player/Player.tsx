@@ -55,6 +55,27 @@ const Player = () => {
         <button className="ml-3 p-1 transition-transform active:scale-95 flex-shrink-0">
           <img className="w-4 opacity-70 hover:opacity-100" src={assets.like_icon} alt="Like" />
         </button>
+        <button 
+          onClick={toggleDjOverlay}
+          className={`ml-2 w-8 h-8 rounded-full flex items-center justify-center relative active:scale-95 transition-all ${
+            showDjOverlay 
+              ? 'bg-[#1ed760]/20 border border-[#1ed760]/40 text-[#1ed760]' 
+              : 'bg-white/5 border border-white/5 text-[#b3b3b3] hover:text-white hover:bg-white/10'
+          }`}
+          title="AI DJ Alex"
+        >
+          <svg className="w-[18px] h-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M12 7V4m-2 0h4" />
+            <path d="M5 12H4m16 0h-1" />
+            <rect x="6" y="8" width="12" height="10" rx="2" />
+            <path d="M10 12v2M14 12v2" />
+          </svg>
+          <div className="absolute -top-1 -right-1 text-[#2ad8ff] drop-shadow-[0_0_4px_rgba(42,216,255,0.6)]">
+            <svg className="w-3.5 h-3.5 fill-current animate-pulse" viewBox="0 0 24 24">
+              <path d="M12 4L14 10L20 12L14 14L12 20L10 14L4 12L10 10Z" />
+            </svg>
+          </div>
+        </button>
       </div>
 
       {/* CONTROLS & PROGRESS */}

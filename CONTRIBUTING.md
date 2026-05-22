@@ -1,30 +1,75 @@
-# Contributing to Spotify Clone
+# 🤝 Contributing Guidelines
 
-First off, thank you for considering contributing to the Spotify Clone! It's people like you that make the open-source community such an amazing place to learn, inspire, and create.
+First off, thank you for taking the time to contribute to **Spotify Elite**! 
 
-## 🚀 How Can I Contribute?
+To maintain the high performance, accessibility, and clean architecture of this codebase, all contributors must follow our professional development workflows.
 
-### Reporting Bugs
-- Check the [Issues](https://github.com/yourusername/spotify-clone/issues) to see if the bug has already been reported.
-- If not, open a new issue. Clearly describe the problem and include steps to reproduce it.
+---
 
-### Suggesting Enhancements
-- Open an issue with the tag `enhancement`.
-- Describe the feature you'd like to see and why it would be useful.
+## 🌿 1. Git Branching Strategy
 
-### Pull Requests
-1. Fork the repo and create your branch from `main`.
-2. If you've added code that should be tested, add tests.
-3. If you've changed APIs, update the documentation.
-4. Ensure the test suite passes.
-5. Make sure your code lints.
-6. Issue that pull request!
+Our repository uses a simplified branch layout to keep development fast and clean:
+- **`main`**: Production-ready branch. Must remain stable and compile successfully at all times.
+- **Feature Branches (`feature/name-here`)**: Dedicated branches for new features.
+- **Bugfix Branches (`bugfix/issue-name`)**: Dedicated branches for fixing reported bugs.
 
-## 📜 Code Style
-- We use **Prettier** and **ESLint** for code formatting.
-- Follow the **Atomic Design** pattern for components.
-- Use **TypeScript** for all new features.
-- Ensure all components are accessible (ARIA labels).
+---
 
-## ⚖️ License
-By contributing, you agree that your contributions will be licensed under its MIT License.
+## 🛠️ 2. Development Workflow
+
+Follow these steps to contribute your changes:
+
+1. **Fork the Repository**: Create your own copy of the repository on GitHub.
+2. **Create a Branch**: Create a feature branch off of the latest `main`:
+   ```bash
+   git checkout -b feature/your-awesome-feature
+   ```
+3. **Install Dependencies**: Install package managers and tools locally:
+   ```bash
+   npm install
+   ```
+4. **Develop and Test**: Implement your changes and verify that the test suite passes:
+   ```bash
+   npm run test
+   ```
+5. **Format and Lint**: Ensure your code meets our styling guidelines:
+   ```bash
+   npm run lint
+   ```
+6. **Commit Code**: Write clean, descriptive commits using semantic style:
+   ```bash
+   git commit -m "feat: add dynamic keyboard shortcut listeners"
+   ```
+7. **Submit Pull Request**: Open a Pull Request targeting our `main` branch.
+
+---
+
+## 🎨 3. Coding Standards & Styling
+
+To keep the codebase easy to maintain, we enforce these style guidelines:
+
+### A. TypeScript Guidelines
+- Avoid using `any` casts. Use strict interfaces, generics, and return types.
+- Put shared types and interfaces inside `/src/core/types.ts`.
+
+### B. Code Style
+- Run Prettier formatting before committing code.
+- Group React imports first, followed by third-party packages, and then local components or hooks.
+
+### C. State Management
+- Never subscribe components to the entire Zustand store. Always use surgical selectors to prevent redundant component re-renders:
+  ```typescript
+  // Recommended
+  const track = usePlayerStore(state => state.track);
+  ```
+
+---
+
+## 🔍 4. Pull Request Review Checklist
+
+Before submitting your PR, verify that it meets the following criteria:
+- [ ] Code builds successfully with zero compilation warnings or errors (`npm run build`).
+- [ ] Test coverage does not decrease.
+- [ ] Key interactions (like progress sliders or toggles) work smoothly in the browser.
+- [ ] Accessibility is maintained (elements have proper ARIA labels and roles).
+- [ ] The PR description clearly details the changes made, the problem solved, and verification steps.

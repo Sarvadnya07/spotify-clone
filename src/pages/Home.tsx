@@ -59,7 +59,6 @@ const Home = () => {
   if (loading) {
     return (
       <div className="h-full flex flex-col bg-[#121212]">
-        <Navbar />
         <div className="flex-grow flex items-center justify-center">
           <div className="w-8 h-8 border-2 border-white/10 border-t-white rounded-full animate-spin" />
         </div>
@@ -75,8 +74,6 @@ const Home = () => {
       animate={{ opacity: 1 }}
       className="flex-grow h-full overflow-y-auto bg-[#121212] custom-scrollbar gpu"
     >
-      <Navbar />
-
       <main className="p-6 md:p-8 space-y-10">
         {/* TOP SECTION: FEATURED CHARTS */}
         <section>

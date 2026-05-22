@@ -16,6 +16,7 @@ import ToastContainer from "./components/ui/ToastContainer";
 import ShortcutsModal from "./components/ui/ShortcutsModal";
 import ErrorBoundary from "./components/ui/ErrorBoundary";
 import ReactiveBackground from "./components/animations/ReactiveBackground";
+import Navbar from "./components/layout/Navbar";
 import { useAudioEngine } from "./features/player/hooks/useAudioEngine";
 import { useKeyboardShortcuts } from "./hooks/useKeyboardShortcuts";
 import { useElectronHotkeys } from "./hooks/useElectronHotkeys";
@@ -31,7 +32,7 @@ import ErrorToast from "./components/ui/ErrorToast";
 const App: React.FC = () => {
   const [isMounted, setIsMounted] = useState(false);
   const [isShortcutsOpen, setIsShortcutsOpen] = useState(false);
-  const { showMiniplayer, toggleMiniplayer } = usePlayerStore();
+  const { showMiniplayer, toggleMiniplayer, showFriendActivity } = usePlayerStore();
 
   const toggleShortcuts = useCallback(() => {
     setIsShortcutsOpen(prev => !prev);
@@ -51,8 +52,12 @@ const App: React.FC = () => {
     <div className={`h-screen overflow-hidden transition-opacity duration-700 bg-black ${isMounted ? 'opacity-100' : 'opacity-0'}`}>
       <ReactiveBackground />
       
-      <div className="h-full flex flex-col relative z-10 bg-black">
-        <div className="flex-grow flex p-2 gap-2 overflow-hidden min-h-0">
+      <div className="h-full flex flex-col relative z-10 bg-black p-2 gap-2">
+        <ErrorBoundary>
+          <Navbar />
+        </ErrorBoundary>
+
+        <div className="flex-grow flex gap-2 overflow-hidden min-h-0">
           <ErrorBoundary>
             <Sidebar onShowShortcuts={toggleShortcuts} />
           </ErrorBoundary>
@@ -63,9 +68,11 @@ const App: React.FC = () => {
             </ErrorBoundary>
           </div>
 
-          <ErrorBoundary>
-            <FriendActivity />
-          </ErrorBoundary>
+          {showFriendActivity && (
+            <ErrorBoundary>
+              <FriendActivity />
+            </ErrorBoundary>
+          )}
         </div>
 
         <ErrorBoundary>

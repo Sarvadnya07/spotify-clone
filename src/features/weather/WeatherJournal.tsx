@@ -28,7 +28,6 @@ const WeatherJournal = () => {
       animate={{ opacity: 1 }}
       className="h-full flex flex-col bg-gradient-to-b from-black/40 to-transparent"
     >
-      <Navbar />
       
       <div className="flex-grow overflow-y-auto px-8 pt-10 hide-scrollbar">
         <header className="mb-14 relative">

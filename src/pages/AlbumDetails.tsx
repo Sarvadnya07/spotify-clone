@@ -26,7 +26,6 @@ const AlbumDetails = () => {
             animate={{ opacity: 1 }}
             className="h-full flex flex-col bg-transparent overflow-hidden"
         >
-            <Navbar />
             
             <div className="flex-grow overflow-y-auto custom-scrollbar pb-32">
                 {/* HERO HEADER */}

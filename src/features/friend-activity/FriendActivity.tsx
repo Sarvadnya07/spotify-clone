@@ -12,7 +12,7 @@ import { socketService } from "../../services/SocketService";
  * - Normal casing and Spotify green interactive hover colors.
  */
 const FriendActivity = () => {
-  const { playWithId } = usePlayerStore();
+  const { playWithId, toggleFriendActivity } = usePlayerStore();
   const { addToast } = useToastStore();
 
   const friends = [
@@ -53,11 +53,20 @@ const FriendActivity = () => {
   };
 
   return (
-    <div className="w-[280px] h-full hidden xl:flex flex-col bg-[#121212] rounded-lg select-none relative z-40 flex-shrink-0">
+    <div className="w-[280px] h-full flex flex-col bg-[#121212] rounded-lg select-none relative z-40 flex-shrink-0">
       <div className="p-4 flex items-center justify-between">
         <h2 className="font-bold text-sm text-white tracking-tight hover:underline cursor-pointer">Friend Activity</h2>
-        <div className="w-7 h-7 rounded-full flex items-center justify-center hover:bg-white/5 text-[#b3b3b3] hover:text-white transition-colors cursor-pointer">
-          <img className="w-3.5 opacity-70 invert" src={assets.plus_icon} alt="Invite" />
+        <div className="flex items-center gap-1.5">
+          <div className="w-7 h-7 rounded-full flex items-center justify-center hover:bg-white/5 text-[#b3b3b3] hover:text-white transition-colors cursor-pointer" title="Invite Friends">
+            <img className="w-3.5 opacity-70 invert" src={assets.plus_icon} alt="Invite" />
+          </div>
+          <button 
+            onClick={toggleFriendActivity} 
+            className="w-7 h-7 rounded-full flex items-center justify-center hover:bg-white/5 text-[#b3b3b3] hover:text-white transition-colors"
+            title="Close Friend Activity"
+          >
+            <span className="text-sm font-normal">✕</span>
+          </button>
         </div>
       </div>
 

@@ -1,9 +1,10 @@
-import React, { useState, useMemo, memo } from 'react';
+import React, { useMemo, memo } from 'react';
 import Navbar from '../components/layout/Navbar';
 import { songsData, assets } from '../assets/assets';
 import SongItem from '../features/music/SongItem';
 import { aiDjService } from '../services/AiDjService';
 import { motion, AnimatePresence } from 'framer-motion';
+import usePlayerStore from '../store/usePlayerStore';
 
 /**
  * Enterprise Search Component
@@ -12,7 +13,8 @@ import { motion, AnimatePresence } from 'framer-motion';
  * - Elegant mixed-casing typography.
  */
 const Search = () => {
-  const [query, setQuery] = useState("");
+  const query = usePlayerStore(state => state.searchQuery);
+  const setQuery = usePlayerStore(state => state.setSearchQuery);
 
   const filteredSongs = useMemo(() => {
     if (!query) return songsData.slice(0, 8);
@@ -30,32 +32,11 @@ const Search = () => {
 
   return (
     <div className="h-full flex flex-col bg-gradient-to-b from-[#121212] to-[#121212] overflow-hidden">
-      <Navbar />
       
       <div className="flex-grow overflow-y-auto px-6 md:px-8 pt-6 pb-32 custom-scrollbar">
         {/* Search Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold tracking-tight mb-5 text-white">Search</h1>
-          <div className="relative group max-w-md">
-            <input 
-              type="text" 
-              placeholder="What do you want to listen to?" 
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              className="w-full bg-[#242424] hover:bg-[#2a2a2a] focus:bg-[#242424] border-0 rounded-full py-3.5 pl-12 pr-12 text-white font-normal placeholder-[#757575] text-sm focus:outline-none focus:ring-2 focus:ring-white transition-all"
-            />
-            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-white transition-colors">
-               <img className="w-4 h-4 opacity-70" src={assets.search_icon} alt="" />
-            </div>
-            {query && (
-              <button 
-                onClick={() => setQuery("")}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white text-sm"
-              >
-                ✕
-              </button>
-            )}
-          </div>
+        <div className="mb-6">
+          <h1 className="text-3xl font-bold tracking-tight text-white">Search</h1>
         </div>
 
         <AnimatePresence mode="wait">
