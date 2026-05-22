@@ -5,7 +5,7 @@
  * No Client Secret is needed, making it perfect for single-page applications.
  */
 
-const CLIENT_ID = 'YOUR_SPOTIFY_CLIENT_ID'; // Placeholder for production config
+const CLIENT_ID = import.meta.env.VITE_SPOTIFY_CLIENT_ID || ''; 
 const REDIRECT_URI = window.location.origin;
 
 class SpotifyAuthService {
@@ -37,6 +37,11 @@ class SpotifyAuthService {
    * Redirects the user to the Spotify Authorization page.
    */
   async redirectToAuthCodeFlow() {
+    if (!CLIENT_ID) {
+      alert("Missing VITE_SPOTIFY_CLIENT_ID in your .env file. Please add it to connect your account.");
+      return;
+    }
+
     const verifier = this.generateCodeVerifier(128);
     const challenge = await this.generateCodeChallenge(verifier);
 

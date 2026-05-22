@@ -25,8 +25,11 @@ const Sidebar: React.FC<SidebarProps> = ({ onShowShortcuts }) => {
   const toggleSidebarCollapsed = usePlayerStore(state => state.toggleSidebarCollapsed);
 
   const handleCreatePlaylist = () => {
-    createPlaylist("New Playlist");
-    addToast("New playlist created", "success");
+    const name = window.prompt("Enter Playlist Name:");
+    if (name && name.trim().length > 0) {
+      createPlaylist(name.trim());
+      addToast(`Playlist "${name.trim()}" created`, "success");
+    }
   };
 
   const NavItem = memo(({ icon, label, onClick, path }: any) => {
@@ -81,8 +84,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onShowShortcuts }) => {
           )}
         </div>
 
-        {/* WEATHER HUB STATUS */}
-        {!sidebarCollapsed && <WeatherHub />}
+        {/* WEATHER HUB STATUS REMOVED FOR CLEANER UI */}
 
         <div className="flex-1 overflow-y-auto custom-scrollbar mt-2 space-y-1 pr-1 w-full">
           <div 
@@ -120,22 +122,15 @@ const Sidebar: React.FC<SidebarProps> = ({ onShowShortcuts }) => {
         </div>
 
         {!sidebarCollapsed && (
-          <div className="mt-4 pt-4 border-t border-white/5 space-y-3 flex-shrink-0">
-            {/* ELITE CONNECT — OAuth 2.0 PKCE */}
-            <div className="p-3.5 rounded-lg bg-white/[0.02] border border-white/5 relative overflow-hidden group">
-              <h3 className="text-xs font-semibold text-white mb-1">Spotify Connect</h3>
-              <p className="text-[11px] text-text-muted mb-2.5 leading-relaxed">
-                Link Spotify to sync your real library.
-              </p>
-              <button 
-                onClick={() => spotifyAuthService.redirectToAuthCodeFlow()}
-                className="w-full py-1.5 bg-white text-black hover:bg-[#e6e6e6] text-xs font-semibold rounded-full hover:scale-105 active:scale-95 transition-all shadow-md"
-              >
-                Connect Account
-              </button>
-            </div>
-
-            <button onClick={onShowShortcuts} className="w-full py-2 rounded-full bg-transparent hover:bg-white/5 border border-white/10 text-xs font-semibold text-[#b3b3b3] hover:text-white transition-all">
+          <div className="mt-4 pt-4 border-t border-white/5 space-y-2 flex-shrink-0">
+            <button 
+              onClick={() => spotifyAuthService.redirectToAuthCodeFlow()}
+              className="w-full py-2 rounded-full bg-transparent hover:bg-white/5 text-xs font-semibold text-[#b3b3b3] hover:text-white transition-all flex items-center justify-center gap-2"
+            >
+              <img className="w-4 h-4 opacity-70" src={assets.spotify_logo} alt="Spotify" />
+              Connect Spotify
+            </button>
+            <button onClick={onShowShortcuts} className="w-full py-2 rounded-full bg-transparent hover:bg-white/5 text-xs font-semibold text-[#b3b3b3] hover:text-white transition-all">
               Shortcuts
             </button>
           </div>
