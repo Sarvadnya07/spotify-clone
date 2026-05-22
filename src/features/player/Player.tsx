@@ -116,10 +116,15 @@ const Player = () => {
             title="AI DJ Alex"
           >
             <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M12 7V4m-2 0h4" />
-              <path d="M5 12H4m16 0h-1" />
-              <rect x="6" y="8" width="12" height="10" rx="2" />
-              <path d="M10 12v2M14 12v2" />
+              {/* Headphone arc */}
+              <path d="M3 11v-1a9 9 0 0 1 18 0v1" />
+              {/* Earcup boxes */}
+              <rect x="1" y="11" width="4" height="6" rx="1" />
+              <rect x="19" y="11" width="4" height="6" rx="1" />
+              {/* Bot face */}
+              <rect x="7" y="10" width="10" height="8" rx="2" />
+              <path d="M10 14v2" />
+              <path d="M14 14v2" />
             </svg>
             <div className="absolute -top-0.5 -right-0.5 text-[#2ad8ff] drop-shadow-[0_0_4px_rgba(42,216,255,0.6)]">
               <svg className="w-2 h-2 fill-current animate-pulse" viewBox="0 0 24 24">

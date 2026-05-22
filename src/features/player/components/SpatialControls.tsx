@@ -12,34 +12,33 @@ const SpatialControls: React.FC = () => {
   const [mode, setMode] = useState<'standard' | 'studio' | 'concert'>('standard');
   const { addToast } = useToastStore();
 
-  const setAcousticMode = (newMode: 'standard' | 'studio' | 'concert') => {
+  const modes = ['standard', 'studio', 'concert'] as const;
+
+  const toggleMode = () => {
     if (!audioContext) return;
+    const nextIndex = (modes.indexOf(mode) + 1) % modes.length;
+    const newMode = modes[nextIndex];
     setMode(newMode);
-    addToast(`Acoustic Mode: ${newMode.charAt(0).toUpperCase() + newMode.slice(1)}`, 'info');
+    addToast(`Acoustics: ${newMode.charAt(0).toUpperCase() + newMode.slice(1)}`, 'info');
   };
 
   return (
-    <div className="flex items-center gap-1.5 px-3 py-1 bg-[#242424] rounded-full">
-      <span className="text-[11px] font-bold text-[#b3b3b3] mr-1">Acoustics</span>
-      <button 
-        onClick={() => setAcousticMode('standard')}
-        className={`px-2 py-0.5 rounded-full text-[10px] font-bold transition-all ${mode === 'standard' ? 'bg-[#1ed760] text-black' : 'text-[#b3b3b3] hover:text-white hover:bg-white/5'}`}
-      >
-        Standard
-      </button>
-      <button 
-        onClick={() => setAcousticMode('studio')}
-        className={`px-2 py-0.5 rounded-full text-[10px] font-bold transition-all ${mode === 'studio' ? 'bg-[#1ed760] text-black' : 'text-[#b3b3b3] hover:text-white hover:bg-white/5'}`}
-      >
-        Studio
-      </button>
-      <button 
-        onClick={() => setAcousticMode('concert')}
-        className={`px-2 py-0.5 rounded-full text-[10px] font-bold transition-all ${mode === 'concert' ? 'bg-[#1ed760] text-black' : 'text-[#b3b3b3] hover:text-white hover:bg-white/5'}`}
-      >
-        Concert
-      </button>
-    </div>
+    <button 
+      onClick={toggleMode} 
+      className={`p-1.5 transition-opacity ${mode !== 'standard' ? 'text-[#1ed760]' : 'opacity-70 hover:opacity-100'}`}
+      title={`Acoustics: ${mode.charAt(0).toUpperCase() + mode.slice(1)}`}
+    >
+      <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+        {mode === 'studio' && <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />}
+        {mode === 'concert' && (
+          <>
+            <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
+          </>
+        )}
+      </svg>
+    </button>
   );
 };
 
